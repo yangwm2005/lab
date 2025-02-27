@@ -69,6 +69,72 @@
 		.custom-bullet-list li {
  			   margin-bottom: 0px; /* Space between each bullet */
 		}
+
+/* Sidebar Styles */
+#sidebar {
+    position: fixed;
+    top: 0;
+    right: -500px; /* Hidden by default */
+    width: 500px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    transition: right 0.3s ease;
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+#sidebar.open {
+    right: 0; /* Slide in when open */
+}
+
+#sidebar h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+#sidebar iframe {
+    width: 100%;
+    height: 80%; /* Half the sidebar height for the website */
+    border: none;
+    margin-bottom: 10px;
+}
+
+#sidebar .notes-area {
+    width: 100%;
+    height: 20%; /* Remaining space for notes */
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+	text-align: left; /* Ensure left alignment */
+    color: black; /* Default text color */
+}
+
+#sidebar .notes-area:empty:before {
+    content: "Start typing your notes here..."; /* Placeholder text */
+    color: #888; /* Lighter color for placeholder */
+    font-style: italic;
+}
+
+#sidebar-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4444;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#sidebar-close:hover {
+    background-color: #cc0000;
+}
 		
     </style>
 </head>
@@ -85,12 +151,13 @@
     <button onclick="insertBulletPoint()">• Bullet</button>
     <button onclick="document.execCommand('insertUnorderedList')">Bullet-List</button>
     <button onclick="insertSubBullet()">Sub</button>
-    <button onclick="insertCheckbox()">Checkbox</button>
+    <button onclick="insertCheckbox()" style="color:white;background-color:green;">Checkbox</button>
     <button onclick="document.execCommand('insertOrderedList')">1.2.3...</button>
     <button onclick="insertChecklist()">Checklist</button>
-    <button id="saveButton" onclick="saveFile()">Save as File</button>
+    <button id="saveButton" onclick="saveFile()" style="color:white;background-color:purple;">Save as File</button>
     <button id="openButton" onclick="openFile()">Open File</button>
     <button id="printButton" onclick="printContent()">Print</button>
+    <button onclick="toggleSidebar()" style="background-color: #ff9900; color: blue;">Sidebar</button>
 </div>
 <div id="tablesContainer">
     <table id="mainTable">
@@ -126,10 +193,10 @@
     <button onclick="insertBulletPoint()">• Bullet</button>
     <button onclick="document.execCommand('insertUnorderedList')">Bullet-List</button>
     <button onclick="insertSubBullet()">Sub</button>
-    <button onclick="insertCheckbox()">Checkbox</button>
+    <button onclick="insertCheckbox()" style="color:white;background-color:green;">Checkbox</button>
     <button onclick="document.execCommand('insertOrderedList')">1.2.3...</button>
     <button onclick="insertChecklist()">Checklist</button>
-    <button id="saveButton" onclick="saveFile()">Save as File</button>
+    <button id="saveButton" onclick="saveFile()" style="color:white;background-color:purple;">Save as File</button>
     <button id="openButton" onclick="openFile()">Open File</button>
     <button id="printButton" onclick="printContent()">Print</button>
 </div>
@@ -471,6 +538,23 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+    // Sidebar Toggle Functionality
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('open');
+    }
+
+    // Close Sidebar When Clicking Outside
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarButton = document.querySelector('button[onclick="toggleSidebar()"]');
+        
+        if (sidebar.classList.contains('open') && 
+            !sidebar.contains(event.target) && 
+            event.target !== sidebarButton) {
+            sidebar.classList.remove('open');
+        }
+    });
 
 
 
@@ -520,10 +604,23 @@ function insertChecklist() {
         }
     }
 }
+
+
+
 </script>
 
+<!-- Sidebar HTML with iframe and notes -->
+<div id="sidebar">
+    <h3>Progress checking</h3>
+    <iframe src="https://yangwm2005.github.io/lab/self-chat v191.html" title="Embedded Website"></iframe>
+    <div contenteditable="true" class="notes-area"></div>
+    <button id="sidebar-close" onclick="toggleSidebar()">Close</button>
+</div>
+
+
+
 <footer>
-    Copyright © 2025 Dr. Wen-Ming Yang 20250203 v1.5l Daily Goals setting (bullet)
+    Copyright © 2025 Dr. Wen-Ming Yang 20250203 v1.5l Daily Goals setting (bullet) 20250227: sidebar installed w self-Chat 191
 </footer>
 
 </body>
