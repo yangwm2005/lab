@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDCA-2f v1</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/5button-styles.css">
+    <script src="js/5button-script.js"></script>
+    <style>
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100vw;
+            min-width: 800px;
+            max-width: 1300px;
+            margin: 0 auto;
+            background-color: #e5eecc;
+            padding: 5px;
+        }
+        .column {
+            flex: 1;
+            min-width: 400px;
+            max-width: 600px;
+            text-align: center;
+            margin: 0 5px;
+        }
+        .iframe-row {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 2px;
+        }
+        .btn-brown {
+            background-color: #8b4513;
+            color: white !important;
+            font-size: 12px;
+            padding: 1px;
+            margin: 0;
+            height: 25px;
+            width: 47px;
+            border: 2px solid transparent;
+        }
+        .btn-brown:hover {
+            background-color: #a0522d;
+        }
+        .btn-green {
+            background-color: green;
+            color: white !important;
+            font-size: 13px;
+            padding: 1px;
+            margin: 0;
+            height: 25px;
+            width: 45px;
+            border: 2px solid transparent;
+        }
+        .btn-blue {
+            background-color: blue;
+            color: white !important;
+            font-size: 13px;
+            padding: 1px;
+            margin: 0;
+            height: 25px;
+            width: 50px;
+            border: 2px solid transparent;
+        }
+        .btn-small {
+            width: 20px;
+            font-size: 10px;
+            padding: 1px;
+        }
+        .btn-brown.btn-small {
+            width: 20px !important;
+        }
+        .btn-xsmall {
+            width: 15px;
+            font-size: 10px;
+            padding: 1px;
+        }
+        .btn-mini {
+            width: 10px;
+            font-size: 10px;
+            padding: 1px;
+        }
+        .btn-orange {
+            background-color: #ff9900;
+            color: blue !important;
+            font-size: 12px;
+            padding: 1px;
+            margin: 0;
+            height: 25px;
+            width: 60px;
+            border: 2px solid transparent;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            width: auto;
+            min-width: 130px;
+            box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.1);
+            z-index: 1000;
+            margin-top: 2px;
+            padding: 5px 0;
+            text-align: center;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content iframe {
+            border: none;
+            width: 100%;
+            height: 600px;
+        }
+        .dropdown-content.wide {
+            width: 570px;
+            min-width: 570px;
+        }
+        .dropdown-content.extra-wide {
+            width: 800px;
+            min-width: 800px;
+        }
+        .dropdown-menu {
+            background-color: #f1f1f1;
+            min-width: 90px;
+            border: 1px solid #8b4513;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            margin-top: 2px;
+            padding: 5px 0;
+            text-align: left;
+        }
+        .dropdown-menu li {
+            display: block;
+            padding: 2px 5px;
+        }
+        .dropdown-item-row {
+            display: flex;
+            align-items: left;
+            gap: 5px;
+            justify-content: left;
+        }
+        .dropdown-menu input, .dropdown-menu a {
+            margin: 0;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 650px;
+            min-height: 500px;
+            max-height: 800px;
+            margin-top: 1px;
+        }
+        .footnote {
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            margin-top: 10px;
+            padding: 10px 0;
+        }
+        #sidebar {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+            transition: right 0.3s ease;
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        #sidebar.open {
+            right: 0;
+        }
+        #sidebar h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        #sidebar iframe {
+            width: 100%;
+            height: 80%;
+            border: none;
+            margin-bottom: 10px;
+        }
+        #sidebar .notes-area {
+            width: 100%;
+            height: 20%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            text-align: left;
+            color: black;
+        }
+        #sidebar .notes-area:empty:before {
+            content: "Start typing your notes here...";
+            color: #888;
+            font-style: italic;
+        }
+        #sidebar-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff4444;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #sidebar-close:hover {
+            background-color: #cc0000;
+        }
+        @media (max-width: 1000px) {
+            .btn-brown, .btn-green, .btn-blue, .btn-orange {
+                font-size: 10px;
+                padding: 1px;
+                height: 22px;
+            }
+            .btn-small, .btn-xsmall, .btn-mini {
+                font-size: 8px;
+            }
+            .btn-brown.btn-small {
+                width: 20px !important;
+            }
+            .column {
+                min-width: 350px;
+            }
+            .dropdown-content.wide, .dropdown-content.extra-wide {
+                width: 100%;
+                min-width: 350px;
+            }
+            .dropdown-menu {
+                min-width: 100px;
+            }
+            .dropdown-item-row {
+                gap: 3px;
+            }
+        }
+    </style>
+    <script>
+        function openWindow(url, width = 960, height = 600, options = {}) {
+            const defaults = {
+                toolbar: 'yes',
+                location: 'yes',
+                directories: 'no',
+                status: 'no',
+                menubar: 'yes',
+                scrollbars: 'yes',
+                resizable: 'yes',
+                copyhistory: 'yes',
+                screenX: 20,
+                screenY: 60
+            };
+            const settings = { ...defaults, ...options, width, height };
+            const params = Object.entries(settings)
+                .map(([key, value]) => `${key}=${value}`)
+                .join(',');
+            const win = window.open(url, '_blank', params);
+            if (win) {
+                win.focus();
+            } else {
+                alert('Please allow pop-ups for this site');
+            }
+        }
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarButton = document.querySelector('input[value="Sidebar"]');
+            if (sidebar.classList.contains('open') && 
+                !sidebar.contains(event.target) && 
+                event.target !== sidebarButton) {
+                sidebar.classList.remove('open');
+            }
+        });
+ 
+        // Open two sites in the two ifames by one clicking
+        function changeIframes(url1, url2) {
+            document.getElementById('leftframe').src = url1;
+            document.getElementById('rightframe8').src = url2;
+        }
+
+        // Open two pooout windows by one clicking
+		function openPopups(url1, url2) {
+            // Open first popup window
+            window.open(url1, '_blank', 'width=750,height=500,left=50,top=100');
+            // Open second popup window
+            window.open(url2, '_blank', 'width=750,height=500,left=800,top=100');
+        }
+
+        // Open 3 pooout windows by one clicking
+		function openPopups3(url1, url2, url3) {
+            // Open first popup window
+            window.open(url1, '_blank', 'width=750,height=500,left=50,top=50');
+            // Open second popup window
+            window.open(url2, '_blank', 'width=750,height=500,left=800,top=50');
+            // Open second popup window
+            window.open(url3, '_blank', 'width=750,height=500,left=400,top=550');
+
+        }
+
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="iframe-row">
+            <!-- Left Column -->
+            <div class="column">
+                <div class="button-row">
+                    <div class="dropdown">
+                        <button class="btn btn-green" style="width: 30px;" title="Quick view BulletJournal inbox tracking my daily view">B></button>
+                        <div class="dropdown-content wide">
+                            <iframe src="https://journal.bulletjournal.app/dashboard" width="570" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-green" style="width: 30px;" title="Quick view Dynalist Now inbox tracking my daily view">N></button>
+                        <div class="dropdown-content wide">
+                            <iframe src="https://yangwm2005.github.io/p/dynalist-m232.html" width="570" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-blue" style="width: 30px;" title="Class teaching quick short cuts">Q></button>
+                        <div class="dropdown-content">
+                            <iframe src="q-desk.html" width="150" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-blue" style="width: 30px;" title="Class teaching quick short cuts">C></button>
+                        <div class="dropdown-content">
+                            <iframe src="class-quick.html" width="180" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <input type="button" value="T^" onclick="openWindow('https://track.toggl.com/timer', 600, 700, { screenX: 250, screenY: 60 })" class="btn btn-blue btn-small" title="Tracking https://track.toggl.com/timer">
+                    
+                    <!-- Today Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-blue dropdown-toggle" type="button" data-toggle="dropdown" style="width: 50px;" title="Email checking with different options">Today <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><div class="dropdown-item-row"><a href="https://dynalist.io/d/Xmnrvh-jAfk2GWK7vrwQ6faF" target="leftframe" class="btn btn-green" style="width: 70px;">DailyLog</a>
+                            	<input type="button" value="->" onclick="openWindow('https://dynalist.io/d/Xmnrvh-jAfk2GWK7vrwQ6faF', 535, 600)" class="btn btn-blue btn-xsmall" title="DailyLog!">
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><a href="https://dynalist.io/d/pR_siY8W0NE2RbP1odMNKQaX" target="leftframe" class="btn btn-green" style="width: 70px;">Today</a>
+                            	<input type="button" value="^" onclick="openWindow('https://dynalist.io/d/pR_siY8W0NE2RbP1odMNKQaX', 535, 600)" class="btn btn-brown btn-xsmall" title="personal collections">
+                            	<input type="button" value="s" onclick="openWindow('https://dynalist.io/d/pR_siY8W0NE2RbP1odMNKQaX#z=27A8P4hGKGOM4XyafxT7xkNv', 535, 600)" class="btn btn-brown btn-xsmall" style="width: 12px;" 
+                            	title="How to start the daily goal setting">
+                            	</div></li>
+                             <li><div class="dropdown-item-row"><a href="Today2c.html" target="leftframe" class="btn btn-green" style="width: 70px;">Today2c</a>
+                            	<input type="button" value="->" onclick="openWindow('Today2c.html', 900, 600)" class="btn btn-blue btn-xsmall" title="Inbox Now!">
+                            	<input type="button" value="2f" onclick="changeIframes('https://yangwm2005.github.io/p/Today-todo.html', 'https://app.ellieplanner.com/')"
+                            	 class="btn btn-blue btn-xsmall" style="width: 14px;" title="Toady in two inframes!">
+
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><a href="https://app.mighty.day/" target="leftframe" class="btn btn-green" style="width: 70px;">Mighty Day</a>
+                            	<input type="button" value="^" onclick="openWindow('https://app.mighty.day/', 535, 600)" class="btn btn-brown btn-xsmall" title="personal collections">
+                            	<input type="button" value="f" onclick="openWindow('https://app.mighty.day/', 900, 700)" class="btn btn-brown btn-xsmall" style="width: 12px;" 
+                            	title="both list and calendar days">
+                            	</div></li>
+                            <li><div class="dropdown-item-row">
+                            	<input type="button" value="Any.Do" onclick="openPopups('https://app.any.do/calendar', 'https://app.any.do/tasks/next-seven-days')" 
+                            	class="btn btn-blue" style="width: 70px;" title="AnyDon calendar system!">
+                            	<input type="button" value="C" onclick="openWindow('https://app.any.do/calendar', 800, 600)" class="btn btn-blue btn-xsmall" style="width: 14px;" 
+                            	title="Calendar">
+                            	<input type="button" value="W" onclick="openWindow('https://app.any.do/tasks/next-seven-days', 800, 600)" class="btn btn-blue btn-xsmall" style="width: 14px;" 
+                            	title="7-Day Tasks">                            	
+                            	</div></li>
+                             <li><div class="dropdown-item-row"><a href="dynalist-m232.html" target="leftframe" class="btn btn-green" style="width: 70px;">Inbox Now</a>
+                            	<input type="button" value="->" onclick="openWindow('dynalist-m232.html', 535, 600)" class="btn btn-blue btn-xsmall" title="Inbox Now!">
+                            	</div></li>
+
+                            <li><div class="dropdown-item-row"><a href="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&mode=WEEK&src=eWFuZ3dtQGVtYWlsLm5jaHUuZWR1LnR3&src=ZW1haWwubmNodS5lZHUudHdfMWVyc2pqazRvbHBuN2J2Yjdja3M5OHVvcDhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfNXA1cnJyamlnMXVmNGc0azdkdDloN2l2OWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfbTducmJpOHZyZThwbmR0N3FwZGdrNGNhcDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=c203c210M2M3c3U1N2E1MW5sMDZpcXFkZmdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfcnJ0MGtsdTVvMnYzb2lsN3IwaXB2YjgzMG9AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfYnZqcnBxYzhnOGMzMGRnN2ZyYzY4YmJwNGdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfNWtiYjkxb3NsYzdkOTg2M2ZlODc2MTUybzhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=Y183ZDFuaGlnanRkMzkwYjh1bmpka2pkZ2g0MEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=Y19kMjIwNmY0ZWU2MjgxMjcyNWM3NjA4MDBmZjM0NzlmNzY1ZGJhYWRjMmIzYzYyYzlkODViOTA4OTNjNTJiYTIwQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=Y19kMWI2MzdvMGpraDJ0bmc2azRiM3Y0MWcwa0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=dXJoNGIyZHZqOHMzYnNkaTQyZWdmNjhqdmFlYWo1b2ZAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&src=c29vc2NrOHQyYXEwbGw1cGE5dTN2bHFpNzJsb3VqaWhAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%231500f8&color=%23702f80&color=%23cc73e1&color=%23150035&color=%232db70f&color=%23ffff12&color=%23fbb60d&color=%23d4000d&color=%23746767&color=%23b3382c&color=%23cc73e1&color=%2334070b&color=%230a0a0a&color=%234285f4"   
+                                target="leftframe" class="btn btn-green" style="width: 70px;">Cal-Today</a>
+                            	<input type="button" value="^" onclick="openWindow('https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&mode=WEEK&src=eWFuZ3dtQGVtYWlsLm5jaHUuZWR1LnR3&src=ZW1haWwubmNodS5lZHUudHdfMWVyc2pqazRvbHBuN2J2Yjdja3M5OHVvcDhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfNXA1cnJyamlnMXVmNGc0azdkdDloN2l2OWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfbTducmJpOHZyZThwbmR0N3FwZGdrNGNhcDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=c203c210M2M3c3U1N2E1MW5sMDZpcXFkZmdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfcnJ0MGtsdTVvMnYzb2lsN3IwaXB2YjgzMG9AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfYnZqcnBxYzhnOGMzMGRnN2ZyYzY4YmJwNGdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW1haWwubmNodS5lZHUudHdfNWtiYjkxb3NsYzdkOTg2M2ZlODc2MTUybzhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=Y183ZDFuaGlnanRkMzkwYjh1bmpka2pkZ2g0MEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=Y19kMjIwNmY0ZWU2MjgxMjcyNWM3NjA4MDBmZjM0NzlmNzY1ZGJhYWRjMmIzYzYyYzlkODViOTA4OTNjNTJiYTIwQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=Y19kMWI2MzdvMGpraDJ0bmc2azRiM3Y0MWcwa0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=dXJoNGIyZHZqOHMzYnNkaTQyZWdmNjhqdmFlYWo1b2ZAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&src=c29vc2NrOHQyYXEwbGw1cGE5dTN2bHFpNzJsb3VqaWhAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%231500f8&color=%23702f80&color=%23cc73e1&color=%23150035&color=%232db70f&color=%23ffff12&color=%23fbb60d&color=%23d4000d&color=%23746767&color=%23b3382c&color=%23cc73e1&color=%2334070b&color=%230a0a0a&color=%234285f4', 535, 600)" class="btn btn-brown btn-xsmall" title="personal collections">
+                            	<a href="https://yangwm2005.github.io/p/gCalnew v12.html" target="rightframe8" class="btn btn-warning btn-xs" 
+                            	style="width: 15px;height:24px;font-size:12px;color:white;background-color:green;">+</a>
+                            	</div></li>
+                            <li><div class="dropdown-item-row">
+                            	<input type="button" value="DailGoal" onclick="openWindow('https://www.facebook.com/messages/c/562747265686808/t/9442275295796092', 850, 600)" class="btn btn-blue" style="width: 70px;" title="AnyDon calendar system!">
+                            	</div></li>
+
+                        </ul>
+                    </div>
+                    <!-- Email Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown dropdown-toggle" type="button" data-toggle="dropdown" style="width: 20px;" title="Email checking with different options">E <span class="caret"></span></button>
+                        <ul class="dropdown-menu" style="text-align: center;">
+                            <li><input type="button" value="gMail" onclick="openWindow('https://mail.google.com/mail/u/0/?pli=1#all', 1050, 600)" class="btn btn-brown" style="width: 50px;" title="Dashboard to start"></li>
+                            <li><input type="button" value="Spike" onclick="openWindow('https://spikenow.com/web/', 1050, 600)" class="btn btn-brown" style="width: 50px;" title="A good email and organization system!"></li>
+                            <li><input type="button" value="G-Tasks" onclick="openWindow('https://tasksboard.com/app', 1050, 600)" class="btn btn-brown" style="width: 50px;" title="A good email and organization Task system!"></li>
+							<li>-- Twobird --</li>
+                            <li><input type="button" value="Inbox" onclick="openWindow('https://www.twobird.com/inbox', 1050, 600)" class="btn btn-brown" style="width: 50px;" title="A good email and organization system!"></li>
+                            <li><input type="button" value="Low" onclick="openWindow('https://www.twobird.com/low-priority', 1050, 600)" class="btn btn-brown" style="width: 50px;" title="A good email and organization system!"></li>
+                            <li><input type="button" value="Notes" onclick="openWindow('https://www.twobird.com/notes', 1050, 600)" class="btn btn-brown" style="width: 50px;" title="A good email and organization system!"></li>
+                            <li><input type="button" value="Calendar" onclick="openWindow('https://www.twobird.com/calendar', 1050, 600)" class="btn btn-brown" style="width: 50px;" title="A good email and organization system!"></li>
+
+                        </ul>
+                    </div>
+  			       <!-- Tools Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown dropdown-toggle" type="button" data-toggle="dropdown" style="width: 30px;" title="Working tools made by Dr. Yang">T <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><input type="button" value="Quick-Peek" onclick="openWindow('https://yangwm2005.github.io/p/Quick-Peek v187.html', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Quick-Peek"></li>
+                            <li><input type="button" value="Self-chat" onclick="openWindow('https://yangwm2005.github.io/p/self-chat v209T8b.html', 800, 600)" class="btn btn-brown" style="width: 80px;" title="Moment for everything"></li>
+                            <li><input type="button" value="preview" onclick="openWindow('https://yangwm2005.github.io/p/preview v183.html', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Organize your file in a folder with quick view"></li>
+                            <li><input type="button" value="TreeWM" onclick="openWindow('https://yangwm2005.github.io/p/TreeWM v215h.html', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Tree organization system to make life structure in thinking"></li>
+                            <li><input type="button" value="2frames" onclick="openWindow('https://yangwm2005.github.io/p/2frame-selfchat.html', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Tree organization system to make life structure in thinking"></li>
+                            <li><input type="button" value="dynalist-clip" onclick="openWindow('https://yangwm2005.github.io/p/dynalist-m232.html', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Quick add and access the information to Inbox New"></li>
+                        </ul>
+                    </div>
+
+                    <!-- Telegram Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown dropdown-toggle" type="button" data-toggle="dropdown" style="width: 35px;" title="Telegram">TEL <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><input type="button" value="Daily" onclick="openWindow('https://web.telegram.org/k/#-1174342047', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Social Daily inbox"></li>
+                            <li><input type="button" value="Capacities" onclick="openWindow('https://web.telegram.org/k/#@capacitiesioBot', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Send the progress notes to NOTES calendar for the system!"></li>
+                            <li><input type="button" value="Ya-Li" onclick="openWindow('https://web.telegram.org/k/#511288563', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Dr. Yao!"></li>
+                            <li><input type="button" value="Q282X manu" onclick="openWindow('https://web.telegram.org/k/#-372788534', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Q282X with Dr. Yao!"></li>
+                            <li><input type="button" value="KAP1-p53 manu" onclick="openWindow('https://web.telegram.org/k/#-4228785236', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="KAP1-p53 with Dr. Yao!"></li>
+                            <li><input type="button" value="KAP1-CTD manu" onclick="openWindow('https://web.telegram.org/k/#-4527755176', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="KAP1-CTD with Dr. Yao!"></li>
+                        </ul>
+                    </div>
+
+                    <!-- Flow Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown dropdown-toggle" type="button" data-toggle="dropdown" style="width: 35px;" title="Flow">Flow <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><input type="button" value="WorkFlowy" onclick="openWindow('https://workflowy.com/#/04505e75174d', 780, 600)" class="btn btn-brown" style="width: 80px;" title="Workflowy"></li>
+                            <li><input type="button" value="Quick-Peek" onclick="openWindow('Quick-Peek v187.html', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Quick-Peek"></li>
+                            <li><input type="button" value="DayOne" onclick="openWindow('https://dayone.me/', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="DayOne"></li>
+                            <li><input type="button" value="MEM" onclick="openWindow('https://mem.ai/g/gGOSTZ0bMk77wvC7Jgk8', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="MEM.ai Group files (todo list)"></li>
+                            <li><input type="button" value="Pumble" onclick="openWindow('https://app.pumble.com/workspace/65c83963c89e885763825e04/6677ba2d73ed9601049df005', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Pumble"></li>
+                            <li><input type="button" value="Capacities" onclick="openWindow('https://app.capacities.io/278ac4bf-ca8e-42dd-8ed6-5171cb5608c8', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Capacities outline files (todo list)"></li>
+                            <li><input type="button" value="Timestripe" onclick="openWindow('https://timestripe.com/horizons/', 780, 600)" class="btn btn-brown" style="width: 80px;" title="TimeStripe"></li>
+                            <li><input type="button" value="gCal+" onclick="openWindow('https://yangwm2005.github.io/p/gCalnew v12.html', 500, 700)" class="btn btn-brown" style="width: 80px;" title="google calendar keep recrods"></li>
+                            <li><input type="button" value="AnyDo Cal" onclick="openWindow('https://app.any.do/calendar', 780, 600)" class="btn btn-brown" style="width: 80px;" title="TimeStripe"></li>
+                            <li><input type="button" value="Finish" onclick="openPopups3('https://app.any.do/calendar', 'https://diaroapp.com/entry/new?page=1&sort=desc', 'https://web.telegram.org/k/#@capacitiesioBot')" class="btn btn-blue" 
+                            style="width: 80px;" title="Open three Ws to keep the progress and Summary. Any.do calenard, Diaro, and Capacities/Notes"></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-brown" style="width: 20px;" title="Quick view shown current labmates Messenger">L></button>
+                        <div class="dropdown-content">
+                            <iframe src="FMesg-labmates-q.html" width="200" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-brown" style="width: 47px;" title="Quick view shown other items and projects">Meg></button>
+                        <div class="dropdown-content">
+                            <iframe src="Mesg-FB-q.html" width="200" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <input type="button" value="S" onclick="openWindow('https://www.facebook.com/messages/c/1365204320678294/t/9119079054772583', 780, 600)" class="btn btn-brown" style="width: 25px;" title="Self-awareness in Messenger FB system">
+                    <div class="dropdown">
+                        <button class="btn btn-brown" style="width: 47px;" title="Quick view shown other items and projects">Jots></button>
+                        <div class="dropdown-content">
+                            <iframe src="jots-q.html" width="200" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <input type="button" value="Track" onclick="openWindow('https://app.mighty.day/', 900, 700)" class="btn btn-brown" style="width: 40px;" 
+                            	title="Tracking: both list and calendar days">
+                </div>
+                <iframe name="leftframe" id="leftframe" src="https://dynalist.io/d/pR_siY8W0NE2RbP1odMNKQaX#z=YzIHTJW9gMWlyK7MiGuS08pp" scrolling="yes"></iframe>
+            </div>
+            <!-- Right Column -->
+            <div class="column">
+                <div class="button-row">
+                    <!-- +Today-todo adding/checking event Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown" style="width: 45px;" title="Quick add to Google calendar">+Today></button>
+                        <div class="dropdown-content wide">
+                            <iframe src="Today-todo.html" width="500" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <!-- +gCal adding event Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown" style="width: 45px;" title="Quick add to Google calendar">+gCal></button>
+                        <div class="dropdown-content wide">
+                            <iframe src="gCalNew v12.html" width="500" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <!-- INbox Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown" style="width: 50px;" title="Quick Add INbox tasks to get different boxes">INbox ></button>
+                        <div class="dropdown-content">
+                            <iframe src="inbox-q.html" width="200" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Bulletjournal Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-blue" style="width: 30px;" title="Bulletjournal Lab only Quick desk to get it">+W></button>
+                        <div class="dropdown-content wide">
+                            <iframe src="https://classic.bulletjournal.app/dashboard" width="800" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <!-- Bullet Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-blue dropdown-toggle" type="button" data-toggle="dropdown" style="width: 55px;" title="Quick view shown other items and projects">Bullet <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/aMaVbbXzSx3Jm3z6WErK" target="rightframe8" class="btn btn-blue" style="width: 70px;">Today</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/list/aMaVbbXzSx3Jm3z6WErK', 700, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/dashboard" target="rightframe8" class="btn btn-blue" style="width: 70px;">dashboard</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/dashboard', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://journal.bulletjournal.app/dashboard" target="rightframe8" class="btn btn-blue" style="width: 70px;">V2 dashboard</a>
+                                <input type="button" value="->" onclick="openWindow('https://journal.bulletjournal.app/dashboard', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/GQQbjXN98tCxhbsVZlpA" target="rightframe8" class="btn btn-blue" style="width: 70px;">Teaching</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/GQQbjXN98tCxhbsVZlpA', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/ySjFDVkfYnbHqX84CpeP" target="rightframe8" class="btn btn-blue" style="width: 70px;">Budget</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/ySjFDVkfYnbHqX84CpeP', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/Yp4ZOmFGJJjYFwOr8dn9" target="rightframe8" class="btn btn-blue" style="width: 70px;">Lab-Tracking</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/Yp4ZOmFGJJjYFwOr8dn9', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/QxGno3J15Gp72Ow35sP0" target="rightframe8" class="btn btn-blue" style="width: 70px;">Social</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/QxGno3J15Gp72Ow35sP0', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/iVngjgKHhzHwwBL5jSbN" target="rightframe8" class="btn btn-blue" style="width: 70px;">Family</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/iVngjgKHhzHwwBL5jSbN', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li>-----</li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/JSIL4kyVAERnIPSeyCUs" target="rightframe8" class="btn btn-blue" style="width: 70px;">Projects</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/JSIL4kyVAERnIPSeyCUs', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/HW9vV4BmrjZX8oGjaGjn" target="rightframe8" class="btn btn-blue" style="width: 70px;">NSTC</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/HW9vV4BmrjZX8oGjaGjn', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/jBghPYjYOo0QBhV88hIj" target="rightframe8" class="btn btn-blue" style="width: 70px;">Notes</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/jBghPYjYOo0QBhV88hIj', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://classic.bulletjournal.app/list/ySjFDVkfYnbHqX84CpeP" target="rightframe8" class="btn btn-blue" style="width: 70px;">Budget</a>
+                                <input type="button" value="->" onclick="openWindow('https://classic.bulletjournal.app/ySjFDVkfYnbHqX84CpeP', 1050, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                        </ul>
+                    </div>
+                    <!-- BulletJournal Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown dropdown-toggle" data-toggle="dropdown" title="Bullets and todos collections"  style="width: 60px;">Tasks <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li>BulletJournal</li>
+                            <li><div class="dropdown-item-row"><input type="button" value="B-Classic" class="btn btn-green" onclick="window.open('https://classic.bulletjournal.app/list/w21OSzymQajq4KB8KQpN', 'rightframe8')"   style="width: 70px;">
+                               <input type="button" value="B>" onclick="openWindow('https://classic.bulletjournal.app/list/w21OSzymQajq4KB8KQpN', 960, 750)" class="btn btn-brown btn-small" title="go">
+                               </div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="B-Journal" class="btn btn-green" onclick="window.open('https://journal.bulletjournal.app/list/w21OSzymQajq4KB8KQpN', 'rightframe8')"   style="width: 70px;">
+                            	<input type="button" value="V>" onclick="openWindow('https://journal.bulletjournal.app/list/w21OSzymQajq4KB8KQpN', 960, 750)" class="btn btn-brown btn-small" title="go">
+                            	</div></li>
+                             <li><div class="dropdown-item-row"><input type="button" value="Today-todo" class="btn btn-green" onclick="window.open('https://classic.bulletjournal.app/list/aMaVbbXzSx3Jm3z6WErK', 'rightframe8')"   style="width: 70px;">
+                            	<input type="button" value="V>" onclick="openWindow('https://classic.bulletjournal.app/list/aMaVbbXzSx3Jm3z6WErK', 550, 600)" class="btn btn-brown btn-small" title="go">
+                            	</div></li>
+
+                            <li>Others</li>
+                            <li><div class="dropdown-item-row"><input type="button" value="ElliePlanner" class="btn btn-green" onclick="window.open('https://app.ellieplanner.com/', 'rightframe8')"   style="width: 70px;">
+                            	<input type="button" value="V>" onclick="openWindow('https://app.ellieplanner.com/', 960, 750)" class="btn btn-brown btn-small" title="go">
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="Mighty Day" class="btn btn-green" onclick="window.open('https://app.mighty.day/', 'rightframe8')"   style="width: 70px;">
+                            	<input type="button" value="V>" onclick="openWindow('https://app.mighty.day/', 960, 750)" class="btn btn-brown btn-small" title="go">
+                            <li><div class="dropdown-item-row"><input type="button" value="RemNote" onclick="openWindow('https://www.remnote.com/w/62242f0145bfd900161a3b78/NSTC-zitjEbVBxvpFQDbYr', 980, 500)" class="btn btn-brown" title="go"  style="width: 70px;">
+                            	<input type="button" value="^" onclick="openWindow('https://www.remnote.com/w/62242f0145bfd900161a3b78/NSTC-zitjEbVBxvpFQDbYr', 500, 600)" class="btn btn-brown btn-small" title="go">
+                            	</div></li>
+    			           <li><div class="dropdown-item-row"><input type="button" value="Todoist" class="btn btn-green" onclick="window.open('https://app.todoist.com/', 'rightframe8')"   style="width: 70px;">
+                            	<input type="button" value="V>" onclick="openWindow('https://app.todoist.com/', 1050, 750)" class="btn btn-brown btn-small" title="go">
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="Ora.pm" onclick="openWindow('https://app.ora.pm/', 1050, 600)" class="btn btn-brown" style="width: 70px;" title="Ora.pm with google calendare to do list!">
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="Clickup" onclick="openWindow('https://app.clickup.com/', 1050, 600)" class="btn btn-brown" style="width: 70px;" title="https://app.clickup.com/ with google calendare to do list!">
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="Quire" onclick="openWindow('https://quire.io/w/Q282X6267/5?view=board', 1050, 600)" class="btn btn-brown" style="width: 70px;" title="Quire to do list!">
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="gChat" onclick="openWindow('https://mail.google.com/chat/u/0/#chat/space/AAAAsbvX1RU', 1050, 600)" class="btn btn-brown" style="width: 70px;" title="Google Chat system to make all the talk (todo list)"  style="width: 60px;">
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="gCal&Task" onclick="openWindow('https://calendar.google.com/calendar/u/0/r/tasks', 1000, 600)" class="btn btn-brown" style="width: 70px;" title="Google Chat system to make all the talk (todo list)"  style="width: 60px;">
+                                <input type="button" value="+C" onclick="openWindow('https://yangwm2005.github.io/p/gCalnew v12.html', 600, 700)" class="btn btn-brown btn-small" title="Add calendar events">
+                                <input type="button" value="+T" onclick="openWindow('https://tasks.google.com/embed/?origin=https://calendar.google.com&fullWidth=1', 500, 600)" class="btn btn-brown btn-small" title="Add Tasks"> 
+
+                            	</div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="GoogleTasks" onclick="openWindow('https://tasksboard.com/app', 1050, 600)" class="btn btn-brown" 
+                                title="Tasksboard google task"   style="width: 70px;">
+                                <input type="button" value="G2" onclick="openWindow('https://calendar.google.com/calendar/u/0/r/tasks', 1050, 600)" class="btn btn-brown btn-small" title="Directly go to google task">
+                                <input type="button" value="I" onclick="openWindow('https://tasks.google.com/embed/?origin=https://calendar.google.com&fullWidth=1', 500, 600)" class="btn btn-brown btn-small" title="Add google task"> 
+                                </div></li>
+                            <li><div class="dropdown-item-row"><input type="button" value="Chattodo-Line" onclick="openWindow('https://chattodo.cc/todo', 800, 600)" class="btn btn-brown" 
+                                title="Line todo collection and converstaion"   style="width: 70px;">
+                                <input type="button" value="S" onclick="openWindow('https://chattodo.cc/system', 700, 600)" class="btn btn-brown btn-small" title="system setting">
+                                <input type="button" value="T" onclick="openWindow('https://chattodo.cc/tag', 500, 600)" class="btn btn-brown btn-small" title="Tags"> 
+                                </div></li>
+                        </ul>
+                    </div>
+                    <!-- Notes Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown dropdown-toggle" data-toggle="dropdown" title="Elisi & Upbase"  style="width: 60px;">Notes <span class="caret"></span></button>
+                        <ul class="dropdown-menu">                    
+                            <li><div class="dropdown-item-row"><input type="button" value="Elisiapp" class="btn btn-green" onclick="window.open('https://next.elisiapp.com/#/', 'rightframe8')"   style="width: 70px;">
+                          	  <input type="button" value="->" onclick="openWindow('https://next.elisiapp.com/#/', 980, 500)" class="btn btn-brown btn-small" title="go">
+                          	  </div></li>
+                        <li><div class="dropdown-item-row"><input type="button" value="Upbase" class="btn btn-green" onclick="window.open('https://app.upbase.io/', 'rightframe8')"   style="width: 70px;">
+                          	  <input type="button" value="->" onclick="openWindow('https://app.upbase.io/', 980, 500)" class="btn btn-brown btn-small" title="go">
+                          	  </div></li>
+                        <li><div class="dropdown-item-row"><input type="button" value="TwoBird-notes" class="btn btn-green" onclick="window.open('https://www.twobird.com/notes', 'rightframe8')"   style="width: 70px;">
+                          	  <input type="button" value="->" onclick="openWindow('https://www.twobird.com/notes', 980, 500)" class="btn btn-brown btn-small" title="go">
+                          	  </div></li>
+                        <li><div class="dropdown-item-row"><input type="button" value="Daybook" class="btn btn-green" onclick="window.open('https://web.daybook.app/home', 'rightframe8')"   style="width: 70px;">
+                          	  <input type="button" value="->" onclick="openWindow('https://web.daybook.app/home', 980, 500)" class="btn btn-brown btn-small" title="go">
+                          	  </div></li>
+                        <li><div class="dropdown-item-row"><input type="button" value="Diaro" class="btn btn-brown" onclick="openWindow('https://diaroapp.com/entry/new?page=1&sort=desc', 900, 600)"   style="width: 70px;">
+                          	  <input type="button" value="->" onclick="openWindow('https://diaroapp.com/entry/new?page=1&sort=desc', 600, 600)" class="btn btn-brown btn-small" title="go">
+                          	  </div></li>
+                        <li><div class="dropdown-item-row"><input type="button" value="DayOne" class="btn btn-brown" onclick="openWindow('https://dayone.me/', 1050, 700)"   style="width: 70px;">
+                          	  <input type="button" value="->" onclick="openWindow('https://dayone.me/', 600, 600)" class="btn btn-brown btn-small" title="go">
+                          	  </div></li>
+
+                       </ul>
+                    </div>
+                    <!-- AIs Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown" style="width: 47px;" title="Quick view to get different AI tools">AIs></button>
+                        <div class="dropdown-content">
+                            <iframe src="AIs-q.html" width="200" height="600" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                    </div>
+                    <!-- Calendars Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-brown dropdown-toggle" type="button" data-toggle="dropdown" style="width: 47px;" title="semanticscholar AI search and collections">Cal+ <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><input type="button" value="Week Cal" onclick="openWindow('weekcalendar-q.html', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Week Calendars collections"></li>
+                            <li><input type="button" value="IMB calendar" onclick="openWindow('IMB Calendar 2024 Fall.png', 535, 600)" class="btn btn-brown" style="width: 80px;" title="IMB Ali Calendar"></li>
+                            <li><input type="button" value="NCHU-1" onclick="openWindow('https://www.nchu.edu.tw/calendar/#top1', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="NCHU calendar first semester!"></li>
+                            <li><input type="button" value="NCHU-2" onclick="openWindow('https://www.nchu.edu.tw/calendar/#top2', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="NCHU calendar second semester!"></li>
+                            <li><input type="button" value="Jorte" onclick="openWindow('https://jorte.com/', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Big events calendar!"></li>
+                            <li><input type="button" value="Google Cal" onclick="openWindow('https://calendar.google.com/calendar/u/0/r', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Google calendar!"></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://yangwm2005.github.io/p/gCalnew v12.html" target="rightframe8" class="btn btn-green" style="width: 60px;" title="https://yangwm2005.github.io/p/gCalnew v12.html">+gCal</a>
+                                <input type="button" value="->" onclick="openWindow('https://yangwm2005.github.io/p/gCalnew v12.html', 600, 700)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><strong>Other Calendars</strong></li>
+                            <li><div class="dropdown-item-row">
+                                <a href="https://app.any.do/calendar" target="rightframe8" class="btn btn-blue" style="width: 60px;" title="Any.Do Calendar">AnyDo</a>
+                                <input type="button" value="->" onclick="openWindow('https://app.any.do/calendar', 780, 600)" class="btn btn-brown btn-small" title="go">
+                            </div></li>
+                            <li><input type="button" value="Rise Cal" onclick="openWindow('https://beta.risecalendar.com/app/calendar', 780, 600)" class="btn btn-brown" style="width: 80px;" title="Rise Calendar"></li>
+                            <li><input type="button" value="Notion Cal" onclick="openWindow('https://calendar.notion.so/', 780, 600)" class="btn btn-brown" style="width: 80px;" title="Notion Calendar"></li>
+                            <li><input type="button" value="monday" onclick="openWindow('https://calendar.mondayapp.com/', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Monday calendars!"></li>
+                            <li><input type="button" value="Reminder" onclick="openWindow('https://www.icloud.com/reminders/', 780, 600)" class="btn btn-brown" style="width: 80px;" title="iCloud reminder"></li>
+                            <li><strong>Quick form</strong></li>
+                            <li><input type="button" value="Cals-quick" onclick="openWindow('https://www.calendarsquick.com/printables/download.html?action=customWeekly', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Week plan by month!"></li>
+                            <li><input type="button" value="Cals-quick" onclick="openWindow('https://www.calendarlabs.com/calendars/free-custom-calendar.php', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Month and year calendars!"></li>
+                            <li><input type="button" value="Productive forms" onclick="openWindow('https://www.productiveflourishing.com/p/free-planners', 1050, 600)" class="btn btn-brown" style="width: 80px;" title="Free form to print!"></li>
+                        </ul>
+                    </div>
+                <input type="button" value="Chattodo-Line" onclick="openWindow('https://chattodo.cc/todo', 700, 600)" class="btn btn-brown" 
+                                title="Line todo collection and converstaion"   style="width: 50px;">
+                </div>
+                <iframe name="rightframe8" id="rightframe8" src="https://journal.bulletjournal.app/dashboard" scrolling="yes"></iframe>
+            </div>
+        </div>
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <h3>Sidebar</h3>
+            <iframe src="https://yangwm2005.github.io/p/self-chat v209T7b.html" title="Embedded Website"></iframe>
+            <div contenteditable="true" class="notes-area"></div>
+            <button id="sidebar-close" onclick="toggleSidebar()">Close</button>
+        </div>
+        <!-- 5-Button System -->
+        <div class="button-container">
+            <button class="circle-button" title="Dynalist clip" data-letter="S" data-link="https://yangwm2005.github.io/p/dynalist-m241.html">D</button>
+            <button class="circle-button" title="Twobirds email system" data-letter="M" data-link="https://www.twobird.com/inbox">M</button>
+            <button class="circle-button" title="Spike email system" data-letter="T" data-link="https://yangwm2005.github.io/p/PDCA-2f v1.html">T</button>
+            <button class="circle-button" title="Weekcalendar-q" data-letter="W" data-link="https://yangwm2005.github.io/p/weekcalendar1-q.html">W</button>
+            <button class="circle-button" title="Bullet-2f-classic" data-letter="F" data-link="https://yangwm2005.github.io/p/Bullet-2f v1.html">F</button>
+        </div>
+        <div id="slide-out-window" class="slide-out-window">
+            <iframe id="slide-out-iframe" src="" frameborder="0"></iframe>
+            <button id="close-button" class="close-button">×</button>
+        </div>
+        <div class="footnote">
+            Copyright © 2025 Dr. Wen-Ming Yang 20250423: Aligned '->' buttons inline with links in Bullet and Cal+ dropdowns
+        </div>
+    </div>
+</body>
+</html>
