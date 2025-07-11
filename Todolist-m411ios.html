@@ -978,6 +978,7 @@ button.help-btn:hover {
             <button onclick="showImportModal()">📥 Import</button>    
     <button onclick="clearList()">🗑️ Clear</button>
     <button onclick="printToPDF()">🖨️ Print/PDF</button>
+    <button onclick="printToPDFWithNotes()">🖨️ PDF+Notes</button>
     <button onclick="printVisibleList()">🖨️ Print View</button>
     <button onclick="shareList()">📤 Share</button>
     <button onclick="showHelpModal()" class="help-btn">❓ Help</button>
@@ -992,7 +993,7 @@ button.help-btn:hover {
 
         
         <div class="footer">
-            &copy; 2025 Dr. Wen-Ming Yang Lab. All rights reserved. (m411 Note)
+            &copy; 2025 Dr. Wen-Ming Yang Lab. All rights reserved. (m411 ios+pNote)
         </div>
     </div>
 
@@ -2314,6 +2315,164 @@ function printToPDF() {
         }
     `;
     printContainer.appendChild(style);
+    
+    // Print
+    window.print();
+    
+    // Clean up
+    setTimeout(() => {
+        document.body.removeChild(printContainer);
+    }, 1000);
+}
+
+function printToPDFWithNotes() {
+    // Create print container
+    const printContainer = document.createElement('div');
+    printContainer.className = 'print-container';
+    
+    // Add title (left-aligned)
+    const title = document.getElementById('title').value || 'To-Do List';
+    const titleElement = document.createElement('h1');
+    titleElement.className = 'print-title';
+    titleElement.style.textAlign = 'left';
+    titleElement.textContent = title;
+    printContainer.appendChild(titleElement);
+    
+    // Add date (left-aligned)
+    const dateElement = document.createElement('div');
+    dateElement.className = 'print-date';
+    dateElement.style.textAlign = 'left';
+    dateElement.textContent = 'Generated: ' + new Date().toLocaleString();
+    printContainer.appendChild(dateElement);
+    
+    // Create list container
+    const listContainer = document.createElement('div');
+    listContainer.className = 'print-list';
+    
+    // Add all items with notes
+    const todoItems = document.querySelectorAll('#todo-list .todo-item');
+    todoItems.forEach(item => {
+        if (item.classList.contains('section-break')) {
+            // Add section header
+            const sectionDiv = document.createElement('h2');
+            sectionDiv.className = 'print-section';
+            sectionDiv.style.textAlign = 'left';
+            sectionDiv.textContent = item.querySelector('.item-text').textContent;
+            listContainer.appendChild(sectionDiv);
+        } else {
+            // Create item container
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'print-item';
+            
+            // Add checkbox
+            const checkbox = document.createElement('span');
+            checkbox.className = 'print-checkbox';
+            checkbox.innerHTML = item.querySelector('.item-checkbox').checked ? 
+                '&#x2611;' : '&#x2610;';
+            itemDiv.appendChild(checkbox);
+            
+            // Add item text
+            const textSpan = document.createElement('span');
+            textSpan.className = 'print-item-text';
+            textSpan.textContent = item.querySelector('.item-text').textContent;
+            
+            if (item.classList.contains('completed')) {
+                textSpan.style.textDecoration = 'line-through';
+                textSpan.style.color = '#777';
+            }
+            
+            itemDiv.appendChild(textSpan);
+            listContainer.appendChild(itemDiv);
+            
+            // Add note if it exists
+            const note = item.dataset.note;
+            if (note && note.trim()) {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'print-note';
+                noteDiv.style.marginLeft = '30px';
+                noteDiv.style.marginTop = '5px';
+                noteDiv.style.fontStyle = 'italic';
+                noteDiv.style.color = '#555';
+                noteDiv.style.fontSize = '0.9em';
+                noteDiv.textContent = `Note: ${note}`;
+                listContainer.appendChild(noteDiv);
+            }
+        }
+    });
+    
+    printContainer.appendChild(listContainer);
+    
+    // Apply print styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-container, .print-container * {
+                visibility: visible;
+            }
+            .print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                text-align: left !important;
+            }
+            .print-title {
+                font-size: 24pt;
+                margin-bottom: 10px;
+                color: #000;
+                border-bottom: 2px solid #000;
+                padding-bottom: 5px;
+                text-align: left !important;
+            }
+            .print-date {
+                font-size: 10pt;
+                margin-bottom: 20px;
+                color: #555;
+                text-align: left !important;
+            }
+            .print-section {
+                font-size: 16pt;
+                margin: 15px 0 5px 0;
+                color: #333;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 3px;
+                text-align: left !important;
+            }
+            .print-item {
+                display: flex;
+                align-items: center;
+                margin: 8px 0;
+                font-size: 12pt;
+                page-break-inside: avoid;
+            }
+            .print-checkbox {
+                display: inline-block;
+                margin-right: 10px;
+                font-size: 16pt;
+                width: auto !important;
+                height: auto !important;
+                border: none !important;
+            }
+            .print-item-text {
+                flex: 1;
+            }
+            .print-item.completed .print-item-text {
+                text-decoration: line-through;
+                color: #777;
+            }
+            .print-note {
+                page-break-inside: avoid;
+            }
+        }
+    `;
+    printContainer.appendChild(style);
+    
+    // Add to document
+    document.body.appendChild(printContainer);
     
     // Print
     window.print();
