@@ -582,6 +582,89 @@
   transform: scale(1.2);
 }
 
+.floating-index-btn {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.floating-index-btn:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.index-panel {
+  position: fixed;
+  top: 50%;
+  right: 90px;
+  transform: translateY(-50%);
+  width: 300px;
+  max-height: 60vh;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 15px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.index-panel.show {
+  display: block;
+}
+
+.index-section-btn {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: var(--light-gray);
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.index-section-btn:hover {
+  background: var(--secondary-color);
+  color: white;
+  transform: translateX(-5px);
+}
+
+.index-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.close-index-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--dark-gray);
+}
+
   </style>
 </head>
 <body>
@@ -611,7 +694,7 @@
     </div>
 
     <footer class="footer">
-      <p>© 2025 Dr. Wen-Ming Yang Lab. All Rights Reserved. (v16a4 delete button)</p>
+      <p>© 2025 Dr. Wen-Ming Yang Lab. All Rights Reserved. (v16a5 Index button)</p>
     </footer>
   </div>
 
@@ -623,7 +706,7 @@
       storageKey: "lab_access_" + "v2",
       historyKey: "login_history_" + "v2",
       copyright: "© 2025 Dr. Wen-Ming Yang Lab. All Rights Reserved.",
-      portalName: "Office Port"
+      portalName: "Lab Port"
     };
 
     // Portal content configuration
@@ -653,7 +736,7 @@
         {name: "Yanglab-Business", url: "https://www.messenger.com/t/5725621170812826", icon: "fa-triangle-exclamation"},
       ],
       "🧪 Lab Webapps": [
-        {name: "Todolist", url: "https://yangwm2005.github.io/lab/Todolist-m63a.html", icon: "fa-file-lines"},
+        {name: "Todolist", url: "https://yangwm2005.github.io/lab/Todolist-m63a1.html", icon: "fa-file-lines"},
         {name: "Tree", url: "https://yangwm2005.github.io/lab/TreeWM v215h.html", icon: "fa-microscope"},
         {name: "self-chat", url: "https://yangwm2005.github.io/lab/self-chat v209T7c.html", icon: "fa-microscope"},
         {name: "Safety Guidelines", url: "#", icon: "fa-triangle-exclamation"},
@@ -1855,8 +1938,107 @@ function deleteButtonFromCustomSection(sectionTitle, item) {
   }
 }
 
+// Add this to showAuthenticatedContent()
+function showAuthenticatedContent() {
+  document.getElementById('authenticatedContent').style.display = 'block';
+  loadFavorites();
+  loadWorkspace();
+  generatePortalContent();
+  
+  // Initialize the index panel after content is loaded
+  setupIndexPanel();
+}
+
+// Index Panel Functions
+function setupIndexPanel() {
+  const floatingBtn = document.getElementById('floatingIndexBtn');
+  const indexPanel = document.getElementById('indexPanel');
+  const closeBtn = document.getElementById('closeIndexBtn');
+  
+  // Clear existing event listeners
+  floatingBtn.replaceWith(floatingBtn.cloneNode(true));
+  if (closeBtn) closeBtn.replaceWith(closeBtn.cloneNode(true));
+  
+  // Get fresh references
+  const newFloatingBtn = document.getElementById('floatingIndexBtn');
+  const newCloseBtn = document.getElementById('closeIndexBtn');
+  const newIndexPanel = document.getElementById('indexPanel');
+  
+  newFloatingBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    newIndexPanel.classList.toggle('show');
+    if (newIndexPanel.classList.contains('show')) {
+      generateIndexContent();
+    }
+  });
+  
+  if (newCloseBtn) {
+    newCloseBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      newIndexPanel.classList.remove('show');
+    });
+  }
+  
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!newIndexPanel.contains(e.target) && e.target !== newFloatingBtn) {
+      newIndexPanel.classList.remove('show');
+    }
+  });
+}
+
+function generateIndexContent() {
+  const panelContent = document.getElementById('indexPanelContent');
+  if (!panelContent) return;
+  
+  panelContent.innerHTML = '';
+  
+  // Get all sections (including custom sections)
+  const allContent = {
+    ...portalContent,
+    ...JSON.parse(localStorage.getItem(CUSTOM_SECTIONS_KEY)) || {}
+  };
+  
+  Object.keys(allContent).forEach((title, index) => {
+    const sectionId = `section-${index}`;
+    const btn = document.createElement('button');
+    btn.className = 'index-section-btn';
+    btn.textContent = title;
+    
+    btn.addEventListener('click', () => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+        const container = document.getElementById(`${sectionId}-buttons`);
+        if (container && !container.classList.contains('open')) {
+          toggleSection(sectionId);
+        }
+      }
+      document.getElementById('indexPanel').classList.remove('show');
+    });
+    
+    panelContent.appendChild(btn);
+  });
+}
+
     // Initialize
     document.addEventListener('DOMContentLoaded', checkAuth);
   </script>
+
+<!-- Floating Index Button and Panel -->
+<div class="floating-index-btn" id="floatingIndexBtn">
+  <i class="fas fa-list"></i>
+</div>
+
+<div class="index-panel" id="indexPanel">
+  <div class="index-panel-header">
+    <h3>Quick Sections</h3>
+    <button class="close-index-btn" id="closeIndexBtn">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div id="indexPanelContent"></div>
+</div>
+
 </body>
 </html>
