@@ -1,29 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Countdown Redirect</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Dr. Yang's Lab | Redirecting</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        .countdown {
+            font-size: 1.5rem;
+            margin: 1.5rem 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .lab-info {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 1rem;
+        }
+        .manual-link {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        .manual-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .manual-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Replace with your actual lab logo if available -->
+        <img src="https://via.placeholder.com/150x150?text=Lab+Logo" alt="Lab Logo" class="logo">
+        
+        <h1>Welcome to Dr. Wen-Ming Yang's Research Lab</h1>
+        
+        <div class="countdown" id="countdown">Redirecting in 10 seconds...</div>
+        
+        <div class="lab-info">
+            <p>You are being automatically redirected to our laboratory page.</p>
+            <p>If you are not redirected automatically, please click the link below.</p>
+        </div>
+        
+        <div class="manual-link">
+            <a href="https://sites.google.com/email.nchu.edu.tw/mbio/%E7%B3%BB%E6%89%80%E6%88%90%E5%93%A1/%E5%B0%88%E4%BB%BB%E6%95%99%E5%B8%AB/%E6%A5%8A%E6%96%87%E6%98%8E%E6%95%99%E6%8E%88" id="redirect-link">Go to Laboratory Page Now</a>
+        </div>
+    </div>
+
     <script>
-        var seconds = 5;
+        var seconds = 10;
+        var redirectUrl = "https://yangwm2005.github.io/lab/Easylife-lab3";
         
         function countdown() {
             var countdownElement = document.getElementById("countdown");
-            countdownElement.innerHTML = "Redirecting in " + seconds + " seconds...";
+            countdownElement.textContent = "Redirecting in " + seconds + " second" + (seconds !== 1 ? "s" : "") + "...";
             
             if (seconds <= 0) {
-                window.location.href = "https://yangwm2005.github.io/lab/Easylife-lab3";
+                window.location.href = redirectUrl;
             } else {
                 seconds--;
                 setTimeout(countdown, 1000);
             }
         }
+        
+        // Start countdown when page loads
+        window.onload = countdown;
+        
+        // Make the entire container clickable as a backup
+        document.querySelector('.container').addEventListener('click', function() {
+            window.location.href = redirectUrl;
+        });
     </script>
-</head>
-<body onload="countdown()">
-    <div id="countdown" style="font-size: 24px; text-align: center; margin-top: 50px;">
-
-        Redirecting in 5 seconds...
-    </div>
-<br><br>
-<center><H2> Welcome to Dr. Wen-Ming Yang Lab</H2></center>
 </body>
 </html>
