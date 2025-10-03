@@ -25,24 +25,36 @@
             position: relative;
         }
         
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            height: 97vh;
-            margin-bottom: 10px;
-        }
-        
-        .main-content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
+.container {
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    height: 97vh;
+    margin-bottom: 10px;
+    /* ADD THESE LINES FOR MOBILE FIX */
+    max-height: 100vh;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    /* ADD THIS CRUCIAL LINE FOR MOBILE */
+    min-height: 0;
+}
+
+.chat-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* ADD THIS CRUCIAL LINE FOR MOBILE */
+    min-height: 0;
+}
         
         .workflow-guide {
             width: 300px;
@@ -808,42 +820,85 @@
             background: #f0f4ff;
         }
         
-        @media (max-width: 900px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .workflow-guide {
-                width: 100%;
-                max-height: 200px;
-                border-right: none;
-                border-bottom: 1px solid #e0e6ff;
-            }
-            
-            .workflow-guide.collapsed {
-                width: 100%;
-                max-height: 50px;
-                padding: 10px;
-            }
-            
-            .workflow-guide.collapsed .guide-header h2 {
-                writing-mode: horizontal-tb;
-                transform: none;
-                margin: 0;
-            }
-            
-            .sidebar-toggle {
-                display: flex;
-            }
-            
-            .awareness-level {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin: 10px auto;
-                width: fit-content;
-            }
-        }
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+        /* ADD THIS */
+        min-height: 0;
+    }
+    
+    .workflow-guide {
+        width: 100%;
+        max-height: 200px;
+        border-right: none;
+        border-bottom: 1px solid #e0e6ff;
+        /* ADD THIS */
+        flex-shrink: 0;
+    }
+    
+    .workflow-guide.collapsed {
+        width: 100%;
+        max-height: 50px;
+        padding: 10px;
+    }
+    
+    .workflow-guide.collapsed .guide-header h2 {
+        writing-mode: horizontal-tb;
+        transform: none;
+        margin: 0;
+    }
+    
+    .sidebar-toggle {
+        display: flex;
+    }
+    
+    .awareness-level {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 10px auto;
+        width: fit-content;
+    }
+    
+    /* ADD THIS SECTION */
+    .chat-section {
+        min-height: 0;
+        flex: 1;
+    }
+}
+
+@media (max-height: 700px) {
+    .container {
+        height: 95vh;
+    }
+    
+    .controls {
+        padding: 8px 12px;
+    }
+    
+    .control-btn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .stats {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+    }
+    
+    .input-area {
+        padding: 8px 12px;
+    }
+    
+    #user-input {
+        padding: 10px 15px;
+    }
+    
+    #send-btn {
+        width: 42px;
+        height: 42px;
+    }
+}
         
         @media (max-width: 768px) {
             body {
