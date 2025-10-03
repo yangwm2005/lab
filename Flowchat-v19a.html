@@ -25,24 +25,36 @@
             position: relative;
         }
         
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            height: 97vh;
-            margin-bottom: 10px;
-        }
-        
-        .main-content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
+.container {
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    height: 97vh;
+    margin-bottom: 10px;
+    /* Add these properties for mobile */
+    max-height: 100vh;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    /* Add this for mobile */
+    min-height: 0; /* This is crucial for proper flexbox behavior */
+}
+
+.chat-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* Add this for mobile */
+    min-height: 0; /* Crucial for proper scrolling on mobile */
+}
         
         .workflow-guide {
             width: 300px;
@@ -555,34 +567,64 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         
-        @media (max-width: 900px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .workflow-guide {
-                width: 100%;
-                max-height: 200px;
-                border-right: none;
-                border-bottom: 1px solid #e0e6ff;
-            }
-            
-            .workflow-guide.collapsed {
-                width: 100%;
-                max-height: 50px;
-                padding: 10px;
-            }
-            
-            .workflow-guide.collapsed .guide-header h2 {
-                writing-mode: horizontal-tb;
-                transform: none;
-                margin: 0;
-            }
-            
-            .sidebar-toggle {
-                display: flex;
-            }
-        }
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+        /* Ensure proper height calculation */
+        min-height: 0;
+    }
+    
+    .workflow-guide {
+        width: 100%;
+        max-height: 200px;
+        border-right: none;
+        border-bottom: 1px solid #e0e6ff;
+        /* Add this to ensure proper sizing */
+        flex-shrink: 0;
+    }
+    
+    .workflow-guide.collapsed {
+        width: 100%;
+        max-height: 50px;
+        padding: 10px;
+    }
+    
+    .workflow-guide.collapsed .guide-header h2 {
+        writing-mode: horizontal-tb;
+        transform: none;
+        margin: 0;
+    }
+    
+    .sidebar-toggle {
+        display: flex;
+    }
+    
+    /* Add this to ensure chat section gets proper height */
+    .chat-section {
+        min-height: 0;
+        flex: 1;
+    }
+}
+
+@media (max-height: 700px) {
+    .container {
+        height: 95vh;
+    }
+    
+    .controls {
+        padding: 8px 12px;
+    }
+    
+    .control-btn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .stats {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+    }
+}
         
         @media (max-width: 768px) {
             body {
