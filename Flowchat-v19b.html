@@ -376,19 +376,47 @@
             flex-shrink: 0;
         }
         
-        #user-input {
-            flex: 1;
-            padding: 12px 18px;
-            border: 2px solid #e0e6ff;
-            border-radius: 50px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        #user-input:focus {
-            border-color: #6e8efb;
-        }
+#user-input {
+    flex: 1;
+    padding: 12px 18px;
+    border: 2px solid #e0e6ff;
+    border-radius: 50px; /* Single-line rounded look */
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s;
+    resize: none; /* Disable manual resize */
+    height: 46px; /* Single line height */
+    max-height: 200px; /* Maximum expansion */
+    font-family: inherit;
+    line-height: 1.4;
+    overflow-y: hidden; /* Hide scrollbar initially */
+    /* Mobile optimization */
+    font-size: 16px; /* Prevent iOS zoom */
+}
+
+#user-input:focus {
+    border-color: #6e8efb;
+    border-radius: 18px; /* Less rounded when expanded */
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    #user-input {
+        font-size: 16px; /* Prevent zoom and ensure readability */
+        min-height: 44px; /* Better touch target */
+        padding: 10px 15px;
+    }
+    
+    .input-area {
+        padding: 8px 12px;
+    }
+    
+    #send-btn {
+        width: 44px; /* Better touch target */
+        height: 44px;
+        min-width: 44px; /* Ensure proper touch size */
+    }
+}
         
         #send-btn {
             width: 46px;
@@ -1014,12 +1042,12 @@
                     </div>
                 </div>
                 
-                <div class="input-area">
-                    <input type="text" id="user-input" placeholder="Type your thoughts or tasks here..." autocomplete="off">
-                    <button id="send-btn">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
+<div class="input-area">
+    <textarea id="user-input" placeholder="Type your thoughts or tasks here..." autocomplete="off"></textarea>
+    <button id="send-btn">
+        <i class="fas fa-paper-plane"></i>
+    </button>
+</div>
                 
                 <div class="controls">
                     <div class="control-btn" id="theme-btn">
@@ -1073,7 +1101,7 @@
     <input type="file" id="file-input" class="file-input" accept=".json">
 
     <footer>
-        Copyright 2025 Dr. Wen-Ming Yang Lab. All rights reserved. (v19a with Dynalist popout open)
+        Copyright 2025 Dr. Wen-Ming Yang Lab. All rights reserved. (v19b multipleline with Dynalist popout open)
     </footer>
 
     <script>
@@ -1314,43 +1342,48 @@
         }
         
         // Send a message
-        function sendMessage() {
-            const message = userInput.value.trim();
-            if (message === '') return;
-            
-            const messageEl = document.createElement('div');
-            messageEl.classList.add('message', 'user-message');
-            messageEl.innerHTML = `
-                <div class="message-actions">
-                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-                <p>${message}</p>
-                <div class="timestamp user-timestamp">${getCurrentTime()}</div>
-            `;
-            chatContainer.appendChild(messageEl);
-            addMessageListeners(messageEl);
-            
-            messages++;
-            words += message.split(' ').length;
-            messageCount.textContent = messages;
-            wordCount.textContent = words;
-            
-            userInput.value = '';
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            
-            conversationHistory.push({
-                type: 'user',
-                content: message,
-                timestamp: new Date()
-            });
-            
-            if (chatbotEnabled) {
-                setTimeout(() => {
-                    generateResponse(message);
-                }, 1000);
-            }
-        }
+// Update the sendMessage function to reset textarea
+function sendMessage() {
+    const message = userInput.value.trim();
+    if (message === '') return;
+    
+    const messageEl = document.createElement('div');
+    messageEl.classList.add('message', 'user-message');
+    messageEl.innerHTML = `
+        <div class="message-actions">
+            <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+            <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>
+        <p>${message}</p>
+        <div class="timestamp user-timestamp">${getCurrentTime()}</div>
+    `;
+    chatContainer.appendChild(messageEl);
+    addMessageListeners(messageEl);
+    
+    messages++;
+    words += message.split(' ').length;
+    messageCount.textContent = messages;
+    wordCount.textContent = words;
+    
+    // Clear and reset textarea
+    userInput.value = '';
+    userInput.style.height = '46px';
+    userInput.style.borderRadius = '50px';
+    
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    conversationHistory.push({
+        type: 'user',
+        content: message,
+        timestamp: new Date()
+    });
+    
+    if (chatbotEnabled) {
+        setTimeout(() => {
+            generateResponse(message);
+        }, 1000);
+    }
+}
         
         // Generate chatbot response
         function generateResponse(userMessage) {
@@ -2014,6 +2047,10 @@ async function addContentToDynalist(documentId) {
             dynalistSettingsBtn = document.getElementById('dynalist-settings-btn');
             dynalistModal = document.getElementById('dynalist-modal');
             
+            // Initialize auto-expand textarea
+		    initTextarea();
+		    setupMobileKeyboardHandling();
+            
             // Add event listeners
             document.getElementById('toggle-guide').addEventListener('click', toggleSidebar);
             document.getElementById('mobile-toggle').addEventListener('click', toggleSidebar);
@@ -2055,6 +2092,65 @@ async function addContentToDynalist(documentId) {
             // Initialize Dynalist status
             updateDynalistStatusDisplay();
         }
+
+// Auto-expand textarea function
+function autoExpand(textarea) {
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = 'auto';
+    
+    // Set the height to scrollHeight to expand
+    const newHeight = Math.min(textarea.scrollHeight, 200); // Cap at max-height
+    textarea.style.height = newHeight + 'px';
+    
+    // Change border radius when multi-line
+    if (textarea.scrollHeight > 46) {
+        textarea.style.borderRadius = '18px';
+    } else {
+        textarea.style.borderRadius = '50px';
+    }
+}
+
+// Initialize the textarea
+function initTextarea() {
+    const userInput = document.getElementById('user-input');
+    
+    // Auto-expand on input
+    userInput.addEventListener('input', function() {
+        autoExpand(this);
+    });
+    
+    // Also expand on focus (helps with some mobile browsers)
+    userInput.addEventListener('focus', function() {
+        setTimeout(() => autoExpand(this), 10);
+    });
+    
+    // Handle Enter key (send on Enter, new line on Shift+Enter)
+    userInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent new line
+            sendMessage();
+        }
+        // Shift+Enter will naturally create a new line
+    });
+}
+
+// Mobile keyboard handling
+function setupMobileKeyboardHandling() {
+    if ('visualViewport' in window) {
+        const visualViewport = window.visualViewport;
+        
+        visualViewport.addEventListener('resize', function() {
+            // Adjust layout when keyboard appears/disappears
+            setTimeout(() => {
+                const activeElement = document.activeElement;
+                if (activeElement === userInput) {
+                    // Scroll input into view when keyboard is open
+                    activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        });
+    }
+}
         
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', init);
