@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflection Journal with Multiple Views</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbc;
+            --light-color: #f5f7fa;
+            --dark-color: #2c3e50;
+            --morning-color: #ffd166;
+            --night-color: #6c63ff;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .calendar-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .calendar-views {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .view-btn {
+            padding: 8px 15px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            font-weight: bold;
+            padding: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .calendar-date {
+            text-align: center;
+            padding: 10px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+            position: relative;
+        }
+        
+        .calendar-date:hover {
+            background-color: #e9ecef;
+        }
+        
+        .calendar-date.selected {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .calendar-date.today {
+            border: 2px solid var(--success-color);
+        }
+        
+        .calendar-date.has-reflection {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .calendar-date.partial-reflection {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .reflection-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .reflection-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .morning-reflection {
+            border-top: 5px solid var(--morning-color);
+        }
+        
+        .night-reflection {
+            border-top: 5px solid var(--night-color);
+        }
+        
+        .reflection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .reflection-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .morning-title {
+            color: var(--morning-color);
+        }
+        
+        .night-title {
+            color: var(--night-color);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            font-size: 1rem;
+        }
+        
+        .actions-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .save-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .save-btn:hover {
+            background-color: #05b387;
+        }
+        
+        .load-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .load-btn:hover {
+            background-color: #5a7db0;
+        }
+        
+        .export-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .export-btn:hover {
+            background-color: #3d5c8c;
+        }
+        
+        .calendar-view-btn {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .calendar-view-btn:hover {
+            background-color: #e6b440;
+        }
+        
+        .summary-btn {
+            background-color: #6c63ff;
+            color: white;
+        }
+        
+        .summary-btn:hover {
+            background-color: #5a52d6;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .file-label:hover {
+            background-color: #5a7db0;
+        }
+        
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .success {
+            background-color: rgba(6, 214, 160, 0.2);
+            color: var(--success-color);
+        }
+        
+        .error {
+            background-color: rgba(239, 71, 111, 0.2);
+            color: #ef476f;
+        }
+        
+        .info {
+            background-color: rgba(74, 111, 165, 0.2);
+            color: var(--primary-color);
+        }
+        
+        .empty-date {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        .previous-reflection {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .previous-reflection h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        /* Week List View Styles */
+        .week-list-view {
+            display: none;
+        }
+        
+        .week-list-view.active {
+            display: block;
+        }
+        
+        .week-list-day {
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .week-list-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .week-list-content {
+            padding: 15px;
+            background-color: white;
+        }
+        
+        .week-reflection-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        .week-reflection-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .week-reflection-time {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .week-reflection-time.morning {
+            color: var(--morning-color);
+        }
+        
+        .week-reflection-time.night {
+            color: var(--night-color);
+        }
+        
+        .week-reflection-text {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        
+        .empty-reflection {
+            color: #6c757d;
+            font-style: italic;
+            padding: 10px;
+        }
+        
+        .no-reflections-message {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Popup Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .close-btn:hover {
+            color: var(--dark-color);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .week-view, .month-view, .summary-view {
+            display: none;
+        }
+        
+        .week-view.active, .month-view.active, .summary-view.active {
+            display: block;
+        }
+        
+        .week-calendar {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 1px;
+            background-color: #e9ecef;
+            border: 1px solid #e9ecef;
+        }
+        
+        .week-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .week-time {
+            background-color: var(--light-color);
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .week-cell {
+            background-color: white;
+            padding: 10px;
+            min-height: 80px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .week-cell:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .week-cell.has-reflection {
+            background-color: rgba(6, 214, 160, 0.2);
+        }
+        
+        .month-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: #e9ecef;
+            border: 1px solid #e9ecef;
+        }
+        
+        .month-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .month-cell {
+            background-color: white;
+            padding: 10px;
+            min-height: 100px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .month-cell:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .month-cell.has-reflection {
+            background-color: rgba(6, 214, 160, 0.2);
+        }
+        
+        .month-cell.partial-reflection {
+            background-color: rgba(255, 209, 102, 0.3);
+        }
+        
+        .month-date {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .reflection-preview {
+            font-size: 0.8rem;
+            color: #6c757d;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .autosave-indicator {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .autosave-indicator.saving {
+            color: var(--warning-color);
+        }
+        
+        .autosave-indicator.saved {
+            color: var(--success-color);
+        }
+        
+        /* Week Summary Styles */
+        .summary-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .print-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .print-btn:hover {
+            background-color: #3d5c8c;
+        }
+        
+        .save-summary-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .save-summary-btn:hover {
+            background-color: #05b387;
+        }
+        
+        .summary-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .summary-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .summary-date-range {
+            font-size: 1.1rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        .summary-day {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+        
+        .summary-day-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .summary-reflection {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        
+        .summary-reflection.morning {
+            border-left: 4px solid var(--morning-color);
+        }
+        
+        .summary-reflection.night {
+            border-left: 4px solid var(--night-color);
+        }
+        
+        .summary-reflection-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .summary-reflection.morning .summary-reflection-header {
+            color: var(--morning-color);
+        }
+        
+        .summary-reflection.night .summary-reflection-header {
+            color: var(--night-color);
+        }
+        
+        .summary-reflection-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .summary-reflection-text {
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        .no-reflections-summary {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        /* Print Styles for Summary */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .modal-overlay.active,
+            .modal-overlay.active * {
+                visibility: visible;
+            }
+            
+            .modal-overlay.active {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: white;
+                overflow: visible;
+            }
+            
+            .modal {
+                box-shadow: none;
+                width: 100%;
+                max-width: 100%;
+                max-height: none;
+                transform: none;
+            }
+            
+            .modal-header,
+            .summary-actions,
+            .close-btn {
+                display: none;
+            }
+            
+            .summary-content {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .summary-day {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Daily Reflection Journal</h1>
+            <p class="subtitle">Track your morning and night reflections with multiple calendar views</p>
+        </header>
+        
+        <div class="main-content">
+            <section class="calendar-section">
+                <div class="calendar-header">
+                    <button id="prev-month">&lt;</button>
+                    <h2 id="current-month">Month Year</h2>
+                    <button id="next-month">&gt;</button>
+                </div>
+                
+                <div class="calendar-views">
+                    <button class="view-btn active" id="month-view-btn">Month</button>
+                    <button class="view-btn" id="week-view-btn">Week</button>
+                    <button class="view-btn" id="expand-view-btn">Expand View</button>
+                    <button class="view-btn summary-btn" id="week-summary-btn">Week Summary</button>
+                </div>
+                
+                <div class="calendar-container">
+                    <div id="month-calendar">
+                        <div class="calendar-grid" id="calendar-days">
+                            <!-- Calendar days will be generated here -->
+                        </div>
+                    </div>
+                    <div id="week-calendar" class="week-list-view">
+                        <!-- Week list will be generated here -->
+                    </div>
+                </div>
+            </section>
+            
+            <section class="reflection-section">
+                <div class="reflection-card morning-reflection">
+                    <div class="reflection-header">
+                        <h2 class="reflection-title morning-title">Morning Reflection</h2>
+                        <div>
+                            <span id="current-date"></span>
+                            <span id="morning-autosave" class="autosave-indicator"></span>
+                        </div>
+                    </div>
+                    <p>What are your intentions for today? What are you grateful for?</p>
+                    <textarea id="morning-text" placeholder="Write your morning reflection here..."></textarea>
+                </div>
+                
+                <div class="reflection-card night-reflection">
+                    <div class="reflection-header">
+                        <h2 class="reflection-title night-title">Night Reflection</h2>
+                        <div>
+                            <span id="current-date-night"></span>
+                            <span id="night-autosave" class="autosave-indicator"></span>
+                        </div>
+                    </div>
+                    <p>How was your day? What did you learn? What could you improve?</p>
+                    <textarea id="night-text" placeholder="Write your night reflection here..."></textarea>
+                </div>
+                
+                <div class="actions-section">
+                    <button class="save-btn" id="save-btn">Save Reflections</button>
+                    <input type="file" id="file-input" class="file-input" accept=".json">
+                    <label for="file-input" class="file-label">Load File</label>
+                    <button class="export-btn" id="export-btn">Export Data</button>
+                </div>
+                
+                <div id="status-message" class="status-message"></div>
+                
+                <div id="previous-reflection" class="previous-reflection" style="display: none;">
+                    <h3>Previous Reflection</h3>
+                    <div id="previous-content"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Copyright &copy; 2025 Dr. Wen-Ming Yang. All rights reserved. v1.2</p>
+        </div>
+    </footer>
+
+    <!-- Modal for Expanded Calendar Views -->
+    <div class="modal-overlay" id="calendar-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Expanded Calendar View</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="calendar-views-modal">
+                    <button class="view-btn" id="modal-week-btn">Week View</button>
+                    <button class="view-btn active" id="modal-month-btn">Month View</button>
+                </div>
+                
+                <div class="week-view" id="modal-week-view">
+                    <!-- Week view will be generated here -->
+                </div>
+                
+                <div class="month-view active" id="modal-month-view">
+                    <!-- Month view will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Week Summary -->
+    <div class="modal-overlay" id="summary-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Week Summary</h2>
+                <button class="close-btn" id="close-summary-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="summary-actions">
+                    <button class="print-btn" id="print-summary-btn">Print Summary</button>
+                    <button class="save-summary-btn" id="save-summary-btn">Save as PDF</button>
+                </div>
+                <div class="summary-view active" id="summary-content">
+                    <!-- Week summary will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize variables
+        let currentDate = new Date();
+        let selectedDate = new Date();
+        let reflectionsData = {};
+        let autosaveTimeout;
+        let autosaveEnabled = true;
+        const AUTOSAVE_DELAY = 2000; // 2 seconds
+        
+        // DOM Elements
+        const currentMonthElement = document.getElementById('current-month');
+        const calendarDaysElement = document.getElementById('calendar-days');
+        const currentDateElement = document.getElementById('current-date');
+        const currentDateNightElement = document.getElementById('current-date-night');
+        const morningTextElement = document.getElementById('morning-text');
+        const nightTextElement = document.getElementById('night-text');
+        const saveButton = document.getElementById('save-btn');
+        const exportButton = document.getElementById('export-btn');
+        const fileInput = document.getElementById('file-input');
+        const statusMessage = document.getElementById('status-message');
+        const prevMonthButton = document.getElementById('prev-month');
+        const nextMonthButton = document.getElementById('next-month');
+        const previousReflectionElement = document.getElementById('previous-reflection');
+        const previousContentElement = document.getElementById('previous-content');
+        const monthViewBtn = document.getElementById('month-view-btn');
+        const weekViewBtn = document.getElementById('week-view-btn');
+        const expandViewBtn = document.getElementById('expand-view-btn');
+        const weekSummaryBtn = document.getElementById('week-summary-btn');
+        const monthCalendar = document.getElementById('month-calendar');
+        const weekCalendar = document.getElementById('week-calendar');
+        const calendarModal = document.getElementById('calendar-modal');
+        const summaryModal = document.getElementById('summary-modal');
+        const closeModalButton = document.getElementById('close-modal');
+        const closeSummaryModalButton = document.getElementById('close-summary-modal');
+        const modalWeekView = document.getElementById('modal-week-view');
+        const modalMonthView = document.getElementById('modal-month-view');
+        const modalWeekBtn = document.getElementById('modal-week-btn');
+        const modalMonthBtn = document.getElementById('modal-month-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const morningAutosaveIndicator = document.getElementById('morning-autosave');
+        const nightAutosaveIndicator = document.getElementById('night-autosave');
+        const summaryContent = document.getElementById('summary-content');
+        const printSummaryBtn = document.getElementById('print-summary-btn');
+        const saveSummaryBtn = document.getElementById('save-summary-btn');
+        
+        // Initialize the application
+        function init() {
+            // Load saved data from localStorage if available
+            loadFromLocalStorage();
+            
+            // Set up event listeners
+            saveButton.addEventListener('click', saveReflections);
+            exportButton.addEventListener('click', exportData);
+            fileInput.addEventListener('change', handleFileUpload);
+            prevMonthButton.addEventListener('click', showPreviousMonth);
+            nextMonthButton.addEventListener('click', showNextMonth);
+            monthViewBtn.addEventListener('click', () => switchCalendarView('month'));
+            weekViewBtn.addEventListener('click', () => switchCalendarView('week'));
+            expandViewBtn.addEventListener('click', openCalendarModal);
+            weekSummaryBtn.addEventListener('click', openWeekSummary);
+            closeModalButton.addEventListener('click', closeCalendarModal);
+            closeSummaryModalButton.addEventListener('click', closeWeekSummary);
+            modalWeekBtn.addEventListener('click', () => switchModalView('week'));
+            modalMonthBtn.addEventListener('click', () => switchModalView('month'));
+            printSummaryBtn.addEventListener('click', printSummary);
+            saveSummaryBtn.addEventListener('click', saveSummaryAsPDF);
+            
+            // Set up autosave listeners
+            morningTextElement.addEventListener('input', () => scheduleAutosave('morning'));
+            nightTextElement.addEventListener('input', () => scheduleAutosave('night'));
+            
+            // Initialize calendar and display
+            updateCalendar();
+            updateReflectionDisplay();
+        }
+        
+        // Calendar functions
+        function updateCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update month header
+            currentMonthElement.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+            
+            // Clear previous calendar
+            calendarDaysElement.innerHTML = '';
+            
+            // Add day headers
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            daysOfWeek.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                calendarDaysElement.appendChild(dayElement);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyElement = document.createElement('div');
+                emptyElement.className = 'calendar-date';
+                calendarDaysElement.appendChild(emptyElement);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateElement = document.createElement('div');
+                dateElement.className = 'calendar-date';
+                dateElement.textContent = day;
+                
+                // Create a date object for this calendar day
+                const calendarDate = new Date(year, month, day);
+                const dateString = formatDate(calendarDate);
+                
+                // Check if this is today - FIXED: Use proper date comparison
+                if (isToday(calendarDate)) {
+                    dateElement.classList.add('today');
+                }
+                
+                // Check if this date has reflections
+                if (reflectionsData[dateString]) {
+                    const hasMorning = reflectionsData[dateString].morning && reflectionsData[dateString].morning.trim() !== '';
+                    const hasNight = reflectionsData[dateString].night && reflectionsData[dateString].night.trim() !== '';
+                    
+                    if (hasMorning && hasNight) {
+                        dateElement.classList.add('has-reflection');
+                    } else if (hasMorning || hasNight) {
+                        dateElement.classList.add('partial-reflection');
+                    }
+                }
+                
+                // Check if this is the selected date
+                if (isSameDay(calendarDate, selectedDate)) {
+                    dateElement.classList.add('selected');
+                }
+                
+                // Add click event
+                dateElement.addEventListener('click', () => {
+                    selectedDate = calendarDate;
+                    updateCalendar();
+                    updateReflectionDisplay();
+                });
+                
+                calendarDaysElement.appendChild(dateElement);
+            }
+        }
+        
+        function showPreviousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
+        }
+        
+        function showNextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        }
+        
+        function switchCalendarView(view) {
+            // Update active button
+            if (view === 'month') {
+                monthViewBtn.classList.add('active');
+                weekViewBtn.classList.remove('active');
+                monthCalendar.style.display = 'block';
+                weekCalendar.style.display = 'none';
+                updateCalendar();
+            } else {
+                monthViewBtn.classList.remove('active');
+                weekViewBtn.classList.add('active');
+                monthCalendar.style.display = 'none';
+                weekCalendar.style.display = 'block';
+                generateWeekListView();
+            }
+        }
+        
+        function generateWeekListView() {
+            // Clear previous content
+            weekCalendar.innerHTML = '';
+            
+            // Get the current week's dates
+            const weekDates = getWeekDates(selectedDate);
+            
+            // Filter to only include days with content
+            const daysWithContent = weekDates.filter(date => {
+                const dateString = formatDate(date);
+                return reflectionsData[dateString] && 
+                      (reflectionsData[dateString].morning || reflectionsData[dateString].night);
+            });
+            
+            // If no days have content, show message
+            if (daysWithContent.length === 0) {
+                const message = document.createElement('div');
+                message.className = 'no-reflections-message';
+                message.textContent = 'No reflections found for this week.';
+                weekCalendar.appendChild(message);
+                return;
+            }
+            
+            // Create week list view with only days that have content
+            daysWithContent.forEach(date => {
+                const dateString = formatDate(date);
+                const dayElement = document.createElement('div');
+                dayElement.className = 'week-list-day';
+                
+                // Create header with date
+                const header = document.createElement('div');
+                header.className = 'week-list-header';
+                
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const dateFormatted = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                header.innerHTML = `
+                    <span>${dayName}</span>
+                    <span>${dateFormatted}</span>
+                `;
+                
+                dayElement.appendChild(header);
+                
+                // Create content area
+                const content = document.createElement('div');
+                content.className = 'week-list-content';
+                
+                // Add morning reflection if it exists
+                if (reflectionsData[dateString] && reflectionsData[dateString].morning) {
+                    const morningReflection = document.createElement('div');
+                    morningReflection.className = 'week-reflection-item';
+                    
+                    const morningTime = document.createElement('div');
+                    morningTime.className = 'week-reflection-time morning';
+                    morningTime.innerHTML = '<span style="margin-right: 8px;">☀️</span> Morning Reflection';
+                    
+                    morningReflection.appendChild(morningTime);
+                    
+                    const morningText = document.createElement('div');
+                    morningText.className = 'week-reflection-text';
+                    morningText.textContent = reflectionsData[dateString].morning;
+                    
+                    morningReflection.appendChild(morningText);
+                    content.appendChild(morningReflection);
+                }
+                
+                // Add night reflection if it exists
+                if (reflectionsData[dateString] && reflectionsData[dateString].night) {
+                    const nightReflection = document.createElement('div');
+                    nightReflection.className = 'week-reflection-item';
+                    
+                    const nightTime = document.createElement('div');
+                    nightTime.className = 'week-reflection-time night';
+                    nightTime.innerHTML = '<span style="margin-right: 8px;">🌙</span> Night Reflection';
+                    
+                    nightReflection.appendChild(nightTime);
+                    
+                    const nightText = document.createElement('div');
+                    nightText.className = 'week-reflection-text';
+                    nightText.textContent = reflectionsData[dateString].night;
+                    
+                    nightReflection.appendChild(nightText);
+                    content.appendChild(nightReflection);
+                }
+                
+                dayElement.appendChild(content);
+                weekCalendar.appendChild(dayElement);
+            });
+        }
+        
+        function getWeekDates(date) {
+            // Get the week dates for the given date (Sunday to Saturday)
+            const weekDates = [];
+            const dayOfWeek = date.getDay();
+            const startDate = new Date(date);
+            startDate.setDate(date.getDate() - dayOfWeek);
+            
+            for (let i = 0; i < 7; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+                weekDates.push(currentDate);
+            }
+            
+            return weekDates;
+        }
+        
+        // Week Summary Functions
+        function openWeekSummary() {
+            summaryModal.classList.add('active');
+            generateWeekSummary();
+        }
+        
+        function closeWeekSummary() {
+            summaryModal.classList.remove('active');
+        }
+        
+        function generateWeekSummary() {
+            // Clear previous content
+            summaryContent.innerHTML = '';
+            
+            // Get the current week's dates
+            const weekDates = getWeekDates(selectedDate);
+            
+            // Filter to only include days with content
+            const daysWithContent = weekDates.filter(date => {
+                const dateString = formatDate(date);
+                return reflectionsData[dateString] && 
+                      (reflectionsData[dateString].morning || reflectionsData[dateString].night);
+            });
+            
+            // Create summary container
+            const summaryContainer = document.createElement('div');
+            summaryContainer.className = 'summary-content';
+            
+            // Create summary header
+            const summaryHeader = document.createElement('div');
+            summaryHeader.className = 'summary-header';
+            
+            const startDate = weekDates[0];
+            const endDate = weekDates[6];
+            const dateRange = `${startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+            
+            summaryHeader.innerHTML = `
+                <h2 class="summary-title">Weekly Reflection Summary</h2>
+                <div class="summary-date-range">${dateRange}</div>
+            `;
+            
+            summaryContainer.appendChild(summaryHeader);
+            
+            // If no days have content, show message
+            if (daysWithContent.length === 0) {
+                const message = document.createElement('div');
+                message.className = 'no-reflections-summary';
+                message.textContent = 'No reflections found for this week.';
+                summaryContainer.appendChild(message);
+                summaryContent.appendChild(summaryContainer);
+                return;
+            }
+            
+            // Create summary for each day with content
+            daysWithContent.forEach(date => {
+                const dateString = formatDate(date);
+                const dayElement = document.createElement('div');
+                dayElement.className = 'summary-day';
+                
+                // Create day header
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'summary-day-header';
+                
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const dateFormatted = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                
+                dayHeader.textContent = `${dayName}, ${dateFormatted}`;
+                dayElement.appendChild(dayHeader);
+                
+                // Add morning reflection if it exists
+                if (reflectionsData[dateString] && reflectionsData[dateString].morning) {
+                    const morningReflection = document.createElement('div');
+                    morningReflection.className = 'summary-reflection morning';
+                    
+                    const morningHeader = document.createElement('div');
+                    morningHeader.className = 'summary-reflection-header';
+                    morningHeader.innerHTML = '<span class="summary-reflection-icon">☀️</span> Morning Reflection';
+                    
+                    const morningText = document.createElement('div');
+                    morningText.className = 'summary-reflection-text';
+                    morningText.textContent = reflectionsData[dateString].morning;
+                    
+                    morningReflection.appendChild(morningHeader);
+                    morningReflection.appendChild(morningText);
+                    dayElement.appendChild(morningReflection);
+                }
+                
+                // Add night reflection if it exists
+                if (reflectionsData[dateString] && reflectionsData[dateString].night) {
+                    const nightReflection = document.createElement('div');
+                    nightReflection.className = 'summary-reflection night';
+                    
+                    const nightHeader = document.createElement('div');
+                    nightHeader.className = 'summary-reflection-header';
+                    nightHeader.innerHTML = '<span class="summary-reflection-icon">🌙</span> Night Reflection';
+                    
+                    const nightText = document.createElement('div');
+                    nightText.className = 'summary-reflection-text';
+                    nightText.textContent = reflectionsData[dateString].night;
+                    
+                    nightReflection.appendChild(nightHeader);
+                    nightReflection.appendChild(nightText);
+                    dayElement.appendChild(nightReflection);
+                }
+                
+                summaryContainer.appendChild(dayElement);
+            });
+            
+            summaryContent.appendChild(summaryContainer);
+        }
+        
+        function printSummary() {
+            window.print();
+        }
+        
+        function saveSummaryAsPDF() {
+            showStatus('PDF export feature would be implemented in a production version', 'info');
+            // In a real implementation, you would use a library like jsPDF or html2pdf.js
+            // For this demo, we'll just show a message
+        }
+        
+        // Reflection display functions
+        function updateReflectionDisplay() {
+            const dateString = formatDate(selectedDate);
+            const formattedDate = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            currentDateElement.textContent = formattedDate;
+            currentDateNightElement.textContent = formattedDate;
+            
+            // Clear text areas
+            morningTextElement.value = '';
+            nightTextElement.value = '';
+            
+            // Reset autosave indicators
+            morningAutosaveIndicator.textContent = '';
+            nightAutosaveIndicator.textContent = '';
+            
+            // Hide previous reflection section
+            previousReflectionElement.style.display = 'none';
+            
+            // If we have data for this date, load it
+            if (reflectionsData[dateString]) {
+                morningTextElement.value = reflectionsData[dateString].morning || '';
+                nightTextElement.value = reflectionsData[dateString].night || '';
+                
+                // Show previous reflection if available for yesterday
+                const yesterday = new Date(selectedDate);
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayString = formatDate(yesterday);
+                
+                if (reflectionsData[yesterdayString]) {
+                    previousReflectionElement.style.display = 'block';
+                    let previousContent = '';
+                    
+                    if (reflectionsData[yesterdayString].morning) {
+                        previousContent += `<p><strong>Morning:</strong> ${reflectionsData[yesterdayString].morning}</p>`;
+                    }
+                    
+                    if (reflectionsData[yesterdayString].night) {
+                        previousContent += `<p><strong>Night:</strong> ${reflectionsData[yesterdayString].night}</p>`;
+                    }
+                    
+                    previousContentElement.innerHTML = previousContent;
+                }
+            }
+        }
+        
+        // Autosave functionality
+        function scheduleAutosave(type) {
+            // Update autosave indicator
+            const indicator = type === 'morning' ? morningAutosaveIndicator : nightAutosaveIndicator;
+            indicator.textContent = '...';
+            indicator.className = 'autosave-indicator saving';
+            
+            // Clear existing timeout
+            if (autosaveTimeout) {
+                clearTimeout(autosaveTimeout);
+            }
+            
+            // Set new timeout
+            autosaveTimeout = setTimeout(() => {
+                autosaveReflections(type);
+            }, AUTOSAVE_DELAY);
+        }
+        
+        function autosaveReflections(type) {
+            if (!autosaveEnabled) return;
+            
+            const dateString = formatDate(selectedDate);
+            
+            // Initialize date entry if it doesn't exist
+            if (!reflectionsData[dateString]) {
+                reflectionsData[dateString] = {};
+            }
+            
+            // Save reflection based on type
+            if (type === 'morning') {
+                reflectionsData[dateString].morning = morningTextElement.value;
+            } else {
+                reflectionsData[dateString].night = nightTextElement.value;
+            }
+            
+            reflectionsData[dateString].date = selectedDate.toISOString();
+            
+            // Save to localStorage
+            saveToLocalStorage();
+            
+            // Update calendar to reflect changes
+            updateCalendar();
+            
+            // Update autosave indicator
+            const indicator = type === 'morning' ? morningAutosaveIndicator : nightAutosaveIndicator;
+            indicator.textContent = 'saved';
+            indicator.className = 'autosave-indicator saved';
+            
+            // Clear indicator after 2 seconds
+            setTimeout(() => {
+                indicator.textContent = '';
+            }, 2000);
+        }
+        
+        // Data management functions
+        function saveReflections() {
+            const dateString = formatDate(selectedDate);
+            
+            // Initialize date entry if it doesn't exist
+            if (!reflectionsData[dateString]) {
+                reflectionsData[dateString] = {};
+            }
+            
+            // Save reflections
+            reflectionsData[dateString].morning = morningTextElement.value;
+            reflectionsData[dateString].night = nightTextElement.value;
+            reflectionsData[dateString].date = selectedDate.toISOString();
+            
+            // Save to localStorage
+            saveToLocalStorage();
+            
+            // Update calendar to reflect changes
+            updateCalendar();
+            
+            // Show success message
+            showStatus('Reflections saved successfully!', 'success');
+        }
+        
+        function exportData() {
+            // Create a JSON string of the reflections data
+            const dataStr = JSON.stringify(reflectionsData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            // Create a download link
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `reflections-${formatDate(new Date())}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showStatus('Data exported successfully!', 'success');
+        }
+        
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    reflectionsData = { ...reflectionsData, ...importedData };
+                    
+                    // Save to localStorage
+                    saveToLocalStorage();
+                    
+                    // Update display
+                    updateCalendar();
+                    updateReflectionDisplay();
+                    
+                    showStatus('Data imported successfully!', 'success');
+                } catch (error) {
+                    showStatus('Error importing file. Please check the file format.', 'error');
+                    console.error('Error parsing JSON:', error);
+                }
+            };
+            
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+        
+        // Modal functions
+        function openCalendarModal() {
+            calendarModal.classList.add('active');
+            switchModalView('month');
+        }
+        
+        function closeCalendarModal() {
+            calendarModal.classList.remove('active');
+        }
+        
+        function switchModalView(view) {
+            // Update active button
+            if (view === 'week') {
+                modalWeekBtn.classList.add('active');
+                modalMonthBtn.classList.remove('active');
+                modalWeekView.classList.add('active');
+                modalMonthView.classList.remove('active');
+                modalTitle.textContent = 'Expanded Week View';
+                generateModalWeekView();
+            } else {
+                modalWeekBtn.classList.remove('active');
+                modalMonthBtn.classList.add('active');
+                modalWeekView.classList.remove('active');
+                modalMonthView.classList.add('active');
+                modalTitle.textContent = 'Expanded Month View';
+                generateModalMonthView();
+            }
+        }
+        
+        function generateModalWeekView() {
+            // Clear previous content
+            modalWeekView.innerHTML = '';
+            
+            // Create week calendar grid
+            const weekGrid = document.createElement('div');
+            weekGrid.className = 'week-calendar';
+            
+            // Add empty cell for top-left corner
+            const cornerCell = document.createElement('div');
+            cornerCell.className = 'week-header';
+            weekGrid.appendChild(cornerCell);
+            
+            // Add day headers
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            daysOfWeek.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'week-header';
+                dayElement.textContent = day;
+                weekGrid.appendChild(dayElement);
+            });
+            
+            // Add time slots and day cells
+            const timeSlots = ['Morning', 'Night'];
+            timeSlots.forEach(time => {
+                const timeElement = document.createElement('div');
+                timeElement.className = 'week-time';
+                timeElement.textContent = time;
+                weekGrid.appendChild(timeElement);
+                
+                // Add cells for each day
+                for (let i = 0; i < 7; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'week-cell';
+                    
+                    // Calculate date for this cell
+                    const cellDate = new Date(selectedDate);
+                    cellDate.setDate(selectedDate.getDate() - selectedDate.getDay() + i);
+                    const dateString = formatDate(cellDate);
+                    
+                    // Check if this date has reflection for this time
+                    if (reflectionsData[dateString] && 
+                        ((time === 'Morning' && reflectionsData[dateString].morning) || 
+                         (time === 'Night' && reflectionsData[dateString].night))) {
+                        cell.classList.add('has-reflection');
+                        
+                        // Add reflection preview
+                        const reflection = time === 'Morning' ? reflectionsData[dateString].morning : reflectionsData[dateString].night;
+                        const preview = document.createElement('div');
+                        preview.className = 'reflection-preview';
+                        preview.textContent = reflection.substring(0, 30) + '...';
+                        preview.style.marginTop = '5px';
+                        preview.style.fontSize = '0.7rem';
+                        cell.appendChild(preview);
+                    }
+                    
+                    // Add date to cell
+                    const dateNum = document.createElement('div');
+                    dateNum.textContent = cellDate.getDate();
+                    dateNum.style.fontWeight = 'bold';
+                    cell.appendChild(dateNum);
+                    
+                    // Add click event
+                    cell.addEventListener('click', () => {
+                        selectedDate = cellDate;
+                        updateCalendar();
+                        updateReflectionDisplay();
+                        closeCalendarModal();
+                    });
+                    
+                    weekGrid.appendChild(cell);
+                }
+            });
+            
+            modalWeekView.appendChild(weekGrid);
+        }
+        
+        function generateModalMonthView() {
+            // Clear previous content
+            modalMonthView.innerHTML = '';
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Create month calendar grid
+            const monthGrid = document.createElement('div');
+            monthGrid.className = 'month-calendar';
+            
+            // Add day headers
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            daysOfWeek.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'month-header';
+                dayElement.textContent = day;
+                monthGrid.appendChild(dayElement);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyElement = document.createElement('div');
+                emptyElement.className = 'month-cell';
+                monthGrid.appendChild(emptyElement);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'month-cell';
+                
+                // Create a date object for this calendar day
+                const calendarDate = new Date(year, month, day);
+                const dateString = formatDate(calendarDate);
+                
+                // Add date number
+                const dateElement = document.createElement('div');
+                dateElement.className = 'month-date';
+                dateElement.textContent = day;
+                cell.appendChild(dateElement);
+                
+                // Check if this date has reflections
+                if (reflectionsData[dateString]) {
+                    const hasMorning = reflectionsData[dateString].morning && reflectionsData[dateString].morning.trim() !== '';
+                    const hasNight = reflectionsData[dateString].night && reflectionsData[dateString].night.trim() !== '';
+                    
+                    if (hasMorning && hasNight) {
+                        cell.classList.add('has-reflection');
+                    } else if (hasMorning || hasNight) {
+                        cell.classList.add('partial-reflection');
+                    }
+                    
+                    // Add reflection preview
+                    if (hasMorning) {
+                        const preview = document.createElement('div');
+                        preview.className = 'reflection-preview';
+                        preview.textContent = '☀️ ' + reflectionsData[dateString].morning.substring(0, 20) + '...';
+                        cell.appendChild(preview);
+                    }
+                    
+                    if (hasNight) {
+                        const preview = document.createElement('div');
+                        preview.className = 'reflection-preview';
+                        preview.textContent = '🌙 ' + reflectionsData[dateString].night.substring(0, 20) + '...';
+                        cell.appendChild(preview);
+                    }
+                }
+                
+                // Check if this is the selected date
+                if (isSameDay(calendarDate, selectedDate)) {
+                    cell.style.border = '2px solid var(--primary-color)';
+                }
+                
+                // Add click event
+                cell.addEventListener('click', () => {
+                    selectedDate = calendarDate;
+                    updateCalendar();
+                    updateReflectionDisplay();
+                    closeCalendarModal();
+                });
+                
+                monthGrid.appendChild(cell);
+            }
+            
+            modalMonthView.appendChild(monthGrid);
+        }
+        
+        // Local storage functions
+        function saveToLocalStorage() {
+            localStorage.setItem('reflectionJournalData', JSON.stringify(reflectionsData));
+        }
+        
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('reflectionJournalData');
+            if (savedData) {
+                try {
+                    reflectionsData = JSON.parse(savedData);
+                } catch (error) {
+                    console.error('Error loading saved data:', error);
+                    reflectionsData = {};
+                }
+            }
+        }
+        
+        // Utility functions
+        function formatDate(date) {
+            // Fixed: Use local date components to avoid timezone issues
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        function isSameDay(date1, date2) {
+            return formatDate(date1) === formatDate(date2);
+        }
+        
+        function isToday(date) {
+            const today = new Date();
+            return formatDate(date) === formatDate(today);
+        }
+        
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                statusMessage.textContent = '';
+                statusMessage.className = 'status-message';
+            }, 3000);
+        }
+        
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
