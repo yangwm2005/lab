@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Task Discussion | PI Meeting Tracker</title>
+    <style>
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #4a7bc8;
+            --light-color: #f8fafc;
+            --dark-color: #2d3748;
+            --accent-color: #4361ee;
+            --progress-color: #4cc9f0;
+            --results-color: #7209b7;
+            --planning-color: #f72585;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+            --gray-light: #e2e8f0;
+            --gray-medium: #a0aec0;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" opacity="0.1"><circle cx="50" cy="50" r="2"/></svg>') repeat;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .calendar-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .calendar-nav-btn {
+            background: var(--light-color);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .calendar-nav-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .calendar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            font-weight: 600;
+            padding: 8px 4px;
+            font-size: 0.75rem;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+        }
+        
+        .calendar-date {
+            text-align: center;
+            padding: 8px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+        
+        .calendar-date:hover {
+            background-color: var(--light-color);
+        }
+        
+        .calendar-date.selected {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .calendar-date.today {
+            border: 2px solid var(--success-color);
+            font-weight: 700;
+        }
+        
+        .calendar-date.has-tasks {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .tasks-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tasks-header {
+            margin-bottom: 15px;
+        }
+        
+        .tasks-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .current-date {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+        
+        .task-input-section {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .task-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        
+        .task-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .add-task-btn {
+            padding: 10px 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .add-task-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .tasks-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+        }
+        
+        .tasks-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .tasks-list::-webkit-scrollbar-track {
+            background: var(--light-color);
+            border-radius: 10px;
+        }
+        
+        .tasks-list::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        .task-item {
+            padding: 12px;
+            background: var(--light-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+        }
+        
+        .task-item:hover {
+            background: var(--gray-light);
+        }
+        
+        .task-item.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .task-item-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .task-title-text {
+            flex: 1;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            white-space: pre-line;
+            word-break: break-word;
+        }
+        
+        .task-title-text:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .task-title-edit {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: white;
+            color: var(--dark-color);
+            resize: vertical;
+            min-height: 60px;
+            line-height: 1.4;
+            font-family: inherit;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .task-item:hover .task-actions {
+            opacity: 1;
+        }
+        
+        .task-edit-btn, .task-delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            color: var(--gray-medium);
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        
+        .task-edit-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--primary-color);
+        }
+        
+        .task-delete-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--danger-color);
+        }
+        
+        .task-item-preview {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .empty-tasks {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-medium);
+            font-style: italic;
+        }
+        
+        .discussion-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .discussion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .discussion-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .discussion-title-text {
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            white-space: pre-line;
+            word-break: break-word;
+            line-height: 1.4;
+            flex: 1;
+        }
+        
+        .discussion-title-text:hover {
+            background-color: var(--light-color);
+        }
+        
+        .discussion-title-edit {
+            padding: 8px 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            background: white;
+            color: var(--dark-color);
+            width: 100%;
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.4;
+            font-family: inherit;
+        }
+        
+        .discussion-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            color: var(--gray-medium);
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+        
+        .action-btn:hover {
+            background: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .task-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .task-section {
+            background: var(--light-color);
+            border-radius: var(--border-radius);
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .section-header:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .progress-header {
+            background: rgba(76, 201, 240, 0.15);
+            border-left: 4px solid var(--progress-color);
+        }
+        
+        .results-header {
+            background: rgba(114, 9, 183, 0.15);
+            border-left: 4px solid var(--results-color);
+        }
+        
+        .planning-header {
+            background: rgba(247, 37, 133, 0.15);
+            border-left: 4px solid var(--planning-color);
+        }
+        
+        .section-icon {
+            font-size: 1.2rem;
+        }
+        
+        .section-toggle {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .section-toggle.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .section-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .section-content.expanded {
+            padding: 20px;
+            max-height: 500px;
+        }
+        
+        .content-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .content-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        .section-prompt {
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+            font-style: italic;
+            margin-top: 8px;
+        }
+        
+        .empty-discussion {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--gray-medium);
+            font-style: italic;
+        }
+        
+        .discussion-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light-color);
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #38a169);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, #2f855a);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #e53e3e);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+        }
+        
+        .btn-secondary {
+            background: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-light);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            background: var(--light-color);
+            color: var(--dark-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            gap: 8px;
+        }
+        
+        .file-label:hover {
+            background: var(--gray-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .status-message {
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .success {
+            background-color: rgba(72, 187, 120, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(72, 187, 120, 0.2);
+        }
+        
+        .error {
+            background-color: rgba(245, 101, 101, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(245, 101, 101, 0.2);
+        }
+        
+        .info {
+            background-color: rgba(102, 126, 234, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .user-settings {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid var(--gray-light);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .btn-icon {
+            font-size: 1rem;
+        }
+
+        .autosave-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 8px;
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .autosave-indicator.saving {
+            color: var(--warning-color);
+        }
+        
+        .autosave-indicator.saved {
+            color: var(--success-color);
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), #1a202c);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-content p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-group-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-medium);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .export-option {
+            padding: 15px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .export-option:hover {
+            border-color: var(--primary-color);
+            background-color: var(--light-color);
+        }
+        
+        .export-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(44, 90, 160, 0.05);
+        }
+        
+        .export-option-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .export-option-description {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        /* Dynalist Modal Styles */
+        .dynalist-modal .modal {
+            max-width: 500px;
+        }
+        
+        .dynalist-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .dynalist-enabled {
+            background-color: var(--success-color);
+        }
+        
+        .dynalist-disabled {
+            background-color: var(--gray-medium);
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .discussion-section,
+            .discussion-section * {
+                visibility: visible;
+            }
+            
+            .discussion-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                box-shadow: none;
+            }
+            
+            .discussion-controls,
+            .action-group,
+            .status-message,
+            .sidebar,
+            header,
+            footer {
+                display: none !important;
+            }
+            
+            .section-content {
+                max-height: none !important;
+                padding: 20px !important;
+            }
+            
+            .content-textarea {
+                border: 1px solid #ccc;
+                background: white;
+            }
+            
+            .container {
+                max-width: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .quick-btn {
+            padding: 6px 12px;
+            background: var(--light-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .quick-btn:hover {
+            background: var(--gray-light);
+        }
+
+        /* New styles for task list positioning */
+        .task-list-container {
+            grid-column: 1 / -1;
+            margin-bottom: 20px;
+        }
+
+        /* Review Modal Styles */
+        .review-modal .modal {
+            max-width: 900px;
+            max-height: 80vh;
+        }
+
+        .review-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .review-option {
+            padding: 10px 16px;
+            background: var(--light-color);
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .review-option:hover {
+            border-color: var(--primary-color);
+            background-color: var(--light-color);
+        }
+
+        .review-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(44, 90, 160, 0.05);
+        }
+
+        .review-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--light-color);
+            border-radius: 8px;
+        }
+
+        .review-task {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .review-task:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .review-task-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .review-task-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            white-space: pre-line;
+        }
+
+        .review-task-date {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+
+        .review-section {
+            margin-bottom: 10px;
+        }
+
+        .review-section-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .review-section-content {
+            padding-left: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .no-review-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-medium);
+            font-style: italic;
+        }
+
+        /* Floating Dynalist Button */
+        .floating-dynalist-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            z-index: 999;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .floating-dynalist-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .floating-dynalist-btn .tooltip {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--dark-color);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .floating-dynalist-btn:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Dynalist Button -->
+    <div class="floating-dynalist-btn" id="floating-dynalist-btn" title="Open Dynalist">
+        <span>📝</span>
+        <div class="tooltip">Open Dynalist</div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🔬 Lab Task Discussion Tracker</h1>
+            <p class="subtitle">Click tasks to discuss Progress, Results, and Planning with your PI</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- Task List at the Top (spans both columns) -->
+            <div class="task-list-container">
+                <section class="tasks-section">
+                    <div class="tasks-header">
+                        <h2 class="tasks-title">
+                            <span class="btn-icon">📝</span> Tasks for Discussion
+                        </h2>
+                        <div class="current-date" id="current-date">Select a date</div>
+                    </div>
+                    
+                    <div class="task-input-section">
+                        <input type="text" id="task-input" class="task-input" placeholder="New task title...">
+                        <button class="add-task-btn" id="add-task-btn">
+                            <span class="btn-icon">➕</span> Add
+                        </button>
+                    </div>
+                    
+                    <div class="tasks-list" id="tasks-list">
+                        <!-- Tasks will be listed here -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Left Sidebar -->
+            <div class="sidebar">
+                <section class="calendar-section">
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" id="prev-month">‹</button>
+                        <h2 class="calendar-title" id="current-month">Month Year</h2>
+                        <button class="calendar-nav-btn" id="next-month">›</button>
+                    </div>
+                    <div class="calendar-grid" id="calendar-days">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                </section>
+
+                <div class="user-settings">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px;">Your Information</h3>
+                    <div class="form-group">
+                        <input type="text" id="user-name" class="form-input" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="pi-email" class="form-input" placeholder="PI's Email">
+                    </div>
+                    <button class="btn-primary" id="save-settings-btn" style="width: 100%; padding: 8px;">
+                        <span class="btn-icon">💾</span> Save
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Discussion Area (Wider) -->
+            <section class="discussion-section" id="discussion-section">
+                <div class="discussion-header">
+                    <h2 class="discussion-title" id="discussion-task-title">
+                        <span class="discussion-title-text" id="discussion-title-text">Select a Task to Discuss</span>
+                    </h2>
+                    <div class="discussion-actions">
+                        <span id="tasks-autosave" class="autosave-indicator"></span>
+                        <button class="action-btn" id="expand-all" title="Expand all sections">📖</button>
+                        <button class="action-btn" id="collapse-all" title="Collapse all sections">📕</button>
+                    </div>
+                </div>
+                
+                <div id="discussion-content">
+                    <div class="empty-discussion">
+                        <h3>No Task Selected</h3>
+                        <p>Click on a task from the list to start discussing it with your PI</p>
+                        <p><small>Each task has three sections: Progress, Results, and Planning</small></p>
+                    </div>
+                </div>
+
+                <div class="discussion-controls">
+                    <button class="btn-success" id="save-btn">
+                        <span class="btn-icon">💾</span> Save Task
+                    </button>
+                    <button class="btn-primary" id="share-pi-btn">
+                        <span class="btn-icon">✉️</span> Gmail to PI
+                    </button>
+                    <button class="btn-primary" id="review-history-btn">
+                        <span class="btn-icon">📊</span> Review History
+                    </button>
+                    <button class="btn-primary" id="dynalist-export-btn">
+                        <span class="btn-icon">📝</span> Export to Dynalist
+                    </button>
+                    <input type="file" id="file-input" class="file-input" accept=".json">
+                    <label for="file-input" class="file-label">
+                        <span class="btn-icon">📂</span> Import
+                    </label>
+                    <button class="btn-primary" id="export-btn">
+                        <span class="btn-icon">📤</span> Export
+                    </button>
+                    <button class="btn-secondary" id="dynalist-settings-btn">
+                        <span class="btn-icon">⚙️</span> Dynalist Settings
+                    </button>
+                    <button class="btn-danger" id="clear-task-btn">
+                        <span class="btn-icon">🗑️</span> Delete Task
+                    </button>
+                </div>
+                
+                <div id="status-message" class="status-message"></div>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Lab Task Discussion Tracker v1.5 Copyright 2025 Dr. Wen-Ming Yang. All rights reserved | Designed for effective PI meetings</p>
+        </div>
+    </footer>
+
+    <!-- Export Modal -->
+    <div class="modal-overlay" id="export-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Export Discussion</h2>
+                <button class="close-btn" id="close-export-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Choose how you want to export your task discussions:</p>
+                <div class="export-options">
+                    <div class="export-option" data-type="current">
+                        <div class="export-option-title">
+                            <span class="btn-icon">📅</span> Current Task Only
+                        </div>
+                        <div class="export-option-description">
+                            Export only the currently selected task
+                        </div>
+                    </div>
+                    <div class="export-option" data-type="day">
+                        <div class="export-option-title">
+                            <span class="btn-icon">📋</span> Today's Tasks
+                        </div>
+                        <div class="export-option-description">
+                            Export all tasks for the selected date
+                        </div>
+                    </div>
+                    <div class="export-option" data-type="all">
+                        <div class="export-option-title">
+                            <span class="btn-icon">📁</span> All Tasks
+                        </div>
+                        <div class="export-option-description">
+                            Export all your task discussions
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="cancel-export">Cancel</button>
+                    <button class="btn-primary" id="confirm-export" disabled>Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gmail Modal -->
+    <div class="modal-overlay" id="gmail-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Send via Gmail</h2>
+                <button class="close-btn" id="close-gmail-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">To</label>
+                    <input type="email" id="gmail-to" class="form-input" value="" placeholder="PI's email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <input type="text" id="gmail-subject" class="form-input" value="Lab Task Discussions">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message Preview</label>
+                    <div id="gmail-preview" style="padding: 12px; background: var(--light-color); border-radius: 6px; font-size: 0.9rem; max-height: 200px; overflow-y: auto; white-space: pre-wrap;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="cancel-gmail">Cancel</button>
+                    <button class="btn-primary" id="send-gmail">Open Gmail Popout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynalist Settings Modal -->
+    <div class="modal-overlay dynalist-modal" id="dynalist-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Dynalist Settings</h2>
+                <button class="close-btn" id="close-dynalist-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="dynalist-token">API Token</label>
+                    <input type="password" id="dynalist-token" class="form-input" placeholder="Enter your Dynalist API token">
+                    <div class="form-help">
+                        Get your API token from: <a href="https://dynalist.io/developer" target="_blank">https://dynalist.io/developer</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="dynalist-doc-id">Document ID (Optional)</label>
+                    <input type="text" id="dynalist-doc-id" class="form-input" placeholder="Leave empty to create new document each day">
+                    <div class="form-help">
+                        If specified, all exports will go to this document. Leave empty to create a new document for each day.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Current Status</label>
+                    <div id="dynalist-status-display">
+                        <span class="dynalist-status dynalist-disabled" id="dynalist-status-icon"></span>
+                        <span id="dynalist-status-text">Not configured</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="test-connection">Test Connection</button>
+                <button class="btn btn-primary" id="save-dynalist">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review History Modal -->
+    <div class="modal-overlay review-modal" id="review-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Review Task History</h2>
+                <button class="close-btn" id="close-review-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Select a time period to review your task discussions:</p>
+                <div class="review-options">
+                    <div class="review-option" data-period="last-4">Last 4 Meetings</div>
+                    <div class="review-option" data-period="last-month">Last Month</div>
+                    <div class="review-option" data-period="last-2-months">Last 2 Months</div>
+                    <div class="review-option" data-period="last-6-months">Last 6 Months</div>
+                </div>
+                <div class="review-content" id="review-content">
+                    <!-- Review content will be generated here -->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="cancel-review">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize variables
+        let currentDate = new Date();
+        let selectedDate = new Date();
+        let tasksData = {};
+        let userName = '';
+        let piEmail = '';
+        let selectedTaskIndex = null;
+        let autosaveTimeout;
+        const AUTOSAVE_DELAY = 2000;
+        
+        // Dynalist configuration
+        let dynalistApiKey = localStorage.getItem('dynalistApiKey') || '';
+        let dynalistDocId = localStorage.getItem('dynalistDocId') || '';
+        
+        // DOM Elements
+        const currentMonthElement = document.getElementById('current-month');
+        const calendarDaysElement = document.getElementById('calendar-days');
+        const currentDateElement = document.getElementById('current-date');
+        const taskInput = document.getElementById('task-input');
+        const addTaskButton = document.getElementById('add-task-btn');
+        const tasksList = document.getElementById('tasks-list');
+        const discussionContent = document.getElementById('discussion-content');
+        const discussionTaskTitle = document.getElementById('discussion-task-title');
+        const discussionTitleText = document.getElementById('discussion-title-text');
+        const saveButton = document.getElementById('save-btn');
+        const sharePiButton = document.getElementById('share-pi-btn');
+        const reviewHistoryButton = document.getElementById('review-history-btn');
+        const exportButton = document.getElementById('export-btn');
+        const clearTaskButton = document.getElementById('clear-task-btn');
+        const fileInput = document.getElementById('file-input');
+        const statusMessage = document.getElementById('status-message');
+        const expandAllButton = document.getElementById('expand-all');
+        const collapseAllButton = document.getElementById('collapse-all');
+        const prevMonthButton = document.getElementById('prev-month');
+        const nextMonthButton = document.getElementById('next-month');
+        const userNameInput = document.getElementById('user-name');
+        const piEmailInput = document.getElementById('pi-email');
+        const saveSettingsButton = document.getElementById('save-settings-btn');
+        const tasksAutosave = document.getElementById('tasks-autosave');
+        const dynalistExportButton = document.getElementById('dynalist-export-btn');
+        const dynalistSettingsButton = document.getElementById('dynalist-settings-btn');
+        
+        // Modal elements
+        const exportModal = document.getElementById('export-modal');
+        const closeExportModal = document.getElementById('close-export-modal');
+        const cancelExport = document.getElementById('cancel-export');
+        const confirmExport = document.getElementById('confirm-export');
+        const exportOptions = document.querySelectorAll('.export-option');
+        
+        const gmailModal = document.getElementById('gmail-modal');
+        const closeGmailModal = document.getElementById('close-gmail-modal');
+        const cancelGmail = document.getElementById('cancel-gmail');
+        const sendGmail = document.getElementById('send-gmail');
+        const gmailTo = document.getElementById('gmail-to');
+        const gmailSubject = document.getElementById('gmail-subject');
+        const gmailPreview = document.getElementById('gmail-preview');
+        
+        const dynalistModal = document.getElementById('dynalist-modal');
+        const closeDynalistModal = document.getElementById('close-dynalist-modal');
+        const dynalistToken = document.getElementById('dynalist-token');
+        const dynalistDocIdInput = document.getElementById('dynalist-doc-id');
+        const saveDynalist = document.getElementById('save-dynalist');
+        const testConnection = document.getElementById('test-connection');
+        const dynalistStatusIcon = document.getElementById('dynalist-status-icon');
+        const dynalistStatusText = document.getElementById('dynalist-status-text');
+        
+        const reviewModal = document.getElementById('review-modal');
+        const closeReviewModal = document.getElementById('close-review-modal');
+        const cancelReview = document.getElementById('cancel-review');
+        const reviewOptions = document.querySelectorAll('.review-option');
+        const reviewContent = document.getElementById('review-content');
+        
+        // Initialize the application
+        function init() {
+            // Load data from localStorage
+            loadData();
+            
+            // Initialize calendar
+            renderCalendar();
+            
+            // Initialize tasks for the selected date
+            updateTasksList();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Update autosave indicator
+            updateAutosaveIndicator('saved');
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedTasks = localStorage.getItem('labTasks');
+            if (savedTasks) {
+                tasksData = JSON.parse(savedTasks);
+            }
+            
+            userName = localStorage.getItem('userName') || '';
+            piEmail = localStorage.getItem('piEmail') || '';
+            
+            userNameInput.value = userName;
+            piEmailInput.value = piEmail;
+            
+            // Set Dynalist values
+            dynalistToken.value = dynalistApiKey;
+            dynalistDocIdInput.value = dynalistDocId;
+            
+            // Update Dynalist status
+            updateDynalistStatus();
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('labTasks', JSON.stringify(tasksData));
+            localStorage.setItem('userName', userName);
+            localStorage.setItem('piEmail', piEmail);
+            localStorage.setItem('dynalistApiKey', dynalistApiKey);
+            localStorage.setItem('dynalistDocId', dynalistDocId);
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Task management
+            addTaskButton.addEventListener('click', addTask);
+            taskInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTask();
+            });
+            
+            // Calendar navigation
+            prevMonthButton.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+            
+            nextMonthButton.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+            
+            // Discussion controls
+            saveButton.addEventListener('click', saveTask);
+            sharePiButton.addEventListener('click', openGmailModal);
+            exportButton.addEventListener('click', openExportModal);
+            reviewHistoryButton.addEventListener('click', openReviewModal);
+            clearTaskButton.addEventListener('click', deleteCurrentTask);
+            fileInput.addEventListener('change', importTasks);
+            expandAllButton.addEventListener('click', expandAllSections);
+            collapseAllButton.addEventListener('click', collapseAllSections);
+            
+            // Settings
+            saveSettingsButton.addEventListener('click', saveSettings);
+            
+            // Modal controls
+            closeExportModal.addEventListener('click', () => exportModal.classList.remove('active'));
+            cancelExport.addEventListener('click', () => exportModal.classList.remove('active'));
+            confirmExport.addEventListener('click', exportTasks);
+            
+            closeGmailModal.addEventListener('click', () => gmailModal.classList.remove('active'));
+            cancelGmail.addEventListener('click', () => gmailModal.classList.remove('active'));
+            sendGmail.addEventListener('click', sendGmailEmail);
+            
+            closeDynalistModal.addEventListener('click', () => dynalistModal.classList.remove('active'));
+            saveDynalist.addEventListener('click', saveDynalistSettings);
+            testConnection.addEventListener('click', testDynalistConnection);
+            
+            closeReviewModal.addEventListener('click', () => reviewModal.classList.remove('active'));
+            cancelReview.addEventListener('click', () => reviewModal.classList.remove('active'));
+            
+            // Export option selection
+            exportOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    exportOptions.forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    confirmExport.disabled = false;
+                });
+            });
+            
+            // Review option selection
+            reviewOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    reviewOptions.forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    const period = option.getAttribute('data-period');
+                    loadReviewContent(period);
+                });
+            });
+            
+            // Dynalist buttons
+            dynalistExportButton.addEventListener('click', exportToDynalist);
+            dynalistSettingsButton.addEventListener('click', () => {
+                dynalistModal.classList.add('active');
+            });
+            
+            // Floating Dynalist button
+            document.getElementById('floating-dynalist-btn').addEventListener('click', () => {
+                window.open('https://dynalist.io/', '_blank', 'width=1200,height=800');
+            });
+            
+            // Discussion title editing
+            discussionTitleText.addEventListener('click', enableDiscussionTitleEdit);
+            
+            // Autosave - REMOVED SHAKING EFFECT
+            document.addEventListener('input', triggerAutosave);
+            
+            // Close modals when clicking outside
+            [exportModal, gmailModal, dynalistModal, reviewModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+        }
+        
+        // Render the calendar
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update month title
+            currentMonthElement.textContent = currentDate.toLocaleDateString('en-US', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            
+            // Clear calendar
+            calendarDaysElement.innerHTML = '';
+            
+            // Add day headers
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            daysOfWeek.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                calendarDaysElement.appendChild(dayElement);
+            });
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyElement = document.createElement('div');
+                calendarDaysElement.appendChild(emptyElement);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dateString = formatDate(date);
+                
+                const dateElement = document.createElement('div');
+                dateElement.className = 'calendar-date';
+                dateElement.textContent = day;
+                
+                // Check if this date has tasks
+                if (tasksData[dateString] && tasksData[dateString].length > 0) {
+                    dateElement.classList.add('has-tasks');
+                }
+                
+                // Check if this is today
+                const today = new Date();
+                if (date.toDateString() === today.toDateString()) {
+                    dateElement.classList.add('today');
+                }
+                
+                // Check if this is the selected date
+                if (date.toDateString() === selectedDate.toDateString()) {
+                    dateElement.classList.add('selected');
+                }
+                
+                dateElement.addEventListener('click', () => {
+                    selectedDate = date;
+                    updateTasksList();
+                    renderCalendar();
+                });
+                
+                calendarDaysElement.appendChild(dateElement);
+            }
+            
+            // Update current date display
+            currentDateElement.textContent = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        // Update the tasks list for the selected date
+        function updateTasksList() {
+            const dateString = formatDate(selectedDate);
+            const tasks = tasksData[dateString] || [];
+            
+            tasksList.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.className = 'empty-tasks';
+                emptyMessage.textContent = 'No tasks for this date. Add a new task to get started.';
+                tasksList.appendChild(emptyMessage);
+                return;
+            }
+            
+            tasks.forEach((task, index) => {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                if (index === selectedTaskIndex) {
+                    taskItem.classList.add('active');
+                }
+                
+                taskItem.innerHTML = `
+                    <div class="task-item-title">
+                        <span class="task-title-text">${task.title}</span>
+                        <div class="task-actions">
+                            <button class="task-edit-btn" title="Edit task title">✏️</button>
+                            <button class="task-delete-btn" title="Delete task">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="task-item-preview">${getTaskPreview(task)}</div>
+                `;
+                
+                // Add click event to select task
+                taskItem.addEventListener('click', (e) => {
+                    // Don't trigger selection if clicking the edit or delete buttons
+                    if (!e.target.classList.contains('task-edit-btn') && 
+                        !e.target.classList.contains('task-delete-btn') &&
+                        !e.target.classList.contains('task-title-edit')) {
+                        selectTask(index);
+                    }
+                });
+                
+                // Add edit functionality
+                const editBtn = taskItem.querySelector('.task-edit-btn');
+                const deleteBtn = taskItem.querySelector('.task-delete-btn');
+                const titleText = taskItem.querySelector('.task-title-text');
+                
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent task selection
+                    enableTaskTitleEdit(taskItem, index);
+                });
+                
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent task selection
+                    deleteTask(index);
+                });
+                
+                tasksList.appendChild(taskItem);
+            });
+        }
+        
+        // Enable editing of a task title
+        function enableTaskTitleEdit(taskItem, index) {
+            const titleText = taskItem.querySelector('.task-title-text');
+            const currentTitle = titleText.textContent;
+            
+            // Replace text with textarea
+            const textarea = document.createElement('textarea');
+            textarea.className = 'task-title-edit';
+            textarea.value = currentTitle;
+            
+            titleText.replaceWith(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            // Save on Enter key or blur
+            const saveEdit = () => {
+                const newTitle = textarea.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    updateTaskTitle(index, newTitle);
+                } else {
+                    // Restore original title if empty or unchanged
+                    textarea.replaceWith(titleText);
+                }
+            };
+            
+            textarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    saveEdit();
+                } else if (e.key === 'Escape') {
+                    // Cancel edit on Escape
+                    textarea.replaceWith(titleText);
+                }
+            });
+            
+            textarea.addEventListener('blur', saveEdit);
+        }
+        
+        // Enable editing of discussion title
+        function enableDiscussionTitleEdit() {
+            if (selectedTaskIndex === null) return;
+            
+            const currentTitle = discussionTitleText.textContent;
+            
+            // Replace text with textarea
+            const textarea = document.createElement('textarea');
+            textarea.className = 'discussion-title-edit';
+            textarea.value = currentTitle;
+            
+            discussionTitleText.replaceWith(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            // Save on Enter key or blur
+            const saveEdit = () => {
+                const newTitle = textarea.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    updateDiscussionTitle(newTitle);
+                } else {
+                    // Restore original title if empty or unchanged
+                    textarea.replaceWith(discussionTitleText);
+                }
+            };
+            
+            textarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    saveEdit();
+                } else if (e.key === 'Escape') {
+                    // Cancel edit on Escape
+                    textarea.replaceWith(discussionTitleText);
+                }
+            });
+            
+            textarea.addEventListener('blur', saveEdit);
+        }
+        
+        // Update task title
+        function updateTaskTitle(index, newTitle) {
+            const dateString = formatDate(selectedDate);
+            const task = tasksData[dateString][index];
+            
+            task.title = newTitle;
+            task.lastModified = new Date().toISOString();
+            
+            saveData();
+            updateTasksList();
+            
+            // If this is the currently selected task, update the discussion title
+            if (index === selectedTaskIndex) {
+                discussionTitleText.textContent = newTitle;
+            }
+            
+            renderCalendar();
+            showStatus('Task title updated!', 'success');
+        }
+        
+        // Delete a task
+        function deleteTask(index) {
+            const dateString = formatDate(selectedDate);
+            const task = tasksData[dateString][index];
+            
+            if (confirm(`Are you sure you want to delete the task "${task.title}"?`)) {
+                tasksData[dateString].splice(index, 1);
+                
+                // If we deleted the currently selected task, clear the discussion
+                if (index === selectedTaskIndex) {
+                    selectedTaskIndex = null;
+                    discussionTitleText.textContent = 'Select a Task to Discuss';
+                    discussionContent.innerHTML = `
+                        <div class="empty-discussion">
+                            <h3>No Task Selected</h3>
+                            <p>Click on a task from the list to start discussing it with your PI</p>
+                            <p><small>Each task has three sections: Progress, Results, and Planning</small></p>
+                        </div>
+                    `;
+                }
+                
+                saveData();
+                updateTasksList();
+                renderCalendar();
+                showStatus('Task deleted successfully!', 'success');
+            }
+        }
+        
+        // Delete current task
+        function deleteCurrentTask() {
+            if (selectedTaskIndex === null) {
+                showStatus('No task selected to delete', 'error');
+                return;
+            }
+            
+            deleteTask(selectedTaskIndex);
+        }
+        
+        // Update discussion title
+        function updateDiscussionTitle(newTitle) {
+            if (selectedTaskIndex === null) return;
+            
+            const dateString = formatDate(selectedDate);
+            const task = tasksData[dateString][selectedTaskIndex];
+            
+            task.title = newTitle;
+            task.lastModified = new Date().toISOString();
+            
+            saveData();
+            updateTasksList();
+            discussionTitleText.textContent = newTitle;
+            renderCalendar();
+            showStatus('Task title updated!', 'success');
+        }
+        
+        // Get a preview of task content
+        function getTaskPreview(task) {
+            const progress = task.progress || '';
+            const results = task.results || '';
+            const planning = task.planning || '';
+            
+            if (progress) return progress.substring(0, 60) + '...';
+            if (results) return results.substring(0, 60) + '...';
+            if (planning) return planning.substring(0, 60) + '...';
+            
+            return 'No content yet. Click to add details.';
+        }
+        
+        // Add a new task
+        function addTask() {
+            const title = taskInput.value.trim();
+            if (!title) return;
+            
+            const dateString = formatDate(selectedDate);
+            if (!tasksData[dateString]) {
+                tasksData[dateString] = [];
+            }
+            
+            const newTask = {
+                title,
+                progress: '',
+                results: '',
+                planning: '',
+                lastModified: new Date().toISOString()
+            };
+            
+            tasksData[dateString].push(newTask);
+            taskInput.value = '';
+            
+            saveData();
+            updateTasksList();
+            selectTask(tasksData[dateString].length - 1);
+            renderCalendar();
+            
+            showStatus('Task added successfully!', 'success');
+        }
+        
+        // Select a task for discussion
+        function selectTask(index) {
+            const dateString = formatDate(selectedDate);
+            const tasks = tasksData[dateString] || [];
+            
+            if (index < 0 || index >= tasks.length) return;
+            
+            selectedTaskIndex = index;
+            const task = tasks[index];
+            
+            // Update UI
+            updateTasksList();
+            discussionTitleText.textContent = task.title;
+            
+            // Create discussion content
+            discussionContent.innerHTML = `
+                <div class="task-sections">
+                    <div class="task-section">
+                        <div class="section-header progress-header" data-section="progress">
+                            <div class="section-title">
+                                <span class="section-icon">📈</span>
+                                Progress
+                            </div>
+                            <span class="section-toggle">⌄</span>
+                        </div>
+                        <div class="section-content" id="progress-content">
+                            <textarea class="content-textarea progress-textarea" placeholder="What progress has been made since last meeting? Current experiments running? Challenges encountered?">${task.progress || ''}</textarea>
+                            <div class="section-prompt">Discuss current status and recent developments</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-section">
+                        <div class="section-header results-header" data-section="results">
+                            <div class="section-title">
+                                <span class="section-icon">🔍</span>
+                                Results & Findings
+                            </div>
+                            <span class="section-toggle">⌄</span>
+                        </div>
+                        <div class="section-content" id="results-content">
+                            <textarea class="content-textarea results-textarea" placeholder="What results were obtained? Data analysis completed? Key findings or observations?">${task.results || ''}</textarea>
+                            <div class="section-prompt">Share experimental results and data analysis</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-section">
+                        <div class="section-header planning-header" data-section="planning">
+                            <div class="section-title">
+                                <span class="section-icon">🎯</span>
+                                Planning & Next Steps
+                            </div>
+                            <span class="section-toggle">⌄</span>
+                        </div>
+                        <div class="section-content" id="planning-content">
+                            <textarea class="content-textarea planning-textarea" placeholder="What are the next steps? New experiments to design? Papers to read? Analyses to perform?">${task.planning || ''}</textarea>
+                            <div class="section-prompt">Plan future work and set action items</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners for section toggles
+            setupSectionToggles();
+            
+            // Set up auto-save for textareas
+            setupAutosave();
+            
+            // Expand first section by default
+            setTimeout(() => {
+                const firstSection = document.querySelector('.section-header');
+                if (firstSection) {
+                    toggleSection(firstSection);
+                }
+            }, 100);
+        }
+        
+        // Set up section toggle functionality
+        function setupSectionToggles() {
+            const sectionHeaders = document.querySelectorAll('.section-header');
+            sectionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    toggleSection(header);
+                });
+            });
+        }
+        
+        // Toggle section expand/collapse
+        function toggleSection(header) {
+            const section = header.getAttribute('data-section');
+            const content = document.getElementById(`${section}-content`);
+            const toggle = header.querySelector('.section-toggle');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.classList.remove('rotated');
+            } else {
+                content.classList.add('expanded');
+                toggle.classList.add('rotated');
+            }
+        }
+        
+        // Expand all sections
+        function expandAllSections() {
+            const sections = document.querySelectorAll('.section-content');
+            const toggles = document.querySelectorAll('.section-toggle');
+            
+            sections.forEach(section => {
+                section.classList.add('expanded');
+            });
+            
+            toggles.forEach(toggle => {
+                toggle.classList.add('rotated');
+            });
+        }
+        
+        // Collapse all sections
+        function collapseAllSections() {
+            const sections = document.querySelectorAll('.section-content');
+            const toggles = document.querySelectorAll('.section-toggle');
+            
+            sections.forEach(section => {
+                section.classList.remove('expanded');
+            });
+            
+            toggles.forEach(toggle => {
+                toggle.classList.remove('rotated');
+            });
+        }
+        
+        // Set up auto-save
+        function setupAutosave() {
+            const textareas = document.querySelectorAll('.content-textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', () => {
+                    clearTimeout(autosaveTimeout);
+                    updateAutosaveIndicator('saving');
+                    
+                    autosaveTimeout = setTimeout(() => {
+                        saveCurrentTask();
+                    }, AUTOSAVE_DELAY);
+                });
+            });
+        }
+        
+        // Save current task
+        function saveCurrentTask() {
+            if (selectedTaskIndex === null) return;
+            
+            const dateString = formatDate(selectedDate);
+            const tasks = tasksData[dateString] || [];
+            const task = tasks[selectedTaskIndex];
+            
+            if (!task) return;
+            
+            // Update task data from textareas
+            const progressTextarea = document.querySelector('.progress-textarea');
+            const resultsTextarea = document.querySelector('.results-textarea');
+            const planningTextarea = document.querySelector('.planning-textarea');
+            
+            if (progressTextarea) task.progress = progressTextarea.value;
+            if (resultsTextarea) task.results = resultsTextarea.value;
+            if (planningTextarea) task.planning = planningTextarea.value;
+            
+            task.lastModified = new Date().toISOString();
+            
+            saveData();
+            updateTasksList(); // Refresh the list preview
+            renderCalendar();
+            updateAutosaveIndicator('saved');
+        }
+        
+        // Save the current task
+        function saveTask() {
+            saveCurrentTask();
+            showStatus('Task saved successfully!', 'success');
+        }
+        
+        // Open export modal
+        function openExportModal() {
+            exportModal.classList.add('active');
+            exportOptions.forEach(o => o.classList.remove('selected'));
+            confirmExport.disabled = true;
+        }
+        
+        // Export tasks
+        function exportTasks() {
+            const selectedOption = document.querySelector('.export-option.selected');
+            if (!selectedOption) return;
+            
+            const exportType = selectedOption.getAttribute('data-type');
+            let dataToExport = {};
+            
+            if (exportType === 'current') {
+                if (selectedTaskIndex === null) {
+                    showStatus('No task selected to export', 'error');
+                    return;
+                }
+                const dateString = formatDate(selectedDate);
+                dataToExport = {
+                    [dateString]: [tasksData[dateString][selectedTaskIndex]]
+                };
+            } else if (exportType === 'day') {
+                const dateString = formatDate(selectedDate);
+                dataToExport = {
+                    [dateString]: tasksData[dateString] || []
+                };
+            } else if (exportType === 'all') {
+                dataToExport = tasksData;
+            }
+            
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.download = `lab-tasks-${exportType}-${formatDate(new Date())}.json`;
+            link.href = url;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            exportModal.classList.remove('active');
+            showStatus('Tasks exported successfully!', 'success');
+        }
+        
+        // Import tasks
+        function importTasks(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Merge imported data with existing data
+                    for (const date in importedData) {
+                        if (tasksData[date]) {
+                            tasksData[date] = tasksData[date].concat(importedData[date]);
+                        } else {
+                            tasksData[date] = importedData[date];
+                        }
+                    }
+                    
+                    saveData();
+                    updateTasksList();
+                    renderCalendar();
+                    showStatus('Tasks imported successfully!', 'success');
+                } catch (error) {
+                    showStatus('Error importing tasks: Invalid file format', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+            fileInput.value = ''; // Reset file input
+        }
+        
+        // Open Gmail modal - includes ALL tasks for the day
+        function openGmailModal() {
+            const dateString = formatDate(selectedDate);
+            const tasks = tasksData[dateString] || [];
+            
+            if (tasks.length === 0) {
+                showStatus('No tasks to email for selected date', 'error');
+                return;
+            }
+            
+            if (!piEmail) {
+                showStatus('Please enter your PI\'s email address', 'error');
+                return;
+            }
+            
+            gmailTo.value = piEmail;
+            updateGmailPreview();
+            gmailModal.classList.add('active');
+        }
+        
+        // Update Gmail preview to include all tasks for the day
+        function updateGmailPreview() {
+            const dateString = formatDate(selectedDate);
+            const tasks = tasksData[dateString] || [];
+            const dateDisplay = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            let preview = `Hi ${userName ? userName : '[Your Name]'},\n\n`;
+            preview += `Here's an update on my progress for ${dateDisplay}:\n\n`;
+            preview += `=== TASK DISCUSSIONS ===\n\n`;
+            
+            tasks.forEach((task, index) => {
+                preview += `TASK ${index + 1}: ${task.title}\n`;
+                preview += `────────────────────────────\n`;
+                
+                if (task.progress) {
+                    preview += `📈 PROGRESS:\n${task.progress}\n\n`;
+                }
+                
+                if (task.results) {
+                    preview += `🔍 RESULTS:\n${task.results}\n\n`;
+                }
+                
+                if (task.planning) {
+                    preview += `🎯 PLANNING:\n${task.planning}\n\n`;
+                }
+                
+                preview += `\n`;
+            });
+            
+            preview += `Best regards,\n${userName ? userName : '[Your Name]'}`;
+            
+            gmailPreview.textContent = preview;
+        }
+        
+        // Send Gmail email - opens Gmail popout
+        function sendGmailEmail() {
+            const to = gmailTo.value;
+            const subject = gmailSubject.value;
+            const body = gmailPreview.textContent;
+            
+            if (!to) {
+                showStatus('Please enter a recipient email address', 'error');
+                return;
+            }
+            
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.open(gmailUrl, '_blank', 'width=800,height=600');
+            
+            gmailModal.classList.remove('active');
+            showStatus('Gmail popup opened!', 'success');
+        }
+        
+        // Open review modal
+        function openReviewModal() {
+            reviewModal.classList.add('active');
+            reviewOptions.forEach(o => o.classList.remove('selected'));
+            
+            // Select "Last 4 Meetings" by default
+            const last4Option = document.querySelector('.review-option[data-period="last-4"]');
+            if (last4Option) {
+                last4Option.classList.add('selected');
+                loadReviewContent('last-4');
+            }
+        }
+        
+        // Load review content based on selected period
+        function loadReviewContent(period) {
+            reviewContent.innerHTML = '<div class="no-review-data">Loading review data...</div>';
+            
+            setTimeout(() => {
+                let filteredTasks = {};
+                const now = new Date();
+                
+                // Filter tasks based on the selected period
+                Object.keys(tasksData).forEach(date => {
+                    const taskDate = new Date(date);
+                    
+                    if (period === 'last-4') {
+                        // Get tasks from the last 4 unique dates with tasks
+                        const datesWithTasks = Object.keys(tasksData)
+                            .filter(d => tasksData[d].length > 0)
+                            .sort((a, b) => new Date(b) - new Date(a))
+                            .slice(0, 4);
+                        
+                        if (datesWithTasks.includes(date)) {
+                            filteredTasks[date] = tasksData[date];
+                        }
+                    } else if (period === 'last-month') {
+                        const oneMonthAgo = new Date(now);
+                        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                        
+                        if (taskDate >= oneMonthAgo) {
+                            filteredTasks[date] = tasksData[date];
+                        }
+                    } else if (period === 'last-2-months') {
+                        const twoMonthsAgo = new Date(now);
+                        twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+                        
+                        if (taskDate >= twoMonthsAgo) {
+                            filteredTasks[date] = tasksData[date];
+                        }
+                    } else if (period === 'last-6-months') {
+                        const sixMonthsAgo = new Date(now);
+                        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                        
+                        if (taskDate >= sixMonthsAgo) {
+                            filteredTasks[date] = tasksData[date];
+                        }
+                    }
+                });
+                
+                // Generate review content
+                if (Object.keys(filteredTasks).length === 0) {
+                    reviewContent.innerHTML = '<div class="no-review-data">No tasks found for the selected period.</div>';
+                    return;
+                }
+                
+                let reviewHTML = '';
+                const sortedDates = Object.keys(filteredTasks).sort((a, b) => new Date(b) - new Date(a));
+                
+                sortedDates.forEach(date => {
+                    const tasks = filteredTasks[date];
+                    const formattedDate = new Date(date).toLocaleDateString('en-US', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    
+                    reviewHTML += `<h3 style="margin: 20px 0 10px; color: var(--primary-color);">${formattedDate}</h3>`;
+                    
+                    tasks.forEach((task, index) => {
+                        reviewHTML += `
+                            <div class="review-task">
+                                <div class="review-task-header">
+                                    <div class="review-task-title">${task.title}</div>
+                                    <div class="review-task-date">Last modified: ${new Date(task.lastModified).toLocaleString()}</div>
+                                </div>
+                                ${task.progress ? `
+                                    <div class="review-section">
+                                        <div class="review-section-title">
+                                            <span>📈</span> Progress
+                                        </div>
+                                        <div class="review-section-content">${task.progress}</div>
+                                    </div>
+                                ` : ''}
+                                ${task.results ? `
+                                    <div class="review-section">
+                                        <div class="review-section-title">
+                                            <span>🔍</span> Results
+                                        </div>
+                                        <div class="review-section-content">${task.results}</div>
+                                    </div>
+                                ` : ''}
+                                ${task.planning ? `
+                                    <div class="review-section">
+                                        <div class="review-section-title">
+                                            <span>🎯</span> Planning
+                                        </div>
+                                        <div class="review-section-content">${task.planning}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+                });
+                
+                reviewContent.innerHTML = reviewHTML;
+            }, 500);
+        }
+        
+        // Save user settings
+        function saveSettings() {
+            userName = userNameInput.value.trim();
+            piEmail = piEmailInput.value.trim();
+            
+            saveData();
+            showStatus('Settings saved successfully!', 'success');
+        }
+        
+        // Save Dynalist settings
+        function saveDynalistSettings() {
+            dynalistApiKey = dynalistToken.value.trim();
+            dynalistDocId = dynalistDocIdInput.value.trim();
+            
+            saveData();
+            updateDynalistStatus();
+            dynalistModal.classList.remove('active');
+            showStatus('Dynalist settings saved!', 'success');
+        }
+        
+        // Test Dynalist connection
+        function testDynalistConnection() {
+            if (!dynalistApiKey) {
+                showStatus('Please enter your Dynalist API token', 'error');
+                return;
+            }
+            
+            fetch('https://dynalist.io/api/v1/file/list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: dynalistApiKey
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data._code === 'Ok') {
+                    dynalistStatusIcon.className = 'dynalist-status dynalist-enabled';
+                    dynalistStatusText.textContent = 'Connected successfully';
+                    showStatus('Dynalist connection successful!', 'success');
+                } else {
+                    dynalistStatusIcon.className = 'dynalist-status dynalist-disabled';
+                    dynalistStatusText.textContent = 'Connection failed: ' + (data._msg || 'Unknown error');
+                    showStatus('Dynalist connection failed', 'error');
+                }
+            })
+            .catch(error => {
+                dynalistStatusIcon.className = 'dynalist-status dynalist-disabled';
+                dynalistStatusText.textContent = 'Connection error: ' + error.message;
+                showStatus('Dynalist connection error', 'error');
+            });
+        }
+        
+        // Update Dynalist status display
+        function updateDynalistStatus() {
+            if (dynalistApiKey) {
+                dynalistStatusIcon.className = 'dynalist-status dynalist-enabled';
+                dynalistStatusText.textContent = 'Configured';
+            } else {
+                dynalistStatusIcon.className = 'dynalist-status dynalist-disabled';
+                dynalistStatusText.textContent = 'Not configured';
+            }
+        }
+        
+        // Export to Dynalist - now includes all tasks for the day
+        function exportToDynalist() {
+            const dateString = formatDate(selectedDate);
+            const tasks = tasksData[dateString] || [];
+            
+            if (tasks.length === 0) {
+                showStatus('No tasks to export for selected date', 'error');
+                return;
+            }
+            
+            if (!dynalistApiKey) {
+                showStatus('Please configure Dynalist settings first', 'error');
+                dynalistModal.classList.add('active');
+                return;
+            }
+            
+            // Prepare content for Dynalist with all tasks for the day
+            let content = `# Lab Tasks - ${selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            })}\n\n`;
+            
+            tasks.forEach((task, index) => {
+                content += `## Task ${index + 1}: ${task.title}\n`;
+                
+                if (task.progress) {
+                    content += `### Progress\n${task.progress}\n\n`;
+                }
+                
+                if (task.results) {
+                    content += `### Results\n${task.results}\n\n`;
+                }
+                
+                if (task.planning) {
+                    content += `### Planning\n${task.planning}\n\n`;
+                }
+                
+                content += `---\n\n`;
+            });
+            
+            // If we have a document ID, add to that document
+            if (dynalistDocId) {
+                addToDynalistDocument(dynalistDocId, content);
+            } else {
+                // Otherwise create a new document for today
+                createDynalistDocument(content);
+            }
+        }
+        
+        // Create a new Dynalist document
+        function createDynalistDocument(content) {
+            const title = `Lab Tasks - ${formatDate(selectedDate)}`;
+            
+            fetch('https://dynalist.io/api/v1/file/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: dynalistApiKey,
+                    title: title,
+                    content: content
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data._code === 'Ok') {
+                    showStatus('All tasks exported to Dynalist successfully!', 'success');
+                } else {
+                    showStatus('Export failed: ' + (data._msg || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                showStatus('Export error: ' + error.message, 'error');
+            });
+        }
+        
+        // Add content to existing Dynalist document
+        function addToDynalistDocument(docId, content) {
+            // This is a simplified implementation
+            // In a real app, you would need to get the document structure and insert at the right position
+            showStatus('Export to existing document not fully implemented in this demo', 'info');
+        }
+        
+        // Trigger autosave - REMOVED SHAKING EFFECT
+        function triggerAutosave() {
+            if (selectedTaskIndex === null) return;
+            
+            updateAutosaveIndicator('saving');
+            
+            // Clear existing timeout
+            if (autosaveTimeout) {
+                clearTimeout(autosaveTimeout);
+            }
+            
+            // Set new timeout
+            autosaveTimeout = setTimeout(() => {
+                saveCurrentTask();
+            }, AUTOSAVE_DELAY);
+        }
+        
+        // Update autosave indicator
+        function updateAutosaveIndicator(status) {
+            tasksAutosave.textContent = status === 'saving' ? 'Saving...' : 'All changes saved';
+            tasksAutosave.className = `autosave-indicator ${status}`;
+        }
+        
+        // Show status message
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                statusMessage.textContent = '';
+                statusMessage.className = 'status-message';
+            }, 3000);
+        }
+        
+        // Format date as YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
