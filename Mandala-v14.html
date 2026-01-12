@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Goal Mandala</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .year-input {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            background-color: white;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .controls-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .controls-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 140px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f0f8ff;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .mandala-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+        
+        table {
+            border-collapse: separate;
+            border-spacing: 15px;
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+        
+        td {
+            border-radius: var(--border-radius);
+            padding: 20px;
+            vertical-align: top;
+            background-color: #f8fafc;
+            border: 2px dashed #d0d7e2;
+            width: 33.33%;
+            height: 200px;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        td:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        td h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+        }
+        
+        .central-cell {
+            background-color: #e8f4fc;
+            border: 3px solid var(--primary-color);
+            text-align: center;
+        }
+        
+        .central-cell h2 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .central-cell p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .cell-content {
+            height: 120px;
+            overflow-y: auto;
+            padding-right: 5px;
+            white-space: normal;
+        }
+        
+        .central-details {
+            text-align: left;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+        }
+        
+        .cell-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .cell-content::-webkit-scrollbar-thumb {
+            background-color: #c1c9d6;
+            border-radius: 10px;
+        }
+        
+        .section-label {
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 30px;
+        }
+        
+        .instructions {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .instructions h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+        }
+        
+        .close-modal:hover {
+            color: var(--dark-color);
+        }
+        
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .theme-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .theme-option.active {
+            border-color: var(--dark-color);
+        }
+        
+        @media (max-width: 1100px) {
+            .controls-container {
+                max-width: 950px;
+            }
+            
+            .mandala-container {
+                max-width: 950px;
+            }
+            
+            .instructions {
+                max-width: 950px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                border-spacing: 8px;
+            }
+            
+            td {
+                height: 180px;
+                padding: 15px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+                min-width: auto;
+            }
+            
+            .export-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .controls-container {
+                padding: 15px;
+            }
+            
+            .instructions {
+                padding: 20px;
+            }
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .print-header {
+            display: none;
+        }
+        
+        @media print {
+            .print-header {
+                display: block;
+                text-align: center;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 20px;
+            }
+            
+            header, .controls-container, footer, .instructions {
+                display: none;
+            }
+            
+            .mandala-container {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            td {
+                border: 1px solid #333 !important;
+                height: auto !important;
+                min-height: 200px;
+            }
+            
+            .cell-content {
+                height: auto !important;
+                max-height: none !important;
+            }
+        }
+        
+        /* Nested table styles */
+        .nested-table-container {
+            height: 100%;
+        }
+        
+        .nested-table {
+            border-collapse: separate;
+            border-spacing: 8px;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .nested-table td {
+            height: 80px;
+            padding: 10px;
+            background-color: #f0f7ff;
+            border: 1px solid #c5d9f1;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: text;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+        
+        .nested-table td:focus {
+            outline: 2px solid var(--primary-color);
+            background-color: #fff;
+        }
+        
+        .expanded-cell {
+            min-height: 250px;
+            height: auto;
+        }
+        
+        .double-click-hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .status-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 1001;
+            display: none;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .filename-display {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            margin-top: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .header-info {
+            margin-bottom: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .blank-hint {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .layout-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            width: 100%;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 1. Title Panel -->
+        <header>
+            <h1 id="pageTitle" contenteditable="true">Annual Goal Mandala</h1>
+            <div class="subtitle">Strategic Life Planning for <span id="yearDisplay" class="year-input" contenteditable="true">2024</span></div>
+            <div class="header-info">
+                <p>Visualize and organize your yearly goals across 8 key life dimensions</p>
+                <div id="currentFilename" class="filename-display">Not saved to file yet</div>
+            </div>
+            <input type="file" id="fileInput" class="file-input" accept=".json">
+        </header>
+        
+        <div class="layout-container">
+            <!-- 2. Main 9x9 Panel -->
+            <div class="mandala-container">
+                <div class="print-header">
+                    <h2>Annual Goal Mandala for <span id="printYear">2024</span></h2>
+                    <p>Created on <span id="printDate">Today's Date</span></p>
+                </div>
+                
+                <table id="mainTable">
+                    <tr>
+                        <td data-section="career" data-original-content="">
+                            <div class="section-label">Career</div>
+                            <h3>Professional Goals</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Advance to senior position<br>
+                                • Complete certification<br>
+                                • Lead a major project<br>
+                                • Expand professional network
+                            </div>
+                        </td>
+                        <td data-section="knowledge" data-original-content="">
+                            <div class="section-label">Knowledge</div>
+                            <h3>Learning & Growth</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Read 24 books<br>
+                                • Learn new language basics<br>
+                                • Attend 3 workshops<br>
+                                • Develop technical skill
+                            </div>
+                        </td>
+                        <td data-section="finance" data-original-content="">
+                            <div class="section-label">Finance</div>
+                            <h3>Financial Objectives</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Increase savings by 20%<br>
+                                • Invest in retirement fund<br>
+                                • Reduce unnecessary expenses<br>
+                                • Create side income stream
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-section="health" data-original-content="">
+                            <div class="section-label">Health</div>
+                            <h3>Physical & Mental Wellbeing</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Exercise 4x per week<br>
+                                • Meditate daily<br>
+                                • Improve sleep schedule<br>
+                                • Annual health checkup
+                            </div>
+                        </td>
+                        <td class="central-cell">
+                            <h2 contenteditable="true">My <span id="centralYear">2024</span> Vision</h2>
+                            <p class="vision-statement" contenteditable="true">A year of balanced growth, meaningful achievements, and personal fulfillment across all life dimensions.</p>
+                            <div class="central-details" contenteditable="true">
+                                <strong>Word of the year:</strong> Progress<br>
+                                <strong>Primary focus:</strong> Balance<br>
+                                <strong>Key metric:</strong> Life satisfaction
+                            </div>
+                        </td>
+                        <td data-section="relationships" data-original-content="">
+                            <div class="section-label">Relationships</div>
+                            <h3>Social & Family</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Weekly family dinners<br>
+                                • Monthly friend outings<br>
+                                • Strengthen partner connection<br>
+                                • Join community group
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-section="leisure" data-original-content="">
+                            <div class="section-label">Leisure</div>
+                            <h3>Fun & Recreation</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Plan 2 vacations<br>
+                                • Try 3 new hobbies<br>
+                                • Visit 5 new places locally<br>
+                                • Digital detox weekends
+                            </div>
+                        </td>
+                        <td data-section="contribution" data-original-content="">
+                            <div class="section-label">Contribution</div>
+                            <h3>Giving & Service</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Volunteer monthly<br>
+                                • Donate to 2 charities<br>
+                                • Mentor someone<br>
+                                • Environmental actions
+                            </div>
+                        </td>
+                        <td data-section="personal" data-original-content="">
+                            <div class="section-label">Personal</div>
+                            <h3>Self Development</h3>
+                            <div class="cell-content" contenteditable="true">
+                                • Practice gratitude daily<br>
+                                • Develop patience<br>
+                                • Overcome a fear<br>
+                                • Improve time management
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- 3. Control Panel -->
+            <div class="controls-wrapper">
+                <div class="controls-container">
+                    <div class="control-group">
+                        <button id="saveButton" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Progress
+                        </button>
+                        <button id="saveFileButton" class="btn-warning">
+                            <i class="fas fa-file-export"></i> Save to File
+                        </button>
+                        <button id="loadFileButton" class="btn-secondary">
+                            <i class="fas fa-file-import"></i> Load from File
+                        </button>
+                        <button id="clearButton" class="btn-danger">
+                            <i class="fas fa-eraser"></i> Clear All
+                        </button>
+                        <button id="resetButton" class="btn-secondary">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                        <button id="exportButton" class="btn-secondary">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button id="themeButton" class="btn-secondary">
+                            <i class="fas fa-palette"></i> Themes
+                        </button>
+                        <button id="printButton" class="btn-success">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                    
+                    <div class="export-options" id="exportOptions" style="display: none;">
+                        <button id="exportHTML" class="export-btn btn-primary">
+                            <i class="fas fa-file-code"></i> Save as HTML
+                        </button>
+                        <button id="exportPDF" class="export-btn btn-secondary">
+                            <i class="fas fa-file-pdf"></i> Export for PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 4. How-to-Use Panel -->
+            <div class="instructions">
+                <h3><i class="fas fa-lightbulb"></i> How to Use Your Goal Mandala</h3>
+                <ul>
+                    <li><strong>Double-click</strong> on any section to expand it into a quarterly planning grid</li>
+                    <li>Click on any text to edit your goals directly</li>
+                    <li>Double-click the expanded section again to collapse back to main view</li>
+                    <li>Use the <strong>Save Progress</strong> button to store in browser</li>
+                    <li>Use <strong>Save to File</strong> to export as JSON file</li>
+                    <li>Use <strong>Load from File</strong> to import saved mandala data</li>
+                    <li>Use <strong>Clear All</strong> to empty all content for a fresh start</li>
+                    <li>Use <strong>Reset</strong> to restore default example content</li>
+                    <li>Click <strong>Export</strong> to save as HTML or print your mandala</li>
+                    <li>Try different color themes using the <strong>Themes</strong> button</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 5. Footer -->
+        <footer>
+            <p><i class="far fa-copyright"></i> 2026 Dr. Wen-Ming Yang lab for Goal Mandala Planner v1.4 | Your progress is automatically saved in your browser</p>
+            <p>Double-click any section for detailed planning | All data is stored locally on your device</p>
+        </footer>
+    </div>
+    
+    <!-- Theme Modal -->
+    <div id="themeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Choose a Theme</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Select a color theme for your Goal Mandala:</p>
+                <div class="theme-selector">
+                    <div class="theme-option active" style="background-color: #4a6fa5;" data-theme="default"></div>
+                    <div class="theme-option" style="background-color: #2c7873;" data-theme="green"></div>
+                    <div class="theme-option" style="background-color: #8a4fff;" data-theme="purple"></div>
+                    <div class="theme-option" style="background-color: #ff6b6b;" data-theme="red"></div>
+                    <div class="theme-option" style="background-color: #ffa500;" data-theme="orange"></div>
+                </div>
+                <button id="applyTheme" class="btn-primary" style="margin-top: 20px; width: 100%;">
+                    Apply Selected Theme
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusMessage" class="status-message"></div>
+
+    <script>
+        // DOM Elements
+        const pageTitle = document.getElementById('pageTitle');
+        const yearDisplay = document.getElementById('yearDisplay');
+        const centralYear = document.getElementById('centralYear');
+        const printYear = document.getElementById('printYear');
+        const printDate = document.getElementById('printDate');
+        const mainTable = document.getElementById('mainTable');
+        const saveButton = document.getElementById('saveButton');
+        const saveFileButton = document.getElementById('saveFileButton');
+        const loadFileButton = document.getElementById('loadFileButton');
+        const clearButton = document.getElementById('clearButton');
+        const exportButton = document.getElementById('exportButton');
+        const resetButton = document.getElementById('resetButton');
+        const themeButton = document.getElementById('themeButton');
+        const printButton = document.getElementById('printButton');
+        const fileInput = document.getElementById('fileInput');
+        const currentFilename = document.getElementById('currentFilename');
+        const exportOptions = document.getElementById('exportOptions');
+        const exportHTML = document.getElementById('exportHTML');
+        const exportPDF = document.getElementById('exportPDF');
+        const themeModal = document.getElementById('themeModal');
+        const closeModal = document.querySelector('.close-modal');
+        const applyTheme = document.getElementById('applyTheme');
+        const themeOptions = document.querySelectorAll('.theme-option');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // Current year for default
+        const currentYear = new Date().getFullYear();
+        yearDisplay.textContent = currentYear;
+        centralYear.textContent = currentYear;
+        printYear.textContent = currentYear;
+        
+        // Current filename
+        let currentFileName = null;
+        
+        // Set print date
+        const today = new Date();
+        printDate.textContent = today.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Update year in all places when year is changed
+        yearDisplay.addEventListener('input', function() {
+            const newYear = yearDisplay.textContent;
+            centralYear.textContent = newYear;
+            printYear.textContent = newYear;
+        });
+        
+        // Show status message
+        function showStatus(message, type = 'success') {
+            statusMessage.textContent = message;
+            statusMessage.style.backgroundColor = type === 'success' ? '#28a745' : 
+                                                 type === 'error' ? '#dc3545' : 
+                                                 type === 'info' ? '#17a2b8' : '#ffc107';
+            statusMessage.style.display = 'block';
+            
+            // Remove and re-add to restart animation
+            statusMessage.style.animation = 'none';
+            setTimeout(() => {
+                statusMessage.style.animation = 'slideIn 0.3s ease, fadeOut 0.3s ease 2.7s';
+            }, 10);
+            
+            // Hide after animation completes
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Generate filename with timestamp
+        function generateFilename() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const title = pageTitle.textContent.replace(/\s+/g, '-').substring(0, 20);
+            return `Mandala-${title}-${year}${month}${day}.json`;
+        }
+        
+        // Collect all mandala data into a JSON object
+        function collectMandalaData() {
+            const data = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                title: pageTitle.textContent,
+                year: yearDisplay.textContent,
+                theme: document.querySelector('.theme-option.active').getAttribute('data-theme'),
+                central: {},
+                sections: {},
+                nestedContent: {}
+            };
+            
+            // Central cell data
+            const visionStatement = document.querySelector('.vision-statement');
+            const centralDetails = document.querySelector('.central-details');
+            const centralTitle = document.querySelector('.central-cell h2');
+            
+            if (visionStatement) data.central.vision = visionStatement.innerHTML;
+            if (centralDetails) data.central.details = centralDetails.innerHTML;
+            if (centralTitle) data.central.title = centralTitle.innerHTML;
+            
+            // Regular cell contents
+            const cells = document.querySelectorAll('.cell-content');
+            cells.forEach(cell => {
+                const section = cell.closest('td').getAttribute('data-section');
+                if (section) {
+                    data.sections[section] = cell.innerHTML;
+                }
+            });
+            
+            // Nested content
+            const sectionCells = document.querySelectorAll('td[data-section]');
+            sectionCells.forEach(cell => {
+                const section = cell.getAttribute('data-section');
+                const nestedContent = cell.getAttribute('data-nested-content');
+                if (nestedContent) {
+                    data.nestedContent[section] = nestedContent;
+                }
+            });
+            
+            return data;
+        }
+        
+        // Save mandala data to JSON file
+        function saveToFile() {
+            const data = collectMandalaData();
+            const jsonData = JSON.stringify(data, null, 2);
+            
+            // Generate filename
+            currentFileName = generateFilename();
+            
+            // Create and download the file
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = currentFileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Update filename display
+            currentFilename.textContent = `Last saved as: ${currentFileName}`;
+            currentFilename.style.color = '#28a745';
+            
+            showStatus('Mandala saved to file successfully!');
+        }
+        
+        // Load mandala data from JSON file
+        function loadFromFile(file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Validate the data structure
+                    if (!data.version || !data.title || !data.year) {
+                        throw new Error('Invalid mandala file format');
+                    }
+                    
+                    // Apply the data
+                    loadMandalaData(data);
+                    
+                    // Update filename
+                    currentFileName = file.name;
+                    currentFilename.textContent = `Loaded from: ${currentFileName}`;
+                    currentFilename.style.color = '#17a2b8';
+                    
+                    showStatus('Mandala loaded successfully!');
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    showStatus('Error: Invalid mandala file', 'error');
+                }
+            };
+            
+            reader.onerror = function() {
+                showStatus('Error reading file', 'error');
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Apply loaded mandala data
+        function loadMandalaData(data) {
+            // Load title
+            if (data.title) {
+                pageTitle.textContent = data.title;
+            }
+            
+            // Load year
+            if (data.year) {
+                yearDisplay.textContent = data.year;
+                centralYear.textContent = data.year;
+                printYear.textContent = data.year;
+            }
+            
+            // Load theme
+            if (data.theme) {
+                applyThemeSelection(data.theme);
+            }
+            
+            // Load central cell data
+            if (data.central) {
+                if (data.central.vision) {
+                    const visionStatement = document.querySelector('.vision-statement');
+                    if (visionStatement) visionStatement.innerHTML = data.central.vision;
+                }
+                if (data.central.details) {
+                    const centralDetails = document.querySelector('.central-details');
+                    if (centralDetails) centralDetails.innerHTML = data.central.details;
+                }
+                if (data.central.title) {
+                    const centralTitle = document.querySelector('.central-cell h2');
+                    if (centralTitle) centralTitle.innerHTML = data.central.title;
+                }
+            }
+            
+            // Load regular cell contents
+            if (data.sections) {
+                Object.keys(data.sections).forEach(section => {
+                    const cell = document.querySelector(`td[data-section="${section}"] .cell-content`);
+                    if (cell) {
+                        cell.innerHTML = data.sections[section];
+                    }
+                });
+            }
+            
+            // Load nested content
+            if (data.nestedContent) {
+                Object.keys(data.nestedContent).forEach(section => {
+                    const cell = document.querySelector(`td[data-section="${section}"]`);
+                    if (cell) {
+                        cell.setAttribute('data-nested-content', data.nestedContent[section]);
+                    }
+                });
+            }
+            
+            // Save to localStorage as well
+            saveData();
+        }
+        
+        // Load saved data from localStorage
+        function loadSavedData() {
+            // Load title
+            const savedTitle = localStorage.getItem('mandalaTitle');
+            if (savedTitle) {
+                pageTitle.textContent = savedTitle;
+            }
+            
+            // Load year
+            const savedYear = localStorage.getItem('mandalaYear');
+            if (savedYear) {
+                yearDisplay.textContent = savedYear;
+                centralYear.textContent = savedYear;
+                printYear.textContent = savedYear;
+            }
+            
+            // Load theme
+            const savedTheme = localStorage.getItem('mandalaTheme');
+            if (savedTheme) {
+                applyThemeSelection(savedTheme);
+            }
+            
+            // Load central cell vision statement
+            const savedVision = localStorage.getItem('mandalaVision');
+            if (savedVision) {
+                const visionStatement = document.querySelector('.vision-statement');
+                if (visionStatement) {
+                    visionStatement.innerHTML = savedVision;
+                }
+            }
+            
+            // Load central cell details
+            const savedDetails = localStorage.getItem('mandalaDetails');
+            if (savedDetails) {
+                const centralDetails = document.querySelector('.central-details');
+                if (centralDetails) {
+                    centralDetails.innerHTML = savedDetails;
+                }
+            }
+            
+            // Load central cell title
+            const savedCentralTitle = localStorage.getItem('mandalaCentralTitle');
+            if (savedCentralTitle) {
+                const centralTitle = document.querySelector('.central-cell h2');
+                if (centralTitle) {
+                    centralTitle.innerHTML = savedCentralTitle;
+                }
+            }
+            
+            // Load regular cell contents
+            const cells = document.querySelectorAll('.cell-content');
+            cells.forEach(cell => {
+                const section = cell.closest('td').getAttribute('data-section');
+                if (section) {
+                    const savedContent = localStorage.getItem(`mandalaCell-${section}`);
+                    if (savedContent) {
+                        cell.innerHTML = savedContent;
+                    }
+                }
+            });
+            
+            // Load nested content
+            const sectionCells = document.querySelectorAll('td[data-section]');
+            sectionCells.forEach(cell => {
+                const section = cell.getAttribute('data-section');
+                const savedNested = localStorage.getItem(`mandalaNested-${section}`);
+                if (savedNested) {
+                    cell.setAttribute('data-nested-content', savedNested);
+                }
+            });
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            // Save title
+            localStorage.setItem('mandalaTitle', pageTitle.textContent);
+            
+            // Save year
+            localStorage.setItem('mandalaYear', yearDisplay.textContent);
+            
+            // Save theme
+            const activeTheme = document.querySelector('.theme-option.active').getAttribute('data-theme');
+            localStorage.setItem('mandalaTheme', activeTheme);
+            
+            // Save central cell vision statement
+            const visionStatement = document.querySelector('.vision-statement');
+            if (visionStatement) {
+                localStorage.setItem('mandalaVision', visionStatement.innerHTML);
+            }
+            
+            // Save central cell details
+            const centralDetails = document.querySelector('.central-details');
+            if (centralDetails) {
+                localStorage.setItem('mandalaDetails', centralDetails.innerHTML);
+            }
+            
+            // Save central cell title
+            const centralTitle = document.querySelector('.central-cell h2');
+            if (centralTitle) {
+                localStorage.setItem('mandalaCentralTitle', centralTitle.innerHTML);
+            }
+            
+            // Save regular cell contents
+            const cells = document.querySelectorAll('.cell-content');
+            cells.forEach(cell => {
+                const section = cell.closest('td').getAttribute('data-section');
+                if (section) {
+                    localStorage.setItem(`mandalaCell-${section}`, cell.innerHTML);
+                }
+            });
+            
+            // Save nested content
+            const sectionCells = document.querySelectorAll('td[data-section]');
+            sectionCells.forEach(cell => {
+                const section = cell.getAttribute('data-section');
+                const nestedContent = cell.getAttribute('data-nested-content');
+                if (nestedContent) {
+                    localStorage.setItem(`mandalaNested-${section}`, nestedContent);
+                }
+            });
+            
+            // Show save confirmation
+            const originalText = saveButton.innerHTML;
+            saveButton.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            saveButton.style.backgroundColor = '#28a745';
+            
+            setTimeout(() => {
+                saveButton.innerHTML = originalText;
+                saveButton.style.backgroundColor = '';
+            }, 1500);
+        }
+        
+        // Clear all content - creates a blank mandala
+        function clearAllContent() {
+            if (confirm('Are you sure you want to clear all content? This will empty all text areas but keep the structure. This cannot be undone.')) {
+                // Clear all editable content
+                const editableElements = document.querySelectorAll('[contenteditable="true"]');
+                editableElements.forEach(el => {
+                    if (el.id === 'pageTitle') {
+                        el.textContent = 'Annual Goal Mandala';
+                    } else if (el.id === 'yearDisplay') {
+                        el.textContent = currentYear;
+                        centralYear.textContent = currentYear;
+                        printYear.textContent = currentYear;
+                    } else if (el.classList.contains('cell-content')) {
+                        // Clear cell content, add hint text
+                        el.innerHTML = '<div class="blank-hint">Click here to add your goals<br>Start typing to begin...</div>';
+                    } else if (el.closest('.central-cell')) {
+                        if (el.tagName === 'H2') {
+                            el.innerHTML = `My <span id="centralYear">${currentYear}</span> Vision`;
+                        } else if (el.classList.contains('vision-statement')) {
+                            el.innerHTML = '<div class="blank-hint">Describe your vision for the year here...</div>';
+                        } else if (el.classList.contains('central-details')) {
+                            el.innerHTML = '<div class="blank-hint"><strong>Word of the year:</strong> (enter your word)<br><strong>Primary focus:</strong> (enter your focus)<br><strong>Key metric:</strong> (enter your metric)</div>';
+                        }
+                    }
+                });
+                
+                // Clear nested content
+                const sectionCells = document.querySelectorAll('td[data-section]');
+                sectionCells.forEach(cell => {
+                    cell.removeAttribute('data-nested-content');
+                    cell.removeAttribute('data-original-content');
+                });
+                
+                // Clear localStorage
+                localStorage.clear();
+                
+                // Reset filename display
+                currentFileName = null;
+                currentFilename.textContent = 'Not saved to file yet';
+                currentFilename.style.color = '#4a6fa5';
+                
+                // Save empty state
+                saveData();
+                
+                showStatus('All content cleared. Start fresh with a blank mandala!', 'info');
+            }
+        }
+        
+        // Reset mandala to default state (with example content)
+        function resetToDefault() {
+            if (confirm('Are you sure you want to reset to default? This will replace all content with example goals.')) {
+                // Clear all editable content and restore defaults
+                const editableElements = document.querySelectorAll('[contenteditable="true"]');
+                editableElements.forEach(el => {
+                    if (el.id === 'pageTitle') {
+                        el.textContent = 'Annual Goal Mandala';
+                    } else if (el.id === 'yearDisplay') {
+                        el.textContent = currentYear;
+                        centralYear.textContent = currentYear;
+                        printYear.textContent = currentYear;
+                    } else if (el.classList.contains('cell-content')) {
+                        // Reset to default content based on section
+                        const sectionTitle = el.closest('td').querySelector('h3').textContent;
+                        el.innerHTML = getDefaultContent(sectionTitle);
+                    } else if (el.closest('.central-cell')) {
+                        if (el.tagName === 'H2') {
+                            el.innerHTML = `My <span id="centralYear">${currentYear}</span> Vision`;
+                        } else if (el.classList.contains('vision-statement')) {
+                            el.innerHTML = 'A year of balanced growth, meaningful achievements, and personal fulfillment across all life dimensions.';
+                        } else if (el.classList.contains('central-details')) {
+                            el.innerHTML = '<strong>Word of the year:</strong> Progress<br><strong>Primary focus:</strong> Balance<br><strong>Key metric:</strong> Life satisfaction';
+                        }
+                    }
+                });
+                
+                // Clear nested content
+                const sectionCells = document.querySelectorAll('td[data-section]');
+                sectionCells.forEach(cell => {
+                    cell.removeAttribute('data-nested-content');
+                    cell.removeAttribute('data-original-content');
+                });
+                
+                // Clear localStorage
+                localStorage.clear();
+                
+                // Reset filename display
+                currentFileName = null;
+                currentFilename.textContent = 'Not saved to file yet';
+                currentFilename.style.color = '#4a6fa5';
+                
+                // Reset to default theme
+                applyThemeSelection('default');
+                
+                // Save default state
+                saveData();
+                
+                showStatus('Mandala reset to default example content.');
+            }
+        }
+        
+        // Get default content for each section
+        function getDefaultContent(sectionTitle) {
+            const defaults = {
+                'Professional Goals': '• Advance to senior position<br>• Complete certification<br>• Lead a major project<br>• Expand professional network',
+                'Learning & Growth': '• Read 24 books<br>• Learn new language basics<br>• Attend 3 workshops<br>• Develop technical skill',
+                'Financial Objectives': '• Increase savings by 20%<br>• Invest in retirement fund<br>• Reduce unnecessary expenses<br>• Create side income stream',
+                'Physical & Mental Wellbeing': '• Exercise 4x per week<br>• Meditate daily<br>• Improve sleep schedule<br>• Annual health checkup',
+                'Social & Family': '• Weekly family dinners<br>• Monthly friend outings<br>• Strengthen partner connection<br>• Join community group',
+                'Fun & Recreation': '• Plan 2 vacations<br>• Try 3 new hobbies<br>• Visit 5 new places locally<br>• Digital detox weekends',
+                'Giving & Service': '• Volunteer monthly<br>• Donate to 2 charities<br>• Mentor someone<br>• Environmental actions',
+                'Self Development': '• Practice gratitude daily<br>• Develop patience<br>• Overcome a fear<br>• Improve time management'
+            };
+            
+            return defaults[sectionTitle] || '• Set your goals here<br>• Be specific and measurable<br>• Break down into actionable steps<br>• Review regularly';
+        }
+        
+        // Apply theme selection
+        function applyThemeSelection(theme) {
+            const root = document.documentElement;
+            
+            // Reset all theme options
+            themeOptions.forEach(option => option.classList.remove('active'));
+            
+            // Activate selected theme option
+            const selectedOption = document.querySelector(`.theme-option[data-theme="${theme}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('active');
+            } else {
+                // Fallback to default
+                document.querySelector('.theme-option[data-theme="default"]').classList.add('active');
+            }
+            
+            // Apply theme colors
+            switch(theme) {
+                case 'green':
+                    root.style.setProperty('--primary-color', '#2c7873');
+                    root.style.setProperty('--secondary-color', '#004445');
+                    root.style.setProperty('--accent-color', '#0c7b79');
+                    break;
+                case 'purple':
+                    root.style.setProperty('--primary-color', '#8a4fff');
+                    root.style.setProperty('--secondary-color', '#5e35b1');
+                    root.style.setProperty('--accent-color', '#b388ff');
+                    break;
+                case 'red':
+                    root.style.setProperty('--primary-color', '#ff6b6b');
+                    root.style.setProperty('--secondary-color', '#c92a2a');
+                    root.style.setProperty('--accent-color', '#ff8787');
+                    break;
+                case 'orange':
+                    root.style.setProperty('--primary-color', '#ffa500');
+                    root.style.setProperty('--secondary-color', '#cc8400');
+                    root.style.setProperty('--accent-color', '#ffb733');
+                    break;
+                default: // default blue theme
+                    root.style.setProperty('--primary-color', '#4a6fa5');
+                    root.style.setProperty('--secondary-color', '#166088');
+                    root.style.setProperty('--accent-color', '#17a2b8');
+            }
+        }
+        
+        // Export as HTML file
+        function exportAsHTML() {
+            const title = pageTitle.textContent || 'Goal-Mandala';
+            const year = yearDisplay.textContent || currentYear;
+            const filename = `${title.replace(/\s+/g, '-')}-${year}.html`;
+            
+            // Create a clone of the current document
+            const exportDoc = document.documentElement.cloneNode(true);
+            
+            // Remove interactive elements for export
+            const exportButtons = exportDoc.querySelectorAll('.controls, .export-options, footer');
+            exportButtons.forEach(el => el.remove());
+            
+            // Add print styles inline
+            const styleEl = exportDoc.querySelector('style');
+            styleEl.textContent += `
+                @media print {
+                    body { padding: 0; margin: 0; }
+                    .mandala-container { box-shadow: none; border: none; }
+                    td { border: 1px solid #333 !important; page-break-inside: avoid; }
+                }
+            `;
+            
+            // Create and download the file
+            const blob = new Blob([exportDoc.outerHTML], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showStatus('HTML file exported successfully!');
+        }
+        
+        // Prepare for PDF export (opens print dialog)
+        function prepareForPDF() {
+            exportOptions.style.display = 'none';
+            
+            // Show print header
+            document.querySelector('.print-header').style.display = 'block';
+            
+            // Trigger print dialog
+            window.print();
+            
+            // Hide print header again after printing
+            setTimeout(() => {
+                document.querySelector('.print-header').style.display = 'none';
+            }, 100);
+        }
+        
+        // Helper function to extract text content from HTML while preserving line breaks
+        function extractGoalTextWithLineBreaks(htmlContent) {
+            // Create a temporary div to parse HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+            
+            // Get the content after the quarter label
+            let text = '';
+            const lines = tempDiv.innerHTML.split('<br>');
+            
+            // Skip the first line (quarter label) and get the rest
+            if (lines.length > 1) {
+                // Remove quarter label from first line if present
+                const firstLine = lines[0];
+                const quarterLabelMatch = firstLine.match(/<strong>Q[1-4] \(.*?\)<\/strong>/);
+                
+                if (quarterLabelMatch) {
+                    // This line contains the quarter label, skip it
+                    text = lines.slice(1).join('<br>').trim();
+                } else {
+                    // No quarter label found, use all lines
+                    text = lines.join('<br>').trim();
+                }
+            } else {
+                // Only one line, check if it's just the quarter label
+                const firstLine = lines[0];
+                if (!firstLine.match(/<strong>Q[1-4] \(.*?\)<\/strong>/)) {
+                    text = firstLine.trim();
+                }
+            }
+            
+            // Clean up any remaining HTML tags but keep <br> tags
+            text = text.replace(/<[^>]*>/g, '').trim();
+            
+            return text;
+        }
+        
+        // Helper function to create a clean bullet point list with line breaks
+        function createBulletListWithLineBreaks(items) {
+            const bulletList = [];
+            
+            items.forEach(item => {
+                if (item.trim().length > 0) {
+                    // Split item by line breaks to handle multi-line content
+                    const lines = item.split('\n').filter(line => line.trim().length > 0);
+                    
+                    lines.forEach((line, lineIndex) => {
+                        const cleanLine = line.trim();
+                        if (cleanLine) {
+                            if (lineIndex === 0) {
+                                // First line gets a bullet
+                                if (cleanLine.startsWith('•')) {
+                                    bulletList.push(cleanLine);
+                                } else {
+                                    bulletList.push(`• ${cleanLine}`);
+                                }
+                            } else {
+                                // Subsequent lines (for the same goal) don't get bullets
+                                bulletList.push(`  ${cleanLine}`);
+                            }
+                        }
+                    });
+                }
+            });
+            
+            return bulletList.join('<br>');
+        }
+        
+        // Nested table functionality (double-click to expand/collapse)
+        mainTable.addEventListener('dblclick', function(event) {
+            const target = event.target;
+            const cell = target.closest('td');
+            
+            if (!cell || cell.classList.contains('central-cell')) return;
+            
+            const section = cell.getAttribute('data-section');
+            
+            // Check if already expanded
+            if (cell.classList.contains('expanded-cell')) {
+                // COLLAPSE: Save nested content and return to normal view
+                collapseCell(cell, section);
+            } else {
+                // EXPAND: Create nested table for quarterly planning
+                expandCell(cell, section);
+            }
+            
+            // Save data after expanding/collapsing
+            saveData();
+        });
+        
+        function expandCell(cell, section) {
+            const sectionLabel = cell.querySelector('.section-label').textContent;
+            const sectionTitle = cell.querySelector('h3').textContent;
+            const currentContent = cell.querySelector('.cell-content').innerHTML;
+            
+            // Store original content (for reference)
+            cell.setAttribute('data-original-content', currentContent);
+            
+            // Check for saved nested content
+            let savedNestedContent = cell.getAttribute('data-nested-content');
+            let quarterContents = ['', '', '', ''];
+            
+            if (savedNestedContent) {
+                // Parse saved nested content
+                quarterContents = savedNestedContent.split('|');
+            } else {
+                // Parse current bullet list content into quarters
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = currentContent;
+                const lines = tempDiv.innerHTML.split('<br>')
+                    .filter(line => {
+                        const cleanLine = line.replace(/<[^>]*>/g, '').trim();
+                        return cleanLine.length > 0 && !cleanLine.startsWith('•') || cleanLine.startsWith('•');
+                    })
+                    .map(line => {
+                        // Remove bullet points from the beginning
+                        return line.replace(/^[•\-]\s*/, '').trim();
+                    });
+                
+                // Distribute lines to quarters (max 4 lines)
+                lines.forEach((line, index) => {
+                    if (index < 4) {
+                        quarterContents[index] = line;
+                    }
+                });
+            }
+            
+            // Create nested table for quarterly planning
+            const nestedHTML = `
+                <div class="section-label">${sectionLabel}</div>
+                <h3>${sectionTitle} - Quarterly Breakdown</h3>
+                <div class="nested-table-container">
+                    <table class="nested-table">
+                        <tr>
+                            <td contenteditable="true" data-quarter="q1"><strong>Q1 (Jan-Mar)</strong><br>${quarterContents[0] || ''}</td>
+                            <td contenteditable="true" data-quarter="q2"><strong>Q2 (Apr-Jun)</strong><br>${quarterContents[1] || ''}</td>
+                        </tr>
+                        <tr>
+                            <td contenteditable="true" data-quarter="q3"><strong>Q3 (Jul-Sep)</strong><br>${quarterContents[2] || ''}</td>
+                            <td contenteditable="true" data-quarter="q4"><strong>Q4 (Oct-Dec)</strong><br>${quarterContents[3] || ''}</td>
+                        </tr>
+                    </table>
+                    <div class="double-click-hint" style="display: block;">
+                        <i class="fas fa-info-circle"></i> Double-click anywhere to collapse back to main view
+                    </div>
+                </div>
+            `;
+            
+            // Replace cell content
+            cell.innerHTML = nestedHTML;
+            cell.classList.add('expanded-cell');
+            
+            // Focus on first quarter for easy editing
+            setTimeout(() => {
+                const firstQuarter = cell.querySelector('.nested-table td');
+                if (firstQuarter) {
+                    firstQuarter.focus();
+                }
+            }, 100);
+        }
+        
+        function collapseCell(cell, section) {
+            // Get content from nested table
+            const quarterCells = cell.querySelectorAll('.nested-table td');
+            const quarterContents = Array.from(quarterCells).map(qCell => {
+                // Extract the goal text while preserving line breaks
+                return extractGoalTextWithLineBreaks(qCell.innerHTML);
+            });
+            
+            // Store nested content for future expansion (preserve line breaks)
+            cell.setAttribute('data-nested-content', quarterContents.join('|'));
+            
+            // Recreate the original cell structure with updated content
+            const sectionLabel = cell.querySelector('.section-label').textContent.replace(' - Quarterly Breakdown', '');
+            const sectionTitle = cell.querySelector('h3').textContent.replace(' - Quarterly Breakdown', '');
+            
+            // Filter out empty quarters and create a clean bullet list with line breaks
+            const validGoals = quarterContents.filter(content => content.trim().length > 0);
+            let summaryContent = '';
+            
+            if (validGoals.length > 0) {
+                // Create a clean bullet list preserving line breaks within each goal
+                summaryContent = createBulletListWithLineBreaks(validGoals);
+            } else {
+                // If no content in quarters, check if we should show hint text
+                const hasHint = cell.querySelector('.blank-hint');
+                if (hasHint) {
+                    summaryContent = '<div class="blank-hint">Click here to add your goals<br>Start typing to begin...</div>';
+                } else {
+                    summaryContent = getDefaultContent(sectionTitle);
+                }
+            }
+            
+            // Rebuild the original cell
+            const originalHTML = `
+                <div class="section-label">${sectionLabel}</div>
+                <h3>${sectionTitle}</h3>
+                <div class="cell-content" contenteditable="true">
+                    ${summaryContent}
+                </div>
+            `;
+            
+            cell.innerHTML = originalHTML;
+            cell.classList.remove('expanded-cell');
+        }
+        
+        // Event Listeners
+        saveButton.addEventListener('click', saveData);
+        
+        saveFileButton.addEventListener('click', saveToFile);
+        
+        loadFileButton.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                loadFromFile(e.target.files[0]);
+                // Reset file input
+                fileInput.value = '';
+            }
+        });
+        
+        clearButton.addEventListener('click', clearAllContent);
+        
+        resetButton.addEventListener('click', resetToDefault);
+        
+        exportButton.addEventListener('click', function() {
+            exportOptions.style.display = exportOptions.style.display === 'flex' ? 'none' : 'flex';
+        });
+        
+        exportHTML.addEventListener('click', exportAsHTML);
+        
+        exportPDF.addEventListener('click', prepareForPDF);
+        
+        themeButton.addEventListener('click', function() {
+            themeModal.style.display = 'flex';
+        });
+        
+        closeModal.addEventListener('click', function() {
+            themeModal.style.display = 'none';
+        });
+        
+        applyTheme.addEventListener('click', function() {
+            const activeTheme = document.querySelector('.theme-option.active').getAttribute('data-theme');
+            applyThemeSelection(activeTheme);
+            themeModal.style.display = 'none';
+            saveData(); // Save theme preference
+        });
+        
+        themeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        printButton.addEventListener('click', function() {
+            prepareForPDF();
+        });
+        
+        // Auto-save when user stops typing (with debounce)
+        let saveTimeout;
+        document.addEventListener('input', function() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveData, 2000);
+        });
+        
+        // Save on page unload
+        window.addEventListener('beforeunload', saveData);
+        
+        // Load saved data on page load
+        window.addEventListener('load', loadSavedData);
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === themeModal) {
+                themeModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
