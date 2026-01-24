@@ -53,17 +53,17 @@
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             z-index: 1000;
         }
         
         .floating-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 45%;
+            width: 40px;
+            height: 40px;
+            border-radius: 40%;
             border: none;
             color: white;
-            font-size: 22px;
+            font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -78,6 +78,10 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         }
         
+        .floating-btn.selfchat {
+            background: linear-gradient(135deg, #667eea 0%, #764ba3 100%);
+        }
+
         .floating-btn.capacities {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
@@ -113,6 +117,16 @@
 
 .floating-btn.github-lab {
     background: linear-gradient(135deg, #6CC644 0%, #5AB031 100%);
+}
+
+/* ADD THIS NEW TIMESTRIPE STYLE */
+.floating-btn.timestripe {
+    background: linear-gradient(135deg, #FF7E5F 0%, #FEB47B 100%);
+}
+
+/* ADD THIS NEW FACEBOOK MESSAGES STYLE */
+.floating-btn.facebook-messages {
+    background: linear-gradient(135deg, #0084FF 0%, #0066CC 100%);
 }
         
         .floating-btn .tooltip {
@@ -1254,9 +1268,9 @@
             }
             
             .floating-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 16px;
+                width: 40px;
+                height: 40px;
+                font-size: 13px;
             }
             
             .floating-btn .tooltip {
@@ -2046,6 +2060,10 @@
 <body>
     <!-- Floating Buttons - CENTERED VERTICALLY -->
 <div class="floating-buttons">
+    <button class="floating-btn selfchat" id="open-selfchat">
+        <i class="fa-regular fa-comment-dots"></i>
+        <span class="tooltip">Open Self-Chat</span>
+    </button>
     <button class="floating-btn capacities" id="open-capacities">
         <i class="fas fa-brain"></i>
         <span class="tooltip">Open Capacities.io</span>
@@ -2083,6 +2101,16 @@
     <button class="floating-btn github-lab" id="open-github-lab">
         <i class="fas fa-calendar-week"></i>
         <span class="tooltip">View Week Calendar</span>
+    </button>
+    <!-- NEW TIMESTRIPE BUTTON -->
+    <button class="floating-btn timestripe" id="open-timestripe">
+        <i class="fas fa-hourglass-half"></i>
+        <span class="tooltip">Open Timestripe Horizons</span>
+    </button>
+    <!-- NEW FACEBOOK MESSAGES BUTTON -->
+    <button class="floating-btn facebook-messages" id="open-facebook-messages">
+        <i class="fab fa-facebook-messenger"></i>
+        <span class="tooltip">Open Facebook Messages</span>
     </button>
 </div>
     
@@ -2462,6 +2490,15 @@
 
         // Setup floating button event listeners for NEW BROWSER WINDOWS
 function setupFloatingButtons() {
+    // Self-chat button - opens in new browser window
+    document.getElementById('open-selfchat').addEventListener('click', () => {
+        openExternalWindow(
+            'https://yangwm2005.github.io/lab/self-chat%20v209T10.html', 
+            'Self-Chat',
+            'width=800,height=700,left=50,top=70'
+        );
+    });
+
     // Capacities button - opens in new browser window
     document.getElementById('open-capacities').addEventListener('click', () => {
         openExternalWindow(
@@ -2530,7 +2567,7 @@ function setupFloatingButtons() {
         openExternalWindow(
             'https://www.notion.so/', 
             'Notion',
-            'width=1200,height=700,left=400,top=100'
+            'width=1000,height=700,left=400,top=100'
         );
     });
     
@@ -2539,9 +2576,28 @@ function setupFloatingButtons() {
         openExternalWindow(
             'https://yangwm2005.github.io/lab/weekcalendar2-q.html', 
             'GitHub Lab Calendar',
-            'width=1200,height=700,left=450,top=100'
+            'width=1000,height=700,left=450,top=100'
         );
     });
+    
+    // NEW: Timestripe Horizons button - ADD THIS
+    document.getElementById('open-timestripe').addEventListener('click', () => {
+        openExternalWindow(
+            'https://timestripe.com/horizons/', 
+            'Timestripe Horizons',
+            'width=1000,height=700,left=50,top=100'
+        );
+    });
+    
+   // NEW: Facebook Messages button - ADD THIS
+    document.getElementById('open-facebook-messages').addEventListener('click', () => {
+        openExternalWindow(
+            'https://www.facebook.com/messages/t/2456192477736153', 
+            'Facebook Messages',
+            'width=1000,height=700,left=100,top=100'
+        );
+    });
+    
 }
 
         // Open external URL in new browser window (not tab)
