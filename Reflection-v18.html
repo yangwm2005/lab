@@ -618,6 +618,32 @@
             font-size: 0.9rem;
         }
         
+        /* Make Week View reflection text clickable */
+        .week-reflection-text[data-action] {
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .week-reflection-text[data-action]:hover {
+            background-color: #edf2f7;
+            transform: translateX(3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .week-reflection-text[data-action]::after {
+            content: '↗';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        
+        .week-reflection-text[data-action]:hover::after {
+            opacity: 1;
+        }
+        
         .empty-reflection {
             color: var(--gray-medium);
             font-style: italic;
@@ -677,9 +703,11 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-lg);
             width: 90%;
-            max-width: 900px;
+            max-width: 1200px;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             transform: scale(0.9) translateY(20px);
             transition: all 0.3s ease;
         }
@@ -697,6 +725,7 @@
             background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
             border-radius: var(--border-radius) var(--border-radius) 0 0;
+            flex-shrink: 0;
         }
         
         .modal-title {
@@ -726,6 +755,8 @@
         
         .modal-body {
             padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
         }
         
         /* Expand View Styles */
@@ -750,7 +781,8 @@
             background-color: var(--gray-light);
             border: 1px solid var(--gray-light);
             border-radius: 8px;
-            overflow: hidden;
+            overflow: auto;
+            max-height: 600px;
         }
         
         .week-header {
@@ -763,6 +795,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .week-time {
@@ -775,12 +810,15 @@
             justify-content: center;
             gap: 6px;
             font-size: 0.9rem;
+            position: sticky;
+            left: 0;
+            z-index: 5;
         }
         
         .week-cell {
             background-color: white;
             padding: 10px;
-            min-height: 80px;
+            min-height: 100px;
             cursor: pointer;
             transition: background-color 0.2s;
             position: relative;
@@ -807,7 +845,8 @@
             background-color: var(--gray-light);
             border: 1px solid var(--gray-light);
             border-radius: 8px;
-            overflow: hidden;
+            overflow: auto;
+            max-height: 600px;
         }
         
         .month-header {
@@ -817,12 +856,15 @@
             text-align: center;
             font-weight: 600;
             font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .month-cell {
             background-color: white;
             padding: 10px;
-            min-height: 100px;
+            min-height: 120px;
             cursor: pointer;
             transition: background-color 0.2s;
             position: relative;
@@ -863,6 +905,8 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 600px;
         }
         
         .summary-header {
@@ -912,6 +956,13 @@
             margin-bottom: 15px;
             font-weight: 600;
             font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .summary-day-header:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
         
         .summary-reflection {
@@ -977,6 +1028,32 @@
         
         .summary-reflection-text p:last-child {
             margin-bottom: 0;
+        }
+        
+        /* Make Summary View text clickable */
+        .summary-reflection-text[data-action] {
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .summary-reflection-text[data-action]:hover {
+            background-color: #edf2f7;
+            transform: translateX(3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .summary-reflection-text[data-action]::after {
+            content: '↗';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        
+        .summary-reflection-text[data-action]:hover::after {
+            opacity: 1;
         }
         
         .no-reflections-summary {
@@ -1183,200 +1260,199 @@
             background-color: var(--gray-medium);
         }
         
-        
-/* Enhanced Tooltip Styles (Labtalk-style: delayed hover + interactive panel) */
-.calendar-tooltip {
-    position: fixed;
-    z-index: 9999;
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
-    padding: 18px;
-    width: 420px;
-    max-width: 92vw;
-    max-height: 520px;
-    min-height: 150px;
-    border: 1px solid var(--gray-light);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
+        /* Enhanced Tooltip Styles (Labtalk-style: delayed hover + interactive panel) */
+        .calendar-tooltip {
+            position: fixed;
+            z-index: 9999;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 18px;
+            width: 420px;
+            max-width: 92vw;
+            max-height: 520px;
+            min-height: 150px;
+            border: 1px solid var(--gray-light);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-.calendar-tooltip.active {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
+        .calendar-tooltip.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
 
-.calendar-tooltip::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: 30px;
-    width: 12px;
-    height: 12px;
-    background: white;
-    transform: rotate(45deg);
-    border-left: 1px solid var(--gray-light);
-    border-top: 1px solid var(--gray-light);
-}
+        .calendar-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 30px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            transform: rotate(45deg);
+            border-left: 1px solid var(--gray-light);
+            border-top: 1px solid var(--gray-light);
+        }
 
-.tooltip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--gray-light);
-    flex-shrink: 0;
-}
+        .tooltip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-light);
+            flex-shrink: 0;
+        }
 
-.tooltip-date {
-    font-weight: 700;
-    color: var(--primary-color);
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+        .tooltip-date {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.tooltip-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: var(--gray-medium);
-    padding: 0;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background 0.2s, color 0.2s;
-}
+        .tooltip-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--gray-medium);
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s, color 0.2s;
+        }
 
-.tooltip-close:hover {
-    background: var(--light-color);
-    color: var(--danger-color);
-}
+        .tooltip-close:hover {
+            background: var(--light-color);
+            color: var(--danger-color);
+        }
 
-.tooltip-content {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: var(--dark-color);
-    overflow-y: auto;
-    flex-grow: 1;
-    padding-right: 6px;
-}
+        .tooltip-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--dark-color);
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 6px;
+        }
 
-.tooltip-content::-webkit-scrollbar {
-    width: 6px;
-}
+        .tooltip-content::-webkit-scrollbar {
+            width: 6px;
+        }
 
-.tooltip-content::-webkit-scrollbar-track {
-    background: var(--light-color);
-    border-radius: 10px;
-}
+        .tooltip-content::-webkit-scrollbar-track {
+            background: var(--light-color);
+            border-radius: 10px;
+        }
 
-.tooltip-content::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 10px;
-}
+        .tooltip-content::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
 
-.tooltip-content::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color);
-}
+        .tooltip-content::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
 
-.tooltip-reflection {
-    margin-bottom: 14px;
-    padding: 12px;
-    border-radius: 8px;
-    background: var(--light-color);
-    border-left: 4px solid;
-    transition: transform 0.2s;
-}
+        .tooltip-reflection {
+            margin-bottom: 14px;
+            padding: 12px;
+            border-radius: 8px;
+            background: var(--light-color);
+            border-left: 4px solid;
+            transition: transform 0.2s;
+        }
 
-.tooltip-reflection:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-}
+        .tooltip-reflection:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
 
-.tooltip-reflection.morning {
-    border-left-color: var(--morning-color);
-    background: linear-gradient(to right, #fffaf0, #fff5eb);
-}
+        .tooltip-reflection.morning {
+            border-left-color: var(--morning-color);
+            background: linear-gradient(to right, #fffaf0, #fff5eb);
+        }
 
-.tooltip-reflection.night {
-    border-left-color: var(--night-color);
-    background: linear-gradient(to right, #f8f4ff, #f0ebff);
-}
+        .tooltip-reflection.night {
+            border-left-color: var(--night-color);
+            background: linear-gradient(to right, #f8f4ff, #f0ebff);
+        }
 
-.tooltip-reflection-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--dark-color);
-}
+        .tooltip-reflection-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+        }
 
-.tooltip-reflection.morning .tooltip-reflection-header {
-    color: var(--morning-color);
-}
+        .tooltip-reflection.morning .tooltip-reflection-header {
+            color: var(--morning-color);
+        }
 
-.tooltip-reflection.night .tooltip-reflection-header {
-    color: var(--night-color);
-}
+        .tooltip-reflection.night .tooltip-reflection-header {
+            color: var(--night-color);
+        }
 
-.tooltip-reflection-icon {
-    margin-right: 6px;
-    font-size: 0.9rem;
-}
+        .tooltip-reflection-icon {
+            margin-right: 6px;
+            font-size: 0.9rem;
+        }
 
-.tooltip-reflection-text {
-    white-space: pre-wrap;
-    line-height: 1.6;
-    font-size: 0.85rem;
-}
+        .tooltip-reflection-text {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 0.85rem;
+        }
 
-.tooltip-empty {
-    color: var(--gray-medium);
-    font-style: italic;
-    font-size: 0.9rem;
-    text-align: center;
-    padding: 28px 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
+        .tooltip-empty {
+            color: var(--gray-medium);
+            font-style: italic;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
 
-.tooltip-empty-icon {
-    font-size: 2rem;
-    opacity: 0.5;
-}
+        .tooltip-empty-icon {
+            font-size: 2rem;
+            opacity: 0.5;
+        }
 
-.calendar-date.hovered {
-    transform: scale(1.1);
-    box-shadow: 0 0 0 3px var(--primary-color);
-    z-index: 100;
-    position: relative;
-}
+        .calendar-date.hovered {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 3px var(--primary-color);
+            z-index: 100;
+            position: relative;
+        }
 
-.week-cell.hovered, .month-cell.hovered {
-    background-color: #f8f9fa;
-    transform: scale(1.02);
-    box-shadow: 0 0 0 3px var(--primary-color);
-    z-index: 100;
-    position: relative;
-}
+        .week-cell.hovered, .month-cell.hovered {
+            background-color: #f8f9fa;
+            transform: scale(1.02);
+            box-shadow: 0 0 0 3px var(--primary-color);
+            z-index: 100;
+            position: relative;
+        }
 
-/* Animation for tooltip */
+        /* Animation for tooltip */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -1385,7 +1461,6 @@
         .calendar-tooltip {
             animation: fadeIn 0.2s ease-out;
         }
-    
 
         /* Remnote-style 7-day navigation (ported) */
         .week-navigation {
@@ -1538,7 +1613,169 @@
                 font-size: 0.95rem;
             }
         }
+        
+        /* Clickable Tooltip Styles */
+        .tooltip-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
 
+        .tooltip-action-btn {
+            padding: 6px 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .tooltip-action-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        /* Make reflections clickable */
+        .tooltip-reflection[data-action] {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tooltip-reflection[data-action]::after {
+            content: '↗';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .tooltip-reflection[data-action]:hover::after {
+            opacity: 1;
+        }
+
+        .tooltip-reflection[data-action]:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .tooltip-empty button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tooltip-empty button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: '';
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Auto-save JSON indicator */
+        .autosave-json-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+            margin-left: 10px;
+        }
+
+        .autosave-json-indicator.saving {
+            color: var(--warning-color);
+        }
+
+        .autosave-json-indicator.saved {
+            color: var(--success-color);
+        }
+
+        .autosave-json-indicator .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            animation: pulse 1.5s infinite;
+        }
+
+        .auto-save-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--light-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .auto-save-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .auto-save-status {
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+        }
     </style>
 </head>
 <body>
@@ -1624,6 +1861,21 @@
                         <button class="btn-success" id="save-btn">
                             <span class="btn-icon">💾</span> Save
                         </button>
+                        
+                        <!-- NEW: Auto-Save JSON Toggle Switch -->
+                        <div class="auto-save-container">
+                            <label class="auto-save-label">
+                                <span class="btn-icon">📁</span>
+                                <span>Auto-Save to JSON</span>
+                            </label>
+                            <label class="switch">
+                                <input type="checkbox" id="autosave-json-toggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="auto-save-status" id="autosave-json-status">OFF</span>
+                            <div class="autosave-json-indicator" id="json-autosave-indicator"></div>
+                        </div>
+                        
                         <input type="file" id="file-input" class="file-input" accept=".json">
                         <label for="file-input" class="file-label">
                             <span class="btn-icon">📂</span> Import
@@ -1643,6 +1895,10 @@
                     <div class="actions-section">
                         <button class="btn-secondary" id="popout-btn">
                             <span class="btn-icon">🪟</span> Popout View
+                        </button>
+                        <!-- NEW: Change Save Location Button -->
+                        <button class="btn-secondary" id="change-save-location-btn">
+                            <span class="btn-icon">📁</span> Change Save Location
                         </button>
                         <!-- NEW: Dynalist Settings Button -->
                         <button class="btn-secondary" id="dynalist-settings-btn">
@@ -1770,6 +2026,15 @@
         let autosaveEnabled = true;
         const AUTOSAVE_DELAY = 2000;
         
+        // NEW: File handle for auto-save JSON
+        let lastSavedFileHandle = null;
+        let lastSavedFileName = null;
+        
+        // NEW: Auto-save JSON toggle and typing detection
+        let autosaveJsonEnabled = false;
+        let autosaveJsonTimeout = null;
+        const AUTOSAVE_JSON_DELAY = 2000; // Save 2 seconds after user stops typing
+        
         // Dynalist configuration
         let dynalistApiKey = localStorage.getItem('dynalistApiKey') || '';
         let dynalistDocId = localStorage.getItem('dynalistDocId') || '';
@@ -1815,6 +2080,12 @@
         const clearButton = document.getElementById('clear-btn');
         const popoutButton = document.getElementById('popout-btn');
         
+        // NEW: Auto-save JSON toggle and related elements
+        const autosaveJsonToggle = document.getElementById('autosave-json-toggle');
+        const autosaveJsonStatus = document.getElementById('autosave-json-status');
+        const jsonAutosaveIndicator = document.getElementById('json-autosave-indicator');
+        const changeSaveLocationBtn = document.getElementById('change-save-location-btn');
+        
         // NEW: Dynalist DOM Elements
         const dynalistExportBtn = document.getElementById('dynalist-export-btn');
         const dynalistSettingsBtn = document.getElementById('dynalist-settings-btn');
@@ -1827,13 +2098,13 @@
         const dynalistStatusIcon = document.getElementById('dynalist-status-icon');
         const dynalistStatusText = document.getElementById('dynalist-status-text');
         
+        // NEW: Enhanced Tooltip element (Labtalk-style delayed hover tooltip)
+        const calendarTooltip = document.getElementById('calendar-tooltip');
+        let tooltipTimer = null;
+        let activeTooltipAnchor = null;
+        let activeTooltipDate = null;
         
-// NEW: Enhanced Tooltip element (Labtalk-style delayed hover tooltip)
-const calendarTooltip = document.getElementById('calendar-tooltip');
-let tooltipTimer = null;
-let activeTooltipAnchor = null;
-let activeTooltipDate = null;
-// Initialize the application
+        // Initialize the application
         function init() {
             loadFromLocalStorage();
             
@@ -1858,6 +2129,26 @@ let activeTooltipDate = null;
             clearButton.addEventListener('click', clearAllData);
             popoutButton.addEventListener('click', openPopoutWindow);
             
+            // NEW: Auto-save JSON toggle event listener
+            autosaveJsonToggle.addEventListener('change', function(e) {
+                autosaveJsonEnabled = e.target.checked;
+                autosaveJsonStatus.textContent = autosaveJsonEnabled ? 'ON' : 'OFF';
+                showStatus(`Auto-save to JSON ${autosaveJsonEnabled ? 'enabled' : 'disabled'}`, 'info');
+                
+                // If turning off, clear any pending timeout
+                if (!autosaveJsonEnabled && autosaveJsonTimeout) {
+                    clearTimeout(autosaveJsonTimeout);
+                    autosaveJsonTimeout = null;
+                }
+            });
+            
+            // NEW: Typing detection for auto-save JSON
+            morningTextElement.addEventListener('input', () => scheduleJsonAutosave());
+            nightTextElement.addEventListener('input', () => scheduleJsonAutosave());
+            
+            // NEW: Change save location button
+            changeSaveLocationBtn.addEventListener('click', resetSaveLocation);
+            
             // NEW: Dynalist event listeners
             dynalistExportBtn.addEventListener('click', exportToDynalist);
             dynalistSettingsBtn.addEventListener('click', showDynalistSettings);
@@ -1865,31 +2156,30 @@ let activeTooltipDate = null;
             testConnectionBtn.addEventListener('click', testDynalistConnection);
             saveDynalistBtn.addEventListener('click', saveDynalistSettings);
 
-// NEW: Tooltip event listeners (Labtalk-style)
-calendarTooltip.addEventListener('mouseenter', () => {
-    if (tooltipTimer) {
-        clearTimeout(tooltipTimer);
-        tooltipTimer = null;
-    }
-});
-calendarTooltip.addEventListener('mouseleave', () => {
-    hideDateTooltip();
-});
-calendarTooltip.addEventListener('click', (e) => {
-    if (e.target.closest('.tooltip-close')) {
-        hideDateTooltip();
-    }
-});
-
-// Close tooltip when clicking anywhere else
-document.addEventListener('click', (e) => {
-    if (!calendarTooltip.contains(e.target) &&
-        !e.target.closest('.calendar-date') &&
-        !e.target.closest('.week-cell') &&
-        !e.target.closest('.month-cell')) {
-        hideDateTooltip();
-    }
-});
+            // NEW: Tooltip event listeners (Labtalk-style)
+            calendarTooltip.addEventListener('mouseenter', () => {
+                if (tooltipTimer) {
+                    clearTimeout(tooltipTimer);
+                    tooltipTimer = null;
+                }
+            });
+            calendarTooltip.addEventListener('mouseleave', () => {
+                hideDateTooltip();
+            });
+            
+            // NEW: Click handler for tooltip navigation
+            calendarTooltip.addEventListener('click', handleTooltipClick);
+            
+            // Close tooltip when clicking anywhere else
+            document.addEventListener('click', (e) => {
+                if (!calendarTooltip.contains(e.target) &&
+                    !e.target.closest('.calendar-date') &&
+                    !e.target.closest('.week-cell') &&
+                    !e.target.closest('.month-cell')) {
+                    hideDateTooltip();
+                }
+            });
+            
             // Close modal when clicking outside
             window.addEventListener('click', (e) => {
                 if (e.target === dynalistModal) {
@@ -1910,7 +2200,99 @@ document.addEventListener('click', (e) => {
             updateDynalistStatusDisplay();
         }
         
+        // NEW: Schedule JSON auto-save when typing is detected
+        function scheduleJsonAutosave() {
+            // Only proceed if auto-save is enabled
+            if (!autosaveJsonEnabled) return;
+            
+            // Clear any existing timeout
+            if (autosaveJsonTimeout) {
+                clearTimeout(autosaveJsonTimeout);
+            }
+            
+            // Set a new timeout to save after typing stops
+            autosaveJsonTimeout = setTimeout(() => {
+                performJsonAutosave();
+            }, AUTOSAVE_JSON_DELAY);
+        }
 
+        // NEW: Perform the actual JSON auto-save
+        async function performJsonAutosave() {
+            // Show saving indicator
+            jsonAutosaveIndicator.innerHTML = '<span class="dot"></span> Saving...';
+            jsonAutosaveIndicator.className = 'autosave-json-indicator saving';
+            
+            try {
+                // Check if we already have a file handle from this session
+                if (!lastSavedFileHandle) {
+                    // Show file picker for first time
+                    lastSavedFileHandle = await window.showSaveFilePicker({
+                        suggestedName: `mindful-reflections-${formatDate(new Date())}.json`,
+                        types: [{
+                            description: 'JSON Files',
+                            accept: {'application/json': ['.json']}
+                        }]
+                    });
+                    
+                    // Store the file name for display
+                    lastSavedFileName = lastSavedFileHandle.name;
+                    showStatus(`File location set: ${lastSavedFileName}`, 'success');
+                }
+                
+                // Create the file content
+                const dataStr = JSON.stringify(reflectionsData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                
+                // Write to the file
+                const writable = await lastSavedFileHandle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                
+                // Show success indicator
+                jsonAutosaveIndicator.innerHTML = '✓ Saved';
+                jsonAutosaveIndicator.className = 'autosave-json-indicator saved';
+                showStatus(`Auto-saved to ${lastSavedFileName}`, 'success');
+                
+                // Clear indicator after 2 seconds
+                setTimeout(() => {
+                    jsonAutosaveIndicator.innerHTML = '';
+                    jsonAutosaveIndicator.className = 'autosave-json-indicator';
+                }, 2000);
+                
+            } catch (error) {
+                // Clear indicator on error
+                jsonAutosaveIndicator.innerHTML = '';
+                jsonAutosaveIndicator.className = 'autosave-json-indicator';
+                
+                // User cancelled the file picker or other error
+                if (error.name !== 'AbortError') {
+                    console.error('Error saving file:', error);
+                    showStatus('Error saving file: ' + error.message, 'error');
+                    
+                    // Reset file handle on error
+                    lastSavedFileHandle = null;
+                    lastSavedFileName = null;
+                }
+                
+                // Turn off the toggle if there was an error
+                autosaveJsonEnabled = false;
+                autosaveJsonToggle.checked = false;
+                autosaveJsonStatus.textContent = 'OFF';
+            }
+        }
+        
+        // Reset save location
+        function resetSaveLocation() {
+            lastSavedFileHandle = null;
+            lastSavedFileName = null;
+            showStatus('Save location reset. Next auto-save will ask for location.', 'info');
+            
+            // If auto-save is enabled, show a reminder
+            if (autosaveJsonEnabled) {
+                showStatus('Auto-save is ON - next typing will ask for location', 'info');
+            }
+        }
+        
         // Remnote-style 7-day navigation helpers
         function setSelectedDate(date, { closeModal = false } = {}) {
             selectedDate = new Date(date);
@@ -2119,6 +2501,12 @@ document.addEventListener('click', (e) => {
                     <span>${dateFormatted}</span>
                 `;
                 
+                // Make the header clickable to navigate to that date
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setSelectedDate(date);
+                });
+                
                 dayElement.appendChild(header);
                 
                 const content = document.createElement('div');
@@ -2137,6 +2525,13 @@ document.addEventListener('click', (e) => {
                     const morningText = document.createElement('div');
                     morningText.className = 'week-reflection-text';
                     morningText.textContent = reflectionsData[dateString].morning;
+                    // Make the reflection text clickable
+                    morningText.setAttribute('data-action', 'select-date');
+                    morningText.setAttribute('data-date', dateString);
+                    morningText.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        setSelectedDate(date);
+                    });
                     
                     morningReflection.appendChild(morningText);
                     content.appendChild(morningReflection);
@@ -2155,6 +2550,13 @@ document.addEventListener('click', (e) => {
                     const nightText = document.createElement('div');
                     nightText.className = 'week-reflection-text';
                     nightText.textContent = reflectionsData[dateString].night;
+                    // Make the reflection text clickable
+                    nightText.setAttribute('data-action', 'select-date');
+                    nightText.setAttribute('data-date', dateString);
+                    nightText.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        setSelectedDate(date);
+                    });
                     
                     nightReflection.appendChild(nightText);
                     content.appendChild(nightReflection);
@@ -2240,7 +2642,7 @@ document.addEventListener('click', (e) => {
                 const dayElement = document.createElement('div');
                 dayElement.className = 'summary-day';
                 
-                // Day header
+                // Day header - make it clickable to navigate to that date
                 const dayHeader = document.createElement('div');
                 dayHeader.className = 'summary-day-header';
                 
@@ -2248,6 +2650,14 @@ document.addEventListener('click', (e) => {
                 const dateFormatted = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                 
                 dayHeader.textContent = `${dayName}, ${dateFormatted}`;
+                dayHeader.setAttribute('data-action', 'select-date');
+                dayHeader.setAttribute('data-date', dateString);
+                dayHeader.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setSelectedDate(date);
+                    closeWeekSummary();
+                });
+                
                 dayElement.appendChild(dayHeader);
                 
                 // Morning reflection with paragraph structure
@@ -2265,6 +2675,15 @@ document.addEventListener('click', (e) => {
                     // Format text with paragraph structure
                     const formattedText = formatAsParagraph(reflectionsData[dateString].morning);
                     morningText.innerHTML = formattedText;
+                    
+                    // Make the reflection text clickable
+                    morningText.setAttribute('data-action', 'select-date');
+                    morningText.setAttribute('data-date', dateString);
+                    morningText.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        setSelectedDate(date);
+                        closeWeekSummary();
+                    });
                     
                     morningReflection.appendChild(morningHeader);
                     morningReflection.appendChild(morningText);
@@ -2286,6 +2705,15 @@ document.addEventListener('click', (e) => {
                     // Format text with paragraph structure
                     const formattedText = formatAsParagraph(reflectionsData[dateString].night);
                     nightText.innerHTML = formattedText;
+                    
+                    // Make the reflection text clickable
+                    nightText.setAttribute('data-action', 'select-date');
+                    nightText.setAttribute('data-date', dateString);
+                    nightText.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        setSelectedDate(date);
+                        closeWeekSummary();
+                    });
                     
                     nightReflection.appendChild(nightHeader);
                     nightReflection.appendChild(nightText);
@@ -2607,161 +3035,7 @@ document.addEventListener('click', (e) => {
                     .icon {
                         font-size: 1.3rem;
                     }
-                
-
-        /* Remnote-style 7-day navigation (ported) */
-        .week-navigation {
-            margin-top: 15px;
-            background-color: var(--light-color);
-            border-radius: var(--border-radius);
-            padding: 12px;
-            border: 1px solid var(--gray-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .week-nav-btn {
-            background: white;
-            border: 2px solid var(--gray-light);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            font-weight: 800;
-            transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
-            flex: 0 0 auto;
-        }
-
-        .week-nav-btn:hover {
-            transform: scale(1.07);
-            background-color: white;
-            border-color: var(--primary-color);
-        }
-
-        .week-days {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .week-day {
-            flex: 1;
-            min-width: 0;
-            background: white;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            padding: 8px 6px;
-            cursor: pointer;
-            text-align: center;
-            transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
-            position: relative;
-        }
-
-        .week-day:hover {
-            transform: translateY(-2px);
-            background-color: #ffffff;
-            border-color: var(--gray-light);
-        }
-
-        .week-day .week-day-name {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: var(--gray-medium);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .week-day .week-day-date {
-            margin-top: 4px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: var(--dark-color);
-        }
-
-        .week-day.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border-color: transparent;
-            box-shadow: var(--shadow);
-        }
-
-        .week-day.active .week-day-name,
-        .week-day.active .week-day-date {
-            color: white;
-        }
-
-        .week-day.today {
-            border-color: var(--success-color);
-        }
-
-        .week-day.today .week-day-date {
-            color: var(--success-color);
-        }
-
-        .week-day.active.today {
-            border-color: transparent;
-        }
-
-        .week-day-dot {
-            position: absolute;
-            bottom: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: var(--gray-medium);
-            opacity: 0;
-        }
-
-        .week-day.has-reflection .week-day-dot {
-            opacity: 1;
-            background-color: var(--success-color);
-        }
-
-        .week-day.partial-reflection .week-day-dot {
-            opacity: 1;
-            background-color: var(--warning-color);
-        }
-
-        .week-day.active .week-day-dot {
-            opacity: 1;
-            background-color: rgba(255, 255, 255, 0.95);
-        }
-
-        @media (max-width: 520px) {
-            .week-navigation {
-                padding: 10px;
-            }
-            .week-nav-btn {
-                width: 36px;
-                height: 36px;
-            }
-            .week-days {
-                gap: 6px;
-            }
-            .week-day {
-                padding: 7px 4px;
-            }
-            .week-day .week-day-name {
-                font-size: 0.65rem;
-            }
-            .week-day .week-day-date {
-                font-size: 0.95rem;
-            }
-        }
-
-    </style>
+                </style>
             </head>
             <body>
                 <div class="container">
@@ -2822,7 +3096,7 @@ document.addEventListener('click', (e) => {
             }
         }
         
-        // PROPERLY IMPLEMENTED Expand Week View
+        // PROPERLY IMPLEMENTED Expand Week View with Scroll
         function generateModalWeekView() {
             modalWeekView.innerHTML = '';
             
@@ -2906,7 +3180,7 @@ document.addEventListener('click', (e) => {
             modalWeekView.appendChild(weekGrid);
         }
         
-        // PROPERLY IMPLEMENTED Expand Month View
+        // PROPERLY IMPLEMENTED Expand Month View with Scroll
         function generateModalMonthView() {
             modalMonthView.innerHTML = '';
             
@@ -3051,146 +3325,212 @@ document.addEventListener('click', (e) => {
                 statusMessage.className = 'status-message';
             }, 3000);
         }
+        
         // NEW: Enhanced Tooltip functions for calendar hover (Labtalk-style)
+        function buildTooltipHTML(date) {
+            const dateString = formatDate(date);
+            const hasReflections = reflectionsData[dateString] &&
+                ((reflectionsData[dateString].morning && reflectionsData[dateString].morning.trim() !== '') ||
+                 (reflectionsData[dateString].night && reflectionsData[dateString].night.trim() !== ''));
 
-function buildTooltipHTML(date) {
-    const dateString = formatDate(date);
-    const hasReflections = reflectionsData[dateString] &&
-        ((reflectionsData[dateString].morning && reflectionsData[dateString].morning.trim() !== '') ||
-         (reflectionsData[dateString].night && reflectionsData[dateString].night.trim() !== ''));
+            const formattedDate = date.toLocaleDateString('en-US', {
+                weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+            });
 
-    const formattedDate = date.toLocaleDateString('en-US', {
-        weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-    });
+            if (!hasReflections) {
+                return `
+                    <div class="tooltip-header">
+                        <div class="tooltip-date"><span>📅</span> ${formattedDate}</div>
+                        <button class="tooltip-close" type="button" aria-label="Close tooltip">×</button>
+                    </div>
+                    <div class="tooltip-content">
+                        <div class="tooltip-empty">
+                            <div class="tooltip-empty-icon">📝</div>
+                            No reflections for this day<br>
+                            <button class="tooltip-action-btn" data-action="select-date">Click to write for this date</button>
+                        </div>
+                    </div>
+                `;
+            }
 
-    if (!hasReflections) {
-        return `
-            <div class="tooltip-header">
-                <div class="tooltip-date"><span>📅</span> ${formattedDate}</div>
-                <button class="tooltip-close" type="button" aria-label="Close tooltip">×</button>
-            </div>
-            <div class="tooltip-content">
-                <div class="tooltip-empty">
-                    <div class="tooltip-empty-icon">📝</div>
-                    No reflections for this day<br>
-                    <small>Click the date to start writing</small>
+            let html = `
+                <div class="tooltip-header">
+                    <div class="tooltip-date"><span>📅</span> ${formattedDate}</div>
+                    <button class="tooltip-close" type="button" aria-label="Close tooltip">×</button>
                 </div>
-            </div>
-        `;
-    }
+                <div class="tooltip-content">
+                    <div class="tooltip-actions">
+                        <button class="tooltip-action-btn" data-action="select-date">Go to this date</button>
+                        ${weekViewBtn.classList.contains('active') ? '<button class="tooltip-action-btn" data-action="view-summary">View in Week Summary</button>' : ''}
+                    </div>
+            `;
 
-    let html = `
-        <div class="tooltip-header">
-            <div class="tooltip-date"><span>📅</span> ${formattedDate}</div>
-            <button class="tooltip-close" type="button" aria-label="Close tooltip">×</button>
-        </div>
-        <div class="tooltip-content">
-    `;
+            if (reflectionsData[dateString].morning && reflectionsData[dateString].morning.trim() !== '') {
+                const morningText = reflectionsData[dateString].morning;
+                html += `
+                    <div class="tooltip-reflection morning" data-action="select-date">
+                        <div class="tooltip-reflection-header">
+                            <span class="tooltip-reflection-icon">☀️</span> Morning Reflection
+                        </div>
+                        <div class="tooltip-reflection-text">${morningText}</div>
+                    </div>
+                `;
+            }
 
-    if (reflectionsData[dateString].morning && reflectionsData[dateString].morning.trim() !== '') {
-        const morningText = reflectionsData[dateString].morning;
-        html += `
-            <div class="tooltip-reflection morning">
-                <div class="tooltip-reflection-header">
-                    <span class="tooltip-reflection-icon">☀️</span> Morning Reflection
-                </div>
-                <div class="tooltip-reflection-text">${morningText}</div>
-            </div>
-        `;
-    }
+            if (reflectionsData[dateString].night && reflectionsData[dateString].night.trim() !== '') {
+                const nightText = reflectionsData[dateString].night;
+                html += `
+                    <div class="tooltip-reflection night" data-action="select-date">
+                        <div class="tooltip-reflection-header">
+                            <span class="tooltip-reflection-icon">🌙</span> Evening Reflection
+                        </div>
+                        <div class="tooltip-reflection-text">${nightText}</div>
+                    </div>
+                `;
+            }
 
-    if (reflectionsData[dateString].night && reflectionsData[dateString].night.trim() !== '') {
-        const nightText = reflectionsData[dateString].night;
-        html += `
-            <div class="tooltip-reflection night">
-                <div class="tooltip-reflection-header">
-                    <span class="tooltip-reflection-icon">🌙</span> Evening Reflection
-                </div>
-                <div class="tooltip-reflection-text">${nightText}</div>
-            </div>
-        `;
-    }
+            html += `</div>`;
+            return html;
+        }
 
-    html += `</div>`;
-    return html;
-}
+        function positionTooltip(anchorEl) {
+            const rect = anchorEl.getBoundingClientRect();
+            const tooltipRect = calendarTooltip.getBoundingClientRect();
+            const margin = 12;
 
-function positionTooltip(anchorEl) {
-    const rect = anchorEl.getBoundingClientRect();
-    const tooltipRect = calendarTooltip.getBoundingClientRect();
-    const margin = 12;
+            let top = rect.bottom + 10;
+            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
 
-    let top = rect.bottom + 10;
-    let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            // Keep within viewport horizontally
+            if (left + tooltipRect.width > window.innerWidth - margin) {
+                left = window.innerWidth - tooltipRect.width - margin;
+            }
+            if (left < margin) {
+                left = margin;
+            }
 
-    // Keep within viewport horizontally
-    if (left + tooltipRect.width > window.innerWidth - margin) {
-        left = window.innerWidth - tooltipRect.width - margin;
-    }
-    if (left < margin) {
-        left = margin;
-    }
+            // Flip above if needed
+            if (top + tooltipRect.height > window.innerHeight - margin) {
+                top = rect.top - tooltipRect.height - 10;
+            }
+            if (top < margin) {
+                top = margin;
+            }
 
-    // Flip above if needed
-    if (top + tooltipRect.height > window.innerHeight - margin) {
-        top = rect.top - tooltipRect.height - 10;
-    }
-    if (top < margin) {
-        top = margin;
-    }
+            calendarTooltip.style.top = `${top}px`;
+            calendarTooltip.style.left = `${left}px`;
+        }
 
-    calendarTooltip.style.top = `${top}px`;
-    calendarTooltip.style.left = `${left}px`;
-}
+        function showTooltip(date, anchorEl) {
+            activeTooltipAnchor = anchorEl;
+            activeTooltipDate = date;
 
-function showTooltip(date, anchorEl) {
-    activeTooltipAnchor = anchorEl;
-    activeTooltipDate = date;
+            calendarTooltip.innerHTML = buildTooltipHTML(date);
+            calendarTooltip.classList.add('active');
 
-    calendarTooltip.innerHTML = buildTooltipHTML(date);
-    calendarTooltip.classList.add('active');
+            // highlight anchor
+            anchorEl.classList.add('hovered');
 
-    // highlight anchor
-    anchorEl.classList.add('hovered');
+            // Position after it renders (so we have dimensions)
+            setTimeout(() => positionTooltip(anchorEl), 0);
+        }
 
-    // Position after it renders (so we have dimensions)
-    setTimeout(() => positionTooltip(anchorEl), 0);
-}
+        function hideDateTooltip() {
+            calendarTooltip.classList.remove('active');
+            activeTooltipAnchor = null;
+            activeTooltipDate = null;
 
-function hideDateTooltip() {
-    calendarTooltip.classList.remove('active');
-    activeTooltipAnchor = null;
-    activeTooltipDate = null;
+            // Remove hover class from all anchors
+            document.querySelectorAll('.calendar-date.hovered, .week-cell.hovered, .month-cell.hovered').forEach(el => {
+                el.classList.remove('hovered');
+            });
+        }
 
-    // Remove hover class from all anchors
-    document.querySelectorAll('.calendar-date.hovered, .week-cell.hovered, .month-cell.hovered').forEach(el => {
-        el.classList.remove('hovered');
-    });
-}
+        function handleTooltipMouseEnter(date, anchorEl) {
+            if (tooltipTimer) {
+                clearTimeout(tooltipTimer);
+                tooltipTimer = null;
+            }
 
-function handleTooltipMouseEnter(date, anchorEl) {
-    if (tooltipTimer) {
-        clearTimeout(tooltipTimer);
-        tooltipTimer = null;
-    }
+            tooltipTimer = setTimeout(() => {
+                showTooltip(date, anchorEl);
+            }, 300);
+        }
 
-    tooltipTimer = setTimeout(() => {
-        showTooltip(date, anchorEl);
-    }, 300);
-}
+        function handleTooltipMouseLeave(e) {
+            if (tooltipTimer) {
+                clearTimeout(tooltipTimer);
+                tooltipTimer = null;
+            }
 
-function handleTooltipMouseLeave(e) {
-    if (tooltipTimer) {
-        clearTimeout(tooltipTimer);
-        tooltipTimer = null;
-    }
-
-    const relatedTarget = e.relatedTarget;
-    if (!relatedTarget || !calendarTooltip.contains(relatedTarget)) {
-        hideDateTooltip();
-    }
-}
-
+            const relatedTarget = e.relatedTarget;
+            if (!relatedTarget || !calendarTooltip.contains(relatedTarget)) {
+                hideDateTooltip();
+            }
+        }
+        
+        // NEW: Tooltip Click Handler
+        function handleTooltipClick(e) {
+            e.stopPropagation();
+            
+            const target = e.target;
+            
+            // Check if the click is on a clickable element
+            const clickableElement = target.closest('[data-action]');
+            if (!clickableElement) return;
+            
+            const action = clickableElement.dataset.action;
+            const date = activeTooltipDate;
+            
+            if (!date) return;
+            
+            switch(action) {
+                case 'select-date':
+                    setSelectedDate(date);
+                    hideDateTooltip();
+                    
+                    // Switch to month view if we're in week summary view
+                    if (weekViewBtn.classList.contains('active')) {
+                        switchCalendarView('month');
+                    }
+                    break;
+                    
+                case 'view-summary':
+                    openWeekSummary();
+                    
+                    // Scroll to that date in the summary
+                    setTimeout(() => {
+                        scrollToDateInSummary(date);
+                    }, 100);
+                    hideDateTooltip();
+                    break;
+            }
+        }
+        
+        // NEW: Function to scroll to date in summary
+        function scrollToDateInSummary(date) {
+            const dateString = formatDate(date);
+            const summaryDays = summaryContent.querySelectorAll('.summary-day');
+            
+            summaryDays.forEach(dayElement => {
+                const dayHeader = dayElement.querySelector('.summary-day-header');
+                if (dayHeader && dayHeader.textContent.includes(dateString.substring(5, 10))) {
+                    dayElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                    
+                    // Add highlight effect
+                    dayElement.style.boxShadow = '0 0 0 3px var(--primary-color)';
+                    dayElement.style.transition = 'box-shadow 0.3s';
+                    
+                    setTimeout(() => {
+                        dayElement.style.boxShadow = '';
+                    }, 2000);
+                }
+            });
+        }
+        
         // ========== DYNALIST FUNCTIONS ==========
         
         function showDynalistSettings() {
@@ -3348,117 +3688,71 @@ function handleTooltipMouseLeave(e) {
                 throw error;
             }
         }
-        
-async function addReflectionsToDynalist(documentId) {
-    // Read the document root
-    const readResponse = await fetch('https://dynalist.io/api/v1/doc/read', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: dynalistApiKey, file_id: documentId })
-    });
-    const readData = await readResponse.json();
-    if (readData._code !== 'Ok') {
-        throw new Error('Failed to read document: ' + (readData._msg || 'Unknown error'));
-    }
 
-    // Root node
-    const rootNode = readData.nodes.find(node => node.id === 'root');
-    if (!rootNode) throw new Error('Root node not found');
-
-    // Create main session node with timestamp
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const weekday = today.toLocaleDateString('en-US', { weekday: 'short' });
-    const timeString = today.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-    }).toLowerCase();
-    
-    const sessionNodeContent = `Mindful Reflections ${year}${month}${day} (${weekday}) ${timeString}`;
-
-    const sessionResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            token: dynalistApiKey,
-            file_id: documentId,
-            changes: [{
-                action: 'insert',
-                parent_id: rootNode.id,
-                content: sessionNodeContent,
-                index: readData.nodes.filter(n => n.parent === rootNode.id).length
-            }]
-        })
-    });
-    const sessionData = await sessionResponse.json();
-    if (sessionData._code !== 'Ok') {
-        throw new Error('Failed to add session node: ' + (sessionData._msg || 'Unknown error'));
-    }
-    const sessionNodeId = sessionData.new_node_ids ? sessionData.new_node_ids[0] : null;
-    if (!sessionNodeId) throw new Error('Failed to get new session node ID');
-
-    // Add today's reflections
-    const dateString = formatDate(selectedDate);
-    const formattedDate = selectedDate.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-
-    let index = 0;
-
-    // Add date header
-    const dateHeaderResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            token: dynalistApiKey,
-            file_id: documentId,
-            changes: [{
-                action: 'insert',
-                parent_id: sessionNodeId,
-                content: `📅 ${formattedDate}`,
-                index: index++
-            }]
-        })
-    });
-
-    // Helper function to split content into paragraphs for Dynalist
-    function splitIntoParagraphs(content, maxLength = 2000) {
-        if (!content) return [];
-        
-        const paragraphs = [];
-        const sentences = content.split(/(?<=[.!?])\s+/);
-        let currentParagraph = '';
-        
-        sentences.forEach(sentence => {
-            // If adding this sentence would exceed maxLength, start a new paragraph
-            if ((currentParagraph + sentence).length > maxLength && currentParagraph.length > 0) {
-                paragraphs.push(currentParagraph.trim());
-                currentParagraph = sentence + ' ';
-            } else {
-                currentParagraph += sentence + ' ';
+        async function addReflectionsToDynalist(documentId) {
+            // Read the document root
+            const readResponse = await fetch('https://dynalist.io/api/v1/doc/read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: dynalistApiKey, file_id: documentId })
+            });
+            const readData = await readResponse.json();
+            if (readData._code !== 'Ok') {
+                throw new Error('Failed to read document: ' + (readData._msg || 'Unknown error'));
             }
-        });
-        
-        // Add the last paragraph
-        if (currentParagraph.trim()) {
-            paragraphs.push(currentParagraph.trim());
-        }
-        
-        return paragraphs;
-    }
 
-    // Add morning reflection if exists - WITH FULL CONTENT AND COLLAPSIBLE SECTIONS
-    if (reflectionsData[dateString] && reflectionsData[dateString].morning) {
-        const morningContent = reflectionsData[dateString].morning.trim();
-        if (morningContent) {
-            // Add morning reflection header (collapsible section)
-            const morningHeaderResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
+            // Root node
+            const rootNode = readData.nodes.find(node => node.id === 'root');
+            if (!rootNode) throw new Error('Root node not found');
+
+            // Create main session node with timestamp
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const weekday = today.toLocaleDateString('en-US', { weekday: 'short' });
+            const timeString = today.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            }).toLowerCase();
+            
+            const sessionNodeContent = `Mindful Reflections ${year}${month}${day} (${weekday}) ${timeString}`;
+
+            const sessionResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: dynalistApiKey,
+                    file_id: documentId,
+                    changes: [{
+                        action: 'insert',
+                        parent_id: rootNode.id,
+                        content: sessionNodeContent,
+                        index: readData.nodes.filter(n => n.parent === rootNode.id).length
+                    }]
+                })
+            });
+            const sessionData = await sessionResponse.json();
+            if (sessionData._code !== 'Ok') {
+                throw new Error('Failed to add session node: ' + (sessionData._msg || 'Unknown error'));
+            }
+            const sessionNodeId = sessionData.new_node_ids ? sessionData.new_node_ids[0] : null;
+            if (!sessionNodeId) throw new Error('Failed to get new session node ID');
+
+            // Add today's reflections
+            const dateString = formatDate(selectedDate);
+            const formattedDate = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            let index = 0;
+
+            // Add date header
+            const dateHeaderResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -3467,20 +3761,44 @@ async function addReflectionsToDynalist(documentId) {
                     changes: [{
                         action: 'insert',
                         parent_id: sessionNodeId,
-                        content: `☀️ Morning Reflection`,
+                        content: `📅 ${formattedDate}`,
                         index: index++
                     }]
                 })
             });
-            const morningHeaderData = await morningHeaderResponse.json();
-            const morningHeaderId = morningHeaderData.new_node_ids ? morningHeaderData.new_node_ids[0] : null;
 
-            if (morningHeaderId) {
-                // Split morning reflection into paragraphs and add each as a child of the header
-                const morningParagraphs = splitIntoParagraphs(morningContent);
-                for (let i = 0; i < morningParagraphs.length; i++) {
-                    const paragraph = morningParagraphs[i];
-                    const paragraphResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
+            // Helper function to split content into paragraphs for Dynalist
+            function splitIntoParagraphs(content, maxLength = 2000) {
+                if (!content) return [];
+                
+                const paragraphs = [];
+                const sentences = content.split(/(?<=[.!?])\s+/);
+                let currentParagraph = '';
+                
+                sentences.forEach(sentence => {
+                    // If adding this sentence would exceed maxLength, start a new paragraph
+                    if ((currentParagraph + sentence).length > maxLength && currentParagraph.length > 0) {
+                        paragraphs.push(currentParagraph.trim());
+                        currentParagraph = sentence + ' ';
+                    } else {
+                        currentParagraph += sentence + ' ';
+                    }
+                });
+                
+                // Add the last paragraph
+                if (currentParagraph.trim()) {
+                    paragraphs.push(currentParagraph.trim());
+                }
+                
+                return paragraphs;
+            }
+
+            // Add morning reflection if exists - WITH FULL CONTENT AND COLLAPSIBLE SECTIONS
+            if (reflectionsData[dateString] && reflectionsData[dateString].morning) {
+                const morningContent = reflectionsData[dateString].morning.trim();
+                if (morningContent) {
+                    // Add morning reflection header (collapsible section)
+                    const morningHeaderResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -3488,50 +3806,50 @@ async function addReflectionsToDynalist(documentId) {
                             file_id: documentId,
                             changes: [{
                                 action: 'insert',
-                                parent_id: morningHeaderId,
-                                content: paragraph,
-                                index: i
+                                parent_id: sessionNodeId,
+                                content: `☀️ Morning Reflection`,
+                                index: index++
                             }]
                         })
                     });
-                    
-                    // Add small delay between requests to avoid rate limiting
-                    if (i < morningParagraphs.length - 1) {
-                        await new Promise(resolve => setTimeout(resolve, 200));
+                    const morningHeaderData = await morningHeaderResponse.json();
+                    const morningHeaderId = morningHeaderData.new_node_ids ? morningHeaderData.new_node_ids[0] : null;
+
+                    if (morningHeaderId) {
+                        // Split morning reflection into paragraphs and add each as a child of the header
+                        const morningParagraphs = splitIntoParagraphs(morningContent);
+                        for (let i = 0; i < morningParagraphs.length; i++) {
+                            const paragraph = morningParagraphs[i];
+                            const paragraphResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    token: dynalistApiKey,
+                                    file_id: documentId,
+                                    changes: [{
+                                        action: 'insert',
+                                        parent_id: morningHeaderId,
+                                        content: paragraph,
+                                        index: i
+                                    }]
+                                })
+                            });
+                            
+                            // Add small delay between requests to avoid rate limiting
+                            if (i < morningParagraphs.length - 1) {
+                                await new Promise(resolve => setTimeout(resolve, 200));
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
 
-    // Add evening reflection if exists - WITH FULL CONTENT AND COLLAPSIBLE SECTIONS
-    if (reflectionsData[dateString] && reflectionsData[dateString].night) {
-        const nightContent = reflectionsData[dateString].night.trim();
-        if (nightContent) {
-            // Add evening reflection header (collapsible section)
-            const nightHeaderResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    token: dynalistApiKey,
-                    file_id: documentId,
-                    changes: [{
-                        action: 'insert',
-                        parent_id: sessionNodeId,
-                        content: `🌙 Evening Reflection`,
-                        index: index++
-                    }]
-                })
-            });
-            const nightHeaderData = await nightHeaderResponse.json();
-            const nightHeaderId = nightHeaderData.new_node_ids ? nightHeaderData.new_node_ids[0] : null;
-
-            if (nightHeaderId) {
-                // Split evening reflection into paragraphs and add each as a child of the header
-                const nightParagraphs = splitIntoParagraphs(nightContent);
-                for (let i = 0; i < nightParagraphs.length; i++) {
-                    const paragraph = nightParagraphs[i];
-                    const paragraphResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
+            // Add evening reflection if exists - WITH FULL CONTENT AND COLLAPSIBLE SECTIONS
+            if (reflectionsData[dateString] && reflectionsData[dateString].night) {
+                const nightContent = reflectionsData[dateString].night.trim();
+                if (nightContent) {
+                    // Add evening reflection header (collapsible section)
+                    const nightHeaderResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -3539,24 +3857,46 @@ async function addReflectionsToDynalist(documentId) {
                             file_id: documentId,
                             changes: [{
                                 action: 'insert',
-                                parent_id: nightHeaderId,
-                                content: paragraph,
-                                index: i
+                                parent_id: sessionNodeId,
+                                content: `🌙 Evening Reflection`,
+                                index: index++
                             }]
                         })
                     });
-                    
-                    // Add small delay between requests to avoid rate limiting
-                    if (i < nightParagraphs.length - 1) {
-                        await new Promise(resolve => setTimeout(resolve, 200));
+                    const nightHeaderData = await nightHeaderResponse.json();
+                    const nightHeaderId = nightHeaderData.new_node_ids ? nightHeaderData.new_node_ids[0] : null;
+
+                    if (nightHeaderId) {
+                        // Split evening reflection into paragraphs and add each as a child of the header
+                        const nightParagraphs = splitIntoParagraphs(nightContent);
+                        for (let i = 0; i < nightParagraphs.length; i++) {
+                            const paragraph = nightParagraphs[i];
+                            const paragraphResponse = await fetch('https://dynalist.io/api/v1/doc/edit', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    token: dynalistApiKey,
+                                    file_id: documentId,
+                                    changes: [{
+                                        action: 'insert',
+                                        parent_id: nightHeaderId,
+                                        content: paragraph,
+                                        index: i
+                                    }]
+                                })
+                            });
+                            
+                            // Add small delay between requests to avoid rate limiting
+                            if (i < nightParagraphs.length - 1) {
+                                await new Promise(resolve => setTimeout(resolve, 200));
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
 
-    return true;
-}
+            return true;
+        }
 
         // Initialize the app when the page loads
         document.addEventListener('DOMContentLoaded', init);

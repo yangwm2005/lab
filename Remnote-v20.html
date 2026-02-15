@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RemNote-Style Daily Notes with Selection & Copy/Paste</title>
+    <title>RemNote-Style Daily Notes with Auto-Save</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Reset & Base Styles */
@@ -1395,6 +1395,7 @@
             cursor: pointer;
             transition: all 0.2s;
             border-left: 3px solid transparent;
+            position: relative;
         }
 
         .recent-note:hover {
@@ -2167,6 +2168,7 @@
             margin-bottom: 15px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         /* NEW: Section header drag handle */
@@ -2198,6 +2200,34 @@
             z-index: 10000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             animation: slideIn 0.3s ease;
+        }
+
+        /* Auto-save indicator */
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+        
+        .auto-save-indicator i {
+            font-size: 14px;
         }
     </style>
 </head>
@@ -2511,6 +2541,17 @@
                 <button class="btn btn-secondary" id="toggle-select-mode">
                     <i class="fas fa-mouse-pointer"></i> Select Mode
                 </button>
+                <!-- Auto-save control buttons -->
+                <button class="btn btn-secondary" id="toggle-auto-save-btn">
+                    <i class="fas fa-clock"></i> Toggle Auto-Save
+                </button>
+                <button class="btn btn-success" id="manual-save-btn">
+                    <i class="fas fa-save"></i> Save Now (Overwrite)
+                </button>
+                <!-- Reset Save Location Button (NEW) -->
+                <button class="btn btn-secondary" id="reset-save-location">
+                    <i class="fas fa-sync-alt"></i> Reset Save Location
+                </button>
                 <input type="file" id="file-input" class="hidden" accept=".json">
             </div>
             
@@ -2539,27 +2580,26 @@
                     <i class="fas fa-sticky-note"></i> Daily Notes
                 </div>
                 
-                <!-- NEW: Section Controls for Notes -->
-<!-- Update the Notes section controls with the dropdown menu -->
-<div class="section-controls">
-    <button class="btn btn-secondary" id="add-section-btn-notes">
-        <i class="fas fa-grip-lines"></i> Add Section
-    </button>
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" id="notes-section-dropdown" type="button">
-            <i class="fas fa-list"></i> Add Named Section
-        </button>
-        <div class="dropdown-menu" id="notes-section-menu">
-            <a class="dropdown-item" href="#" data-section="Personal">Personal</a>
-            <a class="dropdown-item" href="#" data-section="Lab">Lab</a>
-            <a class="dropdown-item" href="#" data-section="Social">Social</a>
-            <a class="dropdown-item" href="#" data-section="IMB-NCHU">IMB-NCHU</a>
-        </div>
-    </div>
-    <button class="btn btn-secondary" id="remove-empty-sections-btn-notes">
-        <i class="fas fa-trash-alt"></i> Remove Empty
-    </button>
-</div>
+                <!-- Section Controls for Notes -->
+                <div class="section-controls">
+                    <button class="btn btn-secondary" id="add-section-btn-notes">
+                        <i class="fas fa-grip-lines"></i> Add Section
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" id="notes-section-dropdown" type="button">
+                            <i class="fas fa-list"></i> Add Named Section
+                        </button>
+                        <div class="dropdown-menu" id="notes-section-menu">
+                            <a class="dropdown-item" href="#" data-section="Personal">Personal</a>
+                            <a class="dropdown-item" href="#" data-section="Lab">Lab</a>
+                            <a class="dropdown-item" href="#" data-section="Social">Social</a>
+                            <a class="dropdown-item" href="#" data-section="IMB-NCHU">IMB-NCHU</a>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" id="remove-empty-sections-btn-notes">
+                        <i class="fas fa-trash-alt"></i> Remove Empty
+                    </button>
+                </div>
                 
                 <ul class="bullet-list" id="notes-list">
                     <!-- Notes will be loaded based on selected date -->
@@ -2580,10 +2620,9 @@
                     <button class="btn btn-secondary" id="add-section-btn">
                         <i class="fas fa-grip-lines"></i> Add Section
                     </button>
-<!-- In the To-Do List Section, add this button to the section controls -->
-<button class="btn btn-secondary" id="add-dated-section-btn">
-    <i class="fas fa-calendar-day"></i> Add Today-todo
-</button>
+                    <button class="btn btn-secondary" id="add-dated-section-btn">
+                        <i class="fas fa-calendar-day"></i> Add Today-todo
+                    </button>
                     <button class="btn btn-secondary" id="remove-empty-sections-btn">
                         <i class="fas fa-trash-alt"></i> Remove Empty Sections
                     </button>
@@ -2624,8 +2663,14 @@
         </div>
     </div>
     
+    <!-- Auto-save indicator -->
+    <div class="auto-save-indicator" id="auto-save-indicator">
+        <i class="fas fa-save"></i>
+        <span>Auto-saving...</span>
+    </div>
+    
     <div class="footer">
-        <p>&copy; 2026 Dr. Wen-Ming Yang. All rights reserved v2.0. RemNote-Style Daily Notes (Task note switch)</p>
+        <p>&copy; 2026 Dr. Wen-Ming Yang. All rights reserved v2.0. RemNote-Style Daily Notes with Auto-Save (Overwrite Mode)</p>
     </div>
 
     <script>
@@ -2658,6 +2703,14 @@
         let calendarPreviewTimeout = null;
         let calendarPreviewVisible = false;
 
+        // Auto-save variables
+        let autoSaveTimeout = null;
+        let lastSavedContent = '';
+        let isAutoSaveEnabled = false; // Set to false by default (OFF)
+
+        // NEW: File handle for File System Access API
+        let fileHandle = null;
+
         // Initialize the app
         function initApp() {
             loadSampleData();
@@ -2670,7 +2723,289 @@
             setupEventListeners();
             loadFromLocalStorage();
             setupAutoRemoveBlankItems();
+            
+            // Only setup monitoring if auto-save is enabled
+			if (isAutoSaveEnabled) {
+    			setupAutoSaveMonitoring();
+			}
         }
+
+        // Setup auto-save monitoring
+        function setupAutoSaveMonitoring() {
+            // Monitor input events for real-time typing detection
+            document.addEventListener('input', (e) => {
+                if (e.target.classList.contains('bullet-content') || 
+                    e.target.classList.contains('goal-text')) {
+                    triggerAutoSave();
+                }
+            });
+            
+            // Monitor checkbox changes
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('goal-checkbox') || 
+                    (e.target.type === 'checkbox' && e.target.closest('.bullet-item'))) {
+                    triggerAutoSave();
+                }
+            });
+            
+            // Monitor drag and drop events
+            document.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('bullet-item') || 
+                    e.target.classList.contains('goal-item')) {
+                    triggerAutoSave();
+                }
+            });
+        }
+
+        // Trigger auto-save to JSON file
+// Trigger auto-save to JSON file
+function triggerAutoSave() {
+    if (!isAutoSaveEnabled) return; // ADD THIS LINE
+    
+    // Clear any pending auto-save
+    if (autoSaveTimeout) {
+        clearTimeout(autoSaveTimeout);
+    }
+    
+    // Show auto-save indicator
+    const indicator = document.getElementById('auto-save-indicator');
+    indicator.classList.add('show');
+    
+    // Set timeout to save after 2 seconds of no changes
+    autoSaveTimeout = setTimeout(() => {
+        autoSaveToJsonFile();
+        
+        // Hide indicator after save
+        setTimeout(() => {
+            indicator.classList.remove('show');
+        }, 500);
+    }, 2000);
+}
+
+        // NEW: Request file handle for saving (File System Access API)
+        async function getFileHandle(suggestedName) {
+            try {
+                // Check if File System Access API is supported
+                if ('showSaveFilePicker' in window) {
+                    if (!fileHandle) {
+                        fileHandle = await window.showSaveFilePicker({
+                            suggestedName: suggestedName,
+                            types: [{
+                                description: 'JSON Files',
+                                accept: { 'application/json': ['.json'] }
+                            }]
+                        });
+                    }
+                    return fileHandle;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error getting file handle:', error);
+                return null;
+            }
+        }
+
+        // NEW: Auto-save to JSON file with overwrite capability
+        async function autoSaveToJsonFile() {
+            if (!isAutoSaveEnabled) return;
+            
+            try {
+                // Get current date for filename
+                const today = new Date();
+                const filename = `Remnote-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}.json`;
+                
+                // Prepare data for export
+                const data = {
+                    notes: notesData,
+                    todos: todosData,
+                    goals: goalsData,
+                    recentNotes: recentNotesData,
+                    metadata: {
+                        exportDate: new Date().toISOString(),
+                        version: '1.0',
+                        lastModified: new Date().toLocaleString()
+                    }
+                };
+                
+                const jsonString = JSON.stringify(data, null, 2);
+                
+                // Try to use File System Access API first
+                if ('showSaveFilePicker' in window) {
+                    try {
+                        // If we don't have a file handle or the user wants to select a new one
+                        if (!fileHandle) {
+                            fileHandle = await window.showSaveFilePicker({
+                                suggestedName: filename,
+                                types: [{
+                                    description: 'JSON Files',
+                                    accept: { 'application/json': ['.json'] }
+                                }]
+                            });
+                        }
+                        
+                        // Create a writable stream and write the file (this OVERWRITES the existing file)
+                        const writable = await fileHandle.createWritable();
+                        await writable.write(jsonString);
+                        await writable.close();
+                        
+                        console.log(`Auto-saved to ${filename} at ${new Date().toLocaleTimeString()}`);
+                        return;
+                    } catch (error) {
+                        console.error('File System Access API failed, falling back to download:', error);
+                        fileHandle = null; // Reset handle on error
+                    }
+                }
+                
+                // Fallback to traditional download method
+                fallbackSaveToFile(jsonString, filename);
+                
+            } catch (error) {
+                console.error('Error in auto-save:', error);
+                // Show error notification
+                const indicator = document.getElementById('auto-save-indicator');
+                indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Auto-save failed</span>';
+                indicator.style.backgroundColor = '#e74c3c';
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                    // Restore original indicator text
+                    setTimeout(() => {
+                        indicator.innerHTML = '<i class="fas fa-save"></i><span>Auto-saving...</span>';
+                        indicator.style.backgroundColor = '#3498db';
+                    }, 300);
+                }, 2000);
+            }
+        }
+
+        // Fallback save method using traditional download
+        function fallbackSaveToFile(jsonString, filename) {
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            // Show notification that fallback was used
+            showNotification('ℹ️ Using download method (may create duplicates)');
+        }
+
+        // NEW: Manual save with overwrite capability
+        async function manualSaveToJsonFile() {
+            isAutoSaveEnabled = false; // Temporarily disable auto-save to avoid double save
+            
+            try {
+                const today = new Date();
+                const filename = `Remnote-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}.json`;
+                
+                const data = {
+                    notes: notesData,
+                    todos: todosData,
+                    goals: goalsData,
+                    recentNotes: recentNotesData,
+                    metadata: {
+                        exportDate: new Date().toISOString(),
+                        version: '1.0'
+                    }
+                };
+                
+                const jsonString = JSON.stringify(data, null, 2);
+                
+                // Try to use File System Access API first
+                if ('showSaveFilePicker' in window) {
+                    try {
+                        // Always ask for file handle on manual save to ensure user can select location
+                        const handle = await window.showSaveFilePicker({
+                            suggestedName: filename,
+                            types: [{
+                                description: 'JSON Files',
+                                accept: { 'application/json': ['.json'] }
+                            }]
+                        });
+                        
+                        const writable = await handle.createWritable();
+                        await writable.write(jsonString);
+                        await writable.close();
+                        
+                        fileHandle = handle; // Save handle for future auto-saves
+                        
+                        showNotification('✅ File saved successfully (overwritten)');
+                    } catch (error) {
+                        if (error.name !== 'AbortError') { // User cancelled
+                            console.error('File save failed:', error);
+                            fallbackSaveToFile(jsonString, filename);
+                            showNotification('⚠️ Using fallback save method');
+                        }
+                    }
+                } else {
+                    // Fallback for browsers without File System Access API
+                    fallbackSaveToFile(jsonString, filename);
+                    showNotification('ℹ️ Using download method (file may need manual overwrite)');
+                }
+                
+                // Show manual save indicator
+                const indicator = document.getElementById('auto-save-indicator');
+                indicator.innerHTML = '<i class="fas fa-check-circle"></i><span>Saved!</span>';
+                indicator.classList.add('show');
+                
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                    setTimeout(() => {
+                        indicator.innerHTML = '<i class="fas fa-save"></i><span>Auto-saving...</span>';
+                        indicator.style.backgroundColor = '#3498db';
+                    }, 300);
+                    isAutoSaveEnabled = true;
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Manual save failed:', error);
+                showNotification('❌ Save failed');
+                isAutoSaveEnabled = true;
+            }
+        }
+
+        // NEW: Reset file handle (allows user to change save location)
+        function resetFileHandle() {
+            fileHandle = null;
+            showNotification('File save location reset. Next save will ask for location.');
+        }
+
+        // Toggle auto-save on/off
+// Toggle auto-save on/off
+function toggleAutoSave() {
+    isAutoSaveEnabled = !isAutoSaveEnabled;
+    const indicator = document.getElementById('auto-save-indicator');
+    
+    if (isAutoSaveEnabled) {
+        indicator.innerHTML = '<i class="fas fa-save"></i><span>Auto-saving...</span>';
+        indicator.style.backgroundColor = '#3498db';
+        showNotification('Auto-save enabled');
+        
+        // Start monitoring if not already started
+        setupAutoSaveMonitoring();
+    } else {
+        indicator.innerHTML = '<i class="fas fa-ban"></i><span>Auto-save disabled</span>';
+        indicator.style.backgroundColor = '#e74c3c';
+        indicator.classList.add('show');
+        setTimeout(() => {
+            indicator.classList.remove('show');
+        }, 2000);
+        showNotification('Auto-save disabled');
+        
+        // Clear any pending auto-save timeout
+        if (autoSaveTimeout) {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = null;
+        }
+    }
+}
 
         // Setup floating button event listeners for NEW BROWSER WINDOWS
         function setupFloatingButtons() {
@@ -2851,14 +3186,7 @@
                 
                 const message = `Could not open ${title}. Please:\n\n1. Allow popups for this site\n2. Or hold Ctrl/Cmd while clicking the button\n3. Or right-click and select "Open in new window"`;
                 
-                if (window.showModalDialog) {
-                    window.showModalDialog('<html><body style="padding:20px;font-family:Arial;">' + 
-                        '<h3>Browser Popup Blocked</h3>' + 
-                        '<p>' + message.replace(/\n/g, '<br>') + '</p>' + 
-                        '</body></html>', 'Popup Blocked');
-                } else {
-                    alert(message);
-                }
+                alert(message);
             }
         }
 
@@ -3752,7 +4080,7 @@
             });
         }
 
-        // NEW: Add section header to notes
+        // Add section header to notes
         function addSectionHeaderNotes() {
             const dateString = formatDate(selectedDate);
             if (!notesData[dateString]) notesData[dateString] = [];
@@ -3771,6 +4099,7 @@
             notesData[dateString].push(newSection);
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             setTimeout(() => {
                 const notesList = document.getElementById('notes-list');
@@ -3785,88 +4114,89 @@
             }, 10);
         }
 
-// NEW: Function to add a named section header to notes
-function addNamedSectionHeader(sectionName) {
-    const dateString = formatDate(selectedDate);
-    if (!notesData[dateString]) notesData[dateString] = [];
-    
-    const maxId = notesData[dateString].length > 0 ? 
-        Math.max(...notesData[dateString].map(n => n.id)) : 0;
-    
-    const newSection = {
-        id: maxId + 1,
-        content: sectionName,
-        type: 'note',
-        isSection: true,
-        indent: 0
-    };
-    
-    notesData[dateString].push(newSection);
-    loadDailyView();
-    saveToLocalStorage();
-    
-    setTimeout(() => {
-        const notesList = document.getElementById('notes-list');
-        const lastNote = notesList.lastChild;
-        if (lastNote) {
-            const contentElement = lastNote.querySelector('.bullet-content');
-            if (contentElement) {
-                contentElement.focus();
-                // Select all text for easy editing
-                const range = document.createRange();
-                const selection = window.getSelection();
-                range.selectNodeContents(contentElement);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
-        }
-    }, 10);
-}
-
-// NEW: Setup dropdown functionality
-function setupNotesSectionDropdown() {
-    const dropdownToggle = document.getElementById('notes-section-dropdown');
-    const dropdownMenu = document.getElementById('notes-section-menu');
-    const dropdownContainer = dropdownToggle.closest('.dropdown');
-    
-    // Toggle dropdown
-    dropdownToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdownMenu.classList.toggle('show');
-        dropdownContainer.classList.toggle('show');
-    });
-    
-    // Handle menu item clicks
-    dropdownMenu.querySelectorAll('.dropdown-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const sectionName = item.dataset.section;
-            addNamedSectionHeader(sectionName);
+        // Function to add a named section header to notes
+        function addNamedSectionHeader(sectionName) {
+            const dateString = formatDate(selectedDate);
+            if (!notesData[dateString]) notesData[dateString] = [];
             
-            // Close dropdown
-            dropdownMenu.classList.remove('show');
-            dropdownContainer.classList.remove('show');
-        });
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!dropdownContainer.contains(e.target)) {
-            dropdownMenu.classList.remove('show');
-            dropdownContainer.classList.remove('show');
+            const maxId = notesData[dateString].length > 0 ? 
+                Math.max(...notesData[dateString].map(n => n.id)) : 0;
+            
+            const newSection = {
+                id: maxId + 1,
+                content: sectionName,
+                type: 'note',
+                isSection: true,
+                indent: 0
+            };
+            
+            notesData[dateString].push(newSection);
+            loadDailyView();
+            saveToLocalStorage();
+            triggerAutoSave();
+            
+            setTimeout(() => {
+                const notesList = document.getElementById('notes-list');
+                const lastNote = notesList.lastChild;
+                if (lastNote) {
+                    const contentElement = lastNote.querySelector('.bullet-content');
+                    if (contentElement) {
+                        contentElement.focus();
+                        // Select all text for easy editing
+                        const range = document.createRange();
+                        const selection = window.getSelection();
+                        range.selectNodeContents(contentElement);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                }
+            }, 10);
         }
-    });
-    
-    // Close dropdown when pressing Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            dropdownMenu.classList.remove('show');
-            dropdownContainer.classList.remove('show');
-        }
-    });
-}
 
-        // NEW: Add section header to tasks
+        // Setup dropdown functionality
+        function setupNotesSectionDropdown() {
+            const dropdownToggle = document.getElementById('notes-section-dropdown');
+            const dropdownMenu = document.getElementById('notes-section-menu');
+            const dropdownContainer = dropdownToggle.closest('.dropdown');
+            
+            // Toggle dropdown
+            dropdownToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+                dropdownContainer.classList.toggle('show');
+            });
+            
+            // Handle menu item clicks
+            dropdownMenu.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionName = item.dataset.section;
+                    addNamedSectionHeader(sectionName);
+                    
+                    // Close dropdown
+                    dropdownMenu.classList.remove('show');
+                    dropdownContainer.classList.remove('show');
+                });
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!dropdownContainer.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                    dropdownContainer.classList.remove('show');
+                }
+            });
+            
+            // Close dropdown when pressing Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    dropdownMenu.classList.remove('show');
+                    dropdownContainer.classList.remove('show');
+                }
+            });
+        }
+
+        // Add section header to tasks
         function addSectionHeaderTodos() {
             const dateString = formatDate(selectedDate);
             if (!todosData[dateString]) todosData[dateString] = [];
@@ -3886,6 +4216,7 @@ function setupNotesSectionDropdown() {
             todosData[dateString].push(newSection);
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             setTimeout(() => {
                 const todoList = document.getElementById('todo-list');
@@ -3900,55 +4231,56 @@ function setupNotesSectionDropdown() {
             }, 10);
         }
 
-// NEW: Add auto-dated section header to tasks
-function addDatedSectionHeaderTodos() {
-    const dateString = formatDate(selectedDate);
-    if (!todosData[dateString]) todosData[dateString] = [];
-    
-    const maxId = todosData[dateString].length > 0 ? 
-        Math.max(...todosData[dateString].map(t => t.id)) : 0;
-    
-    // Format date as YYYYMMDD
-    const year = selectedDate.getFullYear();
-    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-    const day = String(selectedDate.getDate()).padStart(2, '0');
-    const dateFormat = `${year}${month}${day}`;
-    
-    const newSection = {
-        id: maxId + 1,
-        content: `Todo: ${dateFormat}`,
-        type: 'todo',
-        isSection: true,
-        done: false,
-        indent: 0
-    };
-    
-    todosData[dateString].push(newSection);
-    loadDailyView();
-    saveToLocalStorage();
-    
-    setTimeout(() => {
-        const todoList = document.getElementById('todo-list');
-        const lastTodo = todoList.lastChild;
-        if (lastTodo) {
-            const contentElement = lastTodo.querySelector('.bullet-content');
-            if (contentElement) {
-                contentElement.focus();
-                // Select the date part for easy editing
-                const textNode = contentElement.firstChild;
-                if (textNode && textNode.textContent) {
-                    const range = document.createRange();
-                    const selection = window.getSelection();
-                    // Select from position 6 ("Todo: " is 6 characters)
-                    range.setStart(textNode, 6);
-                    range.setEnd(textNode, textNode.length);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
+        // Add auto-dated section header to tasks
+        function addDatedSectionHeaderTodos() {
+            const dateString = formatDate(selectedDate);
+            if (!todosData[dateString]) todosData[dateString] = [];
+            
+            const maxId = todosData[dateString].length > 0 ? 
+                Math.max(...todosData[dateString].map(t => t.id)) : 0;
+            
+            // Format date as YYYYMMDD
+            const year = selectedDate.getFullYear();
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const dateFormat = `${year}${month}${day}`;
+            
+            const newSection = {
+                id: maxId + 1,
+                content: `Todo: ${dateFormat}`,
+                type: 'todo',
+                isSection: true,
+                done: false,
+                indent: 0
+            };
+            
+            todosData[dateString].push(newSection);
+            loadDailyView();
+            saveToLocalStorage();
+            triggerAutoSave();
+            
+            setTimeout(() => {
+                const todoList = document.getElementById('todo-list');
+                const lastTodo = todoList.lastChild;
+                if (lastTodo) {
+                    const contentElement = lastTodo.querySelector('.bullet-content');
+                    if (contentElement) {
+                        contentElement.focus();
+                        // Select the date part for easy editing
+                        const textNode = contentElement.firstChild;
+                        if (textNode && textNode.textContent) {
+                            const range = document.createRange();
+                            const selection = window.getSelection();
+                            // Select from position 6 ("Todo: " is 6 characters)
+                            range.setStart(textNode, 6);
+                            range.setEnd(textNode, textNode.length);
+                            selection.removeAllRanges();
+                            selection.addRange(range);
+                        }
+                    }
                 }
-            }
+            }, 10);
         }
-    }, 10);
-}
 
         // Load daily view
         function loadDailyView() {
@@ -4037,6 +4369,7 @@ function addDatedSectionHeaderTodos() {
                     li.classList.toggle('done');
                     saveItemStatus(item, type);
                     updateStats();
+                    triggerAutoSave();
                 });
             } else if (item.isSection) {
                 // Section header icon
@@ -4097,6 +4430,7 @@ function addDatedSectionHeaderTodos() {
             
             content.addEventListener('input', () => {
                 saveItemContent(item, type, content.textContent);
+                triggerAutoSave();
             });
             
             li.appendChild(dragHandle);
@@ -4127,6 +4461,7 @@ function addDatedSectionHeaderTodos() {
             
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             setTimeout(() => {
                 const updatedItem = document.querySelector(`.bullet-item[data-id="${item.id}"] .bullet-content`);
@@ -4176,6 +4511,7 @@ function addDatedSectionHeaderTodos() {
             
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             setTimeout(() => {
                 const newItems = document.querySelectorAll(`.bullet-item[data-id="${newItem.id}"]`);
@@ -4244,6 +4580,7 @@ function addDatedSectionHeaderTodos() {
                             loadDailyView();
                             updateStats();
                             saveToLocalStorage();
+                            triggerAutoSave();
                         }
                     }
                 }
@@ -4259,12 +4596,14 @@ function addDatedSectionHeaderTodos() {
                 updateGoalStats(formatDate(selectedDate));
                 updateStats();
                 saveToLocalStorage();
+                triggerAutoSave();
             });
             
             text.addEventListener('input', () => {
                 goal.text = text.textContent;
                 updateGoalStats(formatDate(selectedDate));
                 saveToLocalStorage();
+                triggerAutoSave();
             });
             
             return goalItem;
@@ -4346,6 +4685,8 @@ function addDatedSectionHeaderTodos() {
                     dragType = null;
                     dragSourceList = null;
                 }
+                
+                triggerAutoSave();
             });
             
             list.addEventListener('dragend', (e) => {
@@ -4426,6 +4767,7 @@ function addDatedSectionHeaderTodos() {
             
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             showNotification(`Converted ${sourceType} to ${targetType}`);
         }
@@ -4485,6 +4827,8 @@ function addDatedSectionHeaderTodos() {
                 dragItem = null;
                 dragType = null;
                 dragSourceList = null;
+                
+                triggerAutoSave();
             });
             
             goalsList.addEventListener('dragend', (e) => {
@@ -4670,7 +5014,7 @@ function addDatedSectionHeaderTodos() {
             }
         }
 
-        // NEW: Convert item to section header
+        // Convert item to section header
         function convertToSection(itemId, itemType, itemDate) {
             const dateString = itemDate;
             const data = itemType === 'note' ? notesData : todosData;
@@ -4692,6 +5036,7 @@ function addDatedSectionHeaderTodos() {
             // Reload view
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             // Show notification
             showNotification('Converted to Section Header');
@@ -4737,6 +5082,7 @@ function addDatedSectionHeaderTodos() {
             
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             showNotification(`Converted to ${targetType === 'note' ? 'Note' : 'Task'}`);
         }
@@ -4754,6 +5100,7 @@ function addDatedSectionHeaderTodos() {
                     loadDailyView();
                     updateStats();
                     saveToLocalStorage();
+                    triggerAutoSave();
                     
                     updateMiniCalendar();
                     updateWeekNavigation();
@@ -4856,6 +5203,7 @@ function addDatedSectionHeaderTodos() {
             loadRecentNotes();
             updateStats();
             saveToLocalStorage();
+            triggerAutoSave();
             
             document.getElementById('delete-confirm-modal').style.display = 'none';
         }
@@ -4883,6 +5231,7 @@ function addDatedSectionHeaderTodos() {
                     loadDailyView();
                     updateStats();
                     saveToLocalStorage();
+                    triggerAutoSave();
                     
                     updateMiniCalendar();
                     updateWeekNavigation();
@@ -4908,6 +5257,7 @@ function addDatedSectionHeaderTodos() {
                     loadDailyView();
                     updateStats();
                     saveToLocalStorage();
+                    triggerAutoSave();
                 }
             }
         }
@@ -5293,7 +5643,7 @@ function addDatedSectionHeaderTodos() {
             }, 100);
         }
 
-        // Add new note
+        // Add new note with auto-save trigger
         function addNewNote() {
             const dateString = formatDate(selectedDate);
             if (!notesData[dateString]) notesData[dateString] = [];
@@ -5394,9 +5744,10 @@ function addDatedSectionHeaderTodos() {
             }, 10);
             
             saveToLocalStorage();
+            triggerAutoSave();
         }
 
-        // Add new todo
+        // Add new todo with auto-save trigger
         function addNewTodo() {
             const dateString = formatDate(selectedDate);
             if (!todosData[dateString]) todosData[dateString] = [];
@@ -5507,6 +5858,7 @@ function addDatedSectionHeaderTodos() {
             }, 10);
             
             saveToLocalStorage();
+            triggerAutoSave();
         }
 
         // Add new goal
@@ -5539,6 +5891,7 @@ function addDatedSectionHeaderTodos() {
             }, 10);
             
             saveToLocalStorage();
+            triggerAutoSave();
         }
 
         // Clear completed goals
@@ -5549,13 +5902,14 @@ function addDatedSectionHeaderTodos() {
                 loadDailyView();
                 updateStats();
                 saveToLocalStorage();
+                triggerAutoSave();
                 
                 updateMiniCalendar();
                 updateWeekNavigation();
             }
         }
 
-        // Save item content
+        // Save item content with auto-save trigger
         function saveItemContent(item, type, content) {
             const dateString = formatDate(selectedDate);
             const data = type === 'note' ? notesData : todosData;
@@ -5565,11 +5919,12 @@ function addDatedSectionHeaderTodos() {
                 if (foundItem) {
                     foundItem.content = content;
                     saveToLocalStorage();
+                    triggerAutoSave();
                 }
             }
         }
 
-        // Save item status
+        // Save item status with auto-save trigger
         function saveItemStatus(item, type) {
             const dateString = formatDate(selectedDate);
             const data = type === 'note' ? notesData : todosData;
@@ -5579,6 +5934,7 @@ function addDatedSectionHeaderTodos() {
                 if (foundItem) {
                     foundItem.done = item.done;
                     saveToLocalStorage();
+                    triggerAutoSave();
                 }
             }
         }
@@ -5641,32 +5997,6 @@ function addDatedSectionHeaderTodos() {
             } catch (error) {
                 console.error('Error loading from localStorage:', error);
             }
-        }
-
-        // Save to JSON file
-        function saveDataToFile() {
-            const data = {
-                notes: notesData,
-                todos: todosData,
-                goals: goalsData,
-                recentNotes: recentNotesData,
-                metadata: {
-                    exportDate: new Date().toISOString(),
-                    version: '1.0'
-                }
-            };
-            
-            const jsonString = JSON.stringify(data, null, 2);
-            const today = new Date();
-            const filename = `Remnote-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}.json`;
-            
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
         }
 
         // Load from JSON file
@@ -6057,6 +6387,7 @@ function addDatedSectionHeaderTodos() {
             
             loadDailyView();
             saveToLocalStorage();
+            triggerAutoSave();
             
             showNotification(`Pasted ${copyBuffer.length} item${copyBuffer.length !== 1 ? 's' : ''}`);
         }
@@ -6187,17 +6518,17 @@ function addDatedSectionHeaderTodos() {
             document.getElementById('add-goal-btn').addEventListener('click', addNewGoal);
             document.getElementById('add-goal-full-btn').addEventListener('click', addNewGoal);
             
-            // NEW: Section header buttons for both notes and todos
+            // Section header buttons for both notes and todos
             document.getElementById('add-section-btn-notes').addEventListener('click', addSectionHeaderNotes);
             document.getElementById('add-section-btn').addEventListener('click', addSectionHeaderTodos);
             
-// NEW: Dated section header button for tasks
-document.getElementById('add-dated-section-btn').addEventListener('click', addDatedSectionHeaderTodos);
+            // Dated section header button for tasks
+            document.getElementById('add-dated-section-btn').addEventListener('click', addDatedSectionHeaderTodos);
 
-// NEW: Setup notes section dropdown
-setupNotesSectionDropdown();
+            // Setup notes section dropdown
+            setupNotesSectionDropdown();
 
-            // NEW: Remove empty sections buttons for both notes and todos
+            // Remove empty sections buttons for both notes and todos
             document.getElementById('remove-empty-sections-btn-notes').addEventListener('click', () => {
                 const dateString = formatDate(selectedDate);
                 if (notesData[dateString]) {
@@ -6210,6 +6541,7 @@ setupNotesSectionDropdown();
                     if (removedCount > 0) {
                         loadDailyView();
                         saveToLocalStorage();
+                        triggerAutoSave();
                         showNotification(`Removed ${removedCount} empty section${removedCount !== 1 ? 's' : ''} from notes`);
                     } else {
                         showNotification('No empty sections found in notes');
@@ -6229,6 +6561,7 @@ setupNotesSectionDropdown();
                     if (removedCount > 0) {
                         loadDailyView();
                         saveToLocalStorage();
+                        triggerAutoSave();
                         showNotification(`Removed ${removedCount} empty section${removedCount !== 1 ? 's' : ''} from tasks`);
                     } else {
                         showNotification('No empty sections found in tasks');
@@ -6240,7 +6573,11 @@ setupNotesSectionDropdown();
             document.getElementById('clear-done-goals').addEventListener('click', clearCompletedGoals);
             
             // File controls
-            document.getElementById('save-data-btn').addEventListener('click', saveDataToFile);
+            document.getElementById('save-data-btn').addEventListener('click', () => {
+                // Use manual save with overwrite capability
+                manualSaveToJsonFile();
+            });
+            
             document.getElementById('load-data-btn').addEventListener('click', () => {
                 document.getElementById('file-input').click();
             });
@@ -6254,6 +6591,13 @@ setupNotesSectionDropdown();
             
             // Selection mode toggle
             document.getElementById('toggle-select-mode').addEventListener('click', toggleSelectMode);
+            
+            // Auto-save buttons
+            document.getElementById('toggle-auto-save-btn').addEventListener('click', toggleAutoSave);
+            document.getElementById('manual-save-btn').addEventListener('click', manualSaveToJsonFile);
+            
+            // NEW: Reset save location button
+            document.getElementById('reset-save-location').addEventListener('click', resetFileHandle);
             
             // Date picker
             document.getElementById('open-date-picker').addEventListener('click', () => {
@@ -6364,6 +6708,7 @@ setupNotesSectionDropdown();
                                         loadDailyView();
                                         updateStats();
                                         saveToLocalStorage();
+                                        triggerAutoSave();
                                     }
                                 }
                             }
@@ -6420,30 +6765,6 @@ setupNotesSectionDropdown();
             
             // Auto-save
             setInterval(saveToLocalStorage, 30000);
-            
-            // Add drag and drop events for sections (for visual feedback)
-            document.querySelectorAll('.section').forEach(section => {
-                section.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    if (dragItem && dragType !== 'goal') {
-                        const sectionType = section.dataset.type;
-                        if (dragType !== sectionType) {
-                            section.classList.add('drag-over');
-                        }
-                    }
-                });
-                
-                section.addEventListener('dragleave', (e) => {
-                    if (!section.contains(e.relatedTarget)) {
-                        section.classList.remove('drag-over');
-                    }
-                });
-                
-                section.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    section.classList.remove('drag-over');
-                });
-            });
         }
 
         // Initialize the app
